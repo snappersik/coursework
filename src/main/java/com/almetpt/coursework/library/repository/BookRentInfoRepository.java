@@ -10,3 +10,4 @@ public interface BookRentInfoRepository extends GenericRepository<BookRentInfo>{
     Page<BookRentInfo> getBookRentInfoByUserId(Long id,
                                                Pageable pageRequest);
 }
+

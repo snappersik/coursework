@@ -23,3 +23,4 @@ public interface GenericRepository <T extends GenericModel> extends JpaRepositor
     List<T> findAllByIsDeletedFalse();
 
 }
+

@@ -20,3 +20,4 @@ public interface AuthorRepository extends GenericRepository<Author> {
         """)
     boolean checkAuthorForDeletion(final Long authorId);
 }
+

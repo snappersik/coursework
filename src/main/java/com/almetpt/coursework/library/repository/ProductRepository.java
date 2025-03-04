@@ -35,3 +35,5 @@ public interface ProductRepository extends GenericRepository<Product> {
     boolean isBookCanBeDeleted(final Long id);
 }
 
+
+
