@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 
 @Entity
-@Table (name = "products")
+@Table(name = "products")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,10 +24,9 @@ public class Product extends GenericModel {
     private String productDescription;
 
     @Column(name = "price", nullable = false)
-    private LocalDate price;
+    private BigDecimal price; // BigDecimal для точного хранения цены
 
     @Column(name = "category", nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING) // Хранение категории как строки
     private Category category;
-
 }

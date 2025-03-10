@@ -16,11 +16,10 @@ import java.util.List;
  * @param <T> - Сущность, с которой работает репозиторий
  */
 
-@NoRepositoryBean // не даст создать репозиторий, т.к. он абстрактный. Аналог @MappedSuperclass у GenericModel
-public interface GenericRepository <T extends GenericModel> extends JpaRepository<T, Long> { // Ограничиваем работу
-
+@NoRepositoryBean // Не даст создать репозиторий, т.к. он абстрактный.
+public interface GenericRepository<T extends GenericModel> extends JpaRepository<T, Long> {
     Page<T> findAllByIsDeletedFalse(Pageable pageable);
     List<T> findAllByIsDeletedFalse();
-
 }
+
 
