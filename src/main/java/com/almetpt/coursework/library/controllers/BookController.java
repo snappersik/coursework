@@ -2,7 +2,7 @@ package com.almetpt.coursework.library.controllers;
 
 import com.almetpt.coursework.library.dto.ProductDTO;
 import com.almetpt.coursework.library.model.Book;
-import com.almetpt.coursework.library.service.BookService;
+import com.almetpt.coursework.library.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
         description = "Контроллер для работы с книгами библиотеки")
 public class BookController
         extends GenericController<Book, ProductDTO> {
-    public BookController(BookService bookService) {
+    public BookController(ProductService bookService) {
         super(bookService);
     }
 
@@ -28,6 +28,6 @@ public class BookController
     public ResponseEntity<ProductDTO> addAuthor(@RequestParam(value = "bookId") Long bookId,
                                                 @RequestParam(value = "authorId") Long authorId) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(((BookService) service).addAuthor(bookId, authorId));
+        return ResponseEntity.status(HttpStatus.OK).body(((ProductService) service).addAuthor(bookId, authorId));
     }
 }

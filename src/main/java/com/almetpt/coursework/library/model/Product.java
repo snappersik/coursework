@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -16,7 +17,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @SequenceGenerator(name = "default_generator", sequenceName = "products_sequence", allocationSize = 1)
 public class Product extends GenericModel {
-
     @Column(name = "name", nullable = false)
     private String productName;
 
@@ -24,9 +24,12 @@ public class Product extends GenericModel {
     private String productDescription;
 
     @Column(name = "price", nullable = false)
-    private BigDecimal price; // BigDecimal для точного хранения цены
+    private BigDecimal price;
 
     @Column(name = "category", nullable = false)
-    @Enumerated(EnumType.STRING) // Хранение категории как строки
+    @Enumerated(EnumType.STRING)
     private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> cartItems;
 }

@@ -20,7 +20,7 @@ public interface ProductRepository extends GenericRepository<Product> {
             and coalesce(a.name, '%') ilike '%' || coalesce(:name, '%') || '%'
             and b.is_deleted = false
     """)
-    Page<Product> searchBooks(
+    Page<Product> searchProducts(
             @Param("title") String bookTitle,
             @Param("category") String category,
             @Param("name") String authorName,
