@@ -7,23 +7,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "carts")
+@Table(name = "orders")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SequenceGenerator(name = "default_generator", sequenceName = "cart_seq", allocationSize = 1)
+@SequenceGenerator(name = "default_generator", sequenceName = "orders_sequence", allocationSize = 1)
 public class Order extends GenericModel {
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user; // Связь с пользователем
 
-    @OneToOne
-    @JoinColumn(name = "user_id", unique = true)
-    private User user;
-
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> items = new ArrayList<>();
+    // Связь с продуктами (многие ко многим через OrderItem)
+    @OneToMany(mappedBy = "order")
+    private List<OrderItem> orderItems;
 
     public BigDecimal getTotalPrice() {
         return items.stream()
@@ -31,3 +31,5 @@ public class Order extends GenericModel {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
+
+

@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -30,6 +29,10 @@ public class Product extends GenericModel {
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CartItem> cartItems;
+    @Lob
+    @Column(name = "image")
+    private byte[] image;
+
+    @ManyToMany(mappedBy = "products")
+    private List<OrderItem> orderItems;
 }
