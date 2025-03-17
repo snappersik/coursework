@@ -48,11 +48,11 @@ public class UserService
         return mapper.toDTO(repository.save(mapper.toEntity(newObject)));
     }
 
-    public UserDTO createLibrarian(UserDTO newObject) {
+    public UserDTO createOrganizer(UserDTO newObject) {
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setId(2L);
         newObject.setRole(roleDTO);
-        newObject.setCreatedBy("LIBRARIAN CREATION FORM");
+        newObject.setCreatedBy("ORGANIZER CREATION FORM");
         return create(newObject);
     }
 

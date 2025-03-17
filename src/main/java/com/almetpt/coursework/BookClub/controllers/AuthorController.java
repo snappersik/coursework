@@ -1,6 +1,5 @@
 package com.almetpt.coursework.BookClub.controllers;
 
-import com.almetpt.coursework.BookClub.dto.AddProductDTO;
 import com.almetpt.coursework.BookClub.model.Author;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

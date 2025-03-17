@@ -24,12 +24,10 @@ public class OrderMapper extends GenericMapper<Order, OrderDTO> {
 
     @Override
     protected void mapSpecificFields(OrderDTO source, Order destination) {
-        // Дополнительный маппинг для полей Order, если необходимо
     }
 
     @Override
     protected void mapSpecificFields(Order source, OrderDTO destination) {
-        // Дополнительный маппинг для полей OrderDTO, если необходимо
     }
 
     @Override

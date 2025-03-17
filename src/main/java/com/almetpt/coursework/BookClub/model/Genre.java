@@ -1,5 +1,8 @@
 package com.almetpt.coursework.BookClub.model;
 
+import lombok.Getter;
+
+@Getter
 public enum Genre {
     FANTASY ("Фантастика"),
     SCIENCE_FICTION ("Научная фантастика"),
@@ -14,5 +17,4 @@ public enum Genre {
         this.genreTextDisplay = genreTextDisplay;
     }
 
-    public String getGenreTextDisplay(){return genreTextDisplay;}
 }

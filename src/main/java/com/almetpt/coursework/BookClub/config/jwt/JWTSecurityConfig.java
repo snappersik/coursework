@@ -14,7 +14,7 @@ package com.almetpt.coursework.BookClub.config.jwt;//package com.almetpt.coursew
 //import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 //import static com.almetpt.coursework.library.constants.SecurityConstants.*;
 //import static com.almetpt.coursework.library.constants.UserRoleConstants.ADMIN;
-//import static com.almetpt.coursework.library.constants.UserRoleConstants.LIBRARIAN;
+//import static com.almetpt.coursework.library.constants.UserRoleConstants.ORGANIZER;
 //
 //@Configuration
 //@EnableWebSecurity
@@ -40,7 +40,7 @@ package com.almetpt.coursework.BookClub.config.jwt;//package com.almetpt.coursew
 //                        .requestMatchers(RESOURCES_WHITE_LIST.toArray(String[]::new)).permitAll()
 //                        .requestMatchers(BOOKS_WHITE_LIST.toArray(String[]::new)).permitAll()
 //                        .requestMatchers(USERS_WHITE_LIST.toArray(String[]::new)).permitAll()
-//                        .requestMatchers(BOOKS_PERMISSION_LIST.toArray(String[]::new)).hasAnyRole(ADMIN, LIBRARIAN)
+//                        .requestMatchers(BOOKS_PERMISSION_LIST.toArray(String[]::new)).hasAnyRole(ADMIN, ORGANIZER)
 //                        .anyRequest().authenticated() // Все прочие запросы доступны аутентифицированным пользователям
 //                )
 //                .exceptionHandling()

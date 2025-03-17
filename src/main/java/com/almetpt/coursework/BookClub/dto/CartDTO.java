@@ -11,8 +11,18 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CartDTO {
+public class CartDTO extends GenericDTO {
+
     private Long id;
     private Long userId;
     private List<ProductDTO> products;
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProductDTO {
+        private Long id;
+        private String name;
+    }
 }

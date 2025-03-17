@@ -1,5 +1,8 @@
 package com.almetpt.coursework.BookClub.model;
 
+import lombok.Getter;
+
+@Getter
 public enum OrderStatus {
     PENDING("Ожидает оплаты"),
     PROCESSING("Обрабатывается"),
@@ -12,7 +15,4 @@ public enum OrderStatus {
         this.description = description;
     }
 
-    public String getDescription() {
-        return description;
-    }
 }

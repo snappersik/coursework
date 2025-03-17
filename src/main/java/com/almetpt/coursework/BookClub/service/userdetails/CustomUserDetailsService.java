@@ -40,7 +40,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
             authorities.add(new SimpleGrantedAuthority(user.getRole().getId() == 1L
                     ? "ROLE_" + UserRoleConstants.USER
-                    : "ROLE_" + UserRoleConstants.LIBRARIAN));
+                    : "ROLE_" + UserRoleConstants.ORGANIZER));
 
             return new CustomUserDetails(user.getId().intValue(), username, user.getPassword(), authorities);
         }

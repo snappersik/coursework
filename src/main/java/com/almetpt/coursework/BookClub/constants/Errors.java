@@ -20,5 +20,10 @@ public interface Errors {
         public static final String ACCESS_ERROR_MESSAGE ="Отказано в доступе";
         public static final String NOT_FOUND_ERROR_MESSAGE ="Объект не найден";
     }
-}
+        class Products {
+            String PRODUCT_DELETED_ERROR = "Невозможно удалить продукт, так как он связан с существующими заказами.";
+        }
+    }
+
+
 

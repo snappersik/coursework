@@ -16,7 +16,7 @@ import java.util.Map;
 public class CustomUserDetails implements UserDetails {
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
-    private final String email; // Используем email вместо login
+    private final String email;
     private final Integer id;
     private final Boolean enabled;
     private final Boolean accountNotExpired;
@@ -24,11 +24,11 @@ public class CustomUserDetails implements UserDetails {
     private final Boolean credentialsNonExpired;
 
     public CustomUserDetails(final Integer id,
-                             final String email, // Используем email вместо login
+                             final String email,
                              final String password,
                              final Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
-        this.email = email; // Используем email вместо login
+        this.email = email;
         this.password = password;
         this.authorities = authorities;
         this.accountNotExpired = true;
@@ -47,7 +47,6 @@ public class CustomUserDetails implements UserDetails {
         return password;
     }
 
-    // Используем email для получения имени пользователя
     @Override
     public String getUsername() {
         return email;

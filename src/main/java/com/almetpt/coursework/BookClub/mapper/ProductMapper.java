@@ -20,13 +20,8 @@ public class ProductMapper extends GenericMapper<Product, ProductDTO> {
     public void setupMapper() {
         modelMapper.createTypeMap(Product.class, ProductDTO.class)
                 .setPostConverter(toDTOConverter());
-
         modelMapper.createTypeMap(ProductDTO.class, Product.class)
                 .setPostConverter(toEntityConverter());
     }
-
-    @Override
-    protected List<Long> getIds(Product entity) {
-        return null;
-    }
+    
 }

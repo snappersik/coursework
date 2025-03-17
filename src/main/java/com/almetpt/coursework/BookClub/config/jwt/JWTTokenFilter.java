@@ -1,6 +1,8 @@
 package com.almetpt.coursework.BookClub.config.jwt;
 
 import com.almetpt.coursework;
+import com.almetpt.coursework.BookClub.service.userdetails.CustomUserDetailsService;
+import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,7 +30,6 @@ public class JWTTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        // Authorization = Bearer iljhsgi17624fi12.uydvkwqutyd1i7tefcvi12yteci1xt.y2eciy12gtxeci12
         String token = null;
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
 
@@ -37,7 +38,6 @@ public class JWTTokenFilter extends OncePerRequestFilter {
             return;
         } else {
             // Получаем JWT Token
-            // header = Bearer iljhsgi17624fi12.uydvkwqutyd1i7tefcvi12yteci1xt.y2eciy12gtxeci12
             token = header.split(" ")[1].trim();
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(jwtTokenUtil.getUsernameFromToken(token));
 
