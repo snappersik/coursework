@@ -1,6 +1,5 @@
 package com.almetpt.coursework.BookClub.config.jwt;
 
-import com.almetpt.coursework;
 import com.almetpt.coursework.BookClub.service.userdetails.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

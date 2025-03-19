@@ -1,7 +1,7 @@
 package com.almetpt.coursework.BookClub.config;
 
 import com.almetpt.coursework.BookClub.service.UserService;
-import com.almetpt.coursework.utils.MailUtils;
+import com.almetpt.coursework.BookClub.utils.MailUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

@@ -18,10 +18,10 @@ import java.math.BigDecimal;
 public class Product extends GenericModel {
 
     @Column(name = "name", nullable = false)
-    private String productName;
+    private String name;
 
     @Column(name = "description")
-    private String productDescription;
+    private String description;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
@@ -33,4 +33,5 @@ public class Product extends GenericModel {
     @Lob
     @Column(name = "image")
     private byte[] image;
+
 }

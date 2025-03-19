@@ -7,4 +7,3 @@ import org.springframework.stereotype.Repository;
 public interface CartRepository extends GenericRepository<Cart> {
     Cart findByUserId(Long userId);
 }
-

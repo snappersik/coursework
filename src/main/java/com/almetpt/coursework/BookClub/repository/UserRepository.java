@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends GenericRepository<User> {
+public interface UserRepository extends GenericRepository {
     User findUserByEmail(String email);
 
     User findUserByEmailAndIsDeletedFalse(String email);
@@ -18,16 +18,13 @@ public interface UserRepository extends GenericRepository<User> {
 
     @Query(nativeQuery = true,
             value = """
-                    select u.*
-                    from users u
-                    where u.first_name ilike '%' || coalesce(:firstName, '%') || '%'
-                    and u.last_name ilike '%' || coalesce(:lastName, '%') || '%'
-                    and u.email ilike '%' || coalesce(:email, '%') || '%'
-                    """)
-    Page<User> searchUsers(String firstName,
-                           String lastName,
-                           String email,
-                           Pageable pageable);
+           select u.*
+           from users u
+           where u.first_name ilike '%' || coalesce(:firstName, '%') || '%'
+           and u.last_name ilike '%' || coalesce(:lastName, '%') || '%'
+           and u.email ilike '%' || coalesce(:email, '%') || '%'
+           """)
+    Page<User> searchUsers(String firstName, String lastName, String email, Pageable pageable);
 
     @Query(nativeQuery = true,
             value = """

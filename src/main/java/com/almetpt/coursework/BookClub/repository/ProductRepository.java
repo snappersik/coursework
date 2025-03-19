@@ -1,6 +1,8 @@
 package com.almetpt.coursework.BookClub.repository;
 
 import com.almetpt.coursework.BookClub.model.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -9,12 +11,11 @@ import org.springframework.stereotype.Repository;
 public interface ProductRepository extends GenericRepository<Product> {
 
     @Query(nativeQuery = true, value = """
-            SELECT CASE
-                   WHEN COUNT(*) = 0 THEN TRUE
-                   ELSE FALSE
-                   END
-            FROM orders o
-            WHERE o.product_id = :productId
+            SELECT p FROM Product p WHERE p.productName LIKE %:productName% AND p.category.name = :categoryName
             """)
     boolean isProductCanBeDeleted(@Param("productId") Long productId);
+
+    Page<Product> findAllByProductNameAndCategory(@Param("productName") String productName,
+                                                  @Param("categoryName") String categoryName,
+                                                  Pageable pageable);
 }
