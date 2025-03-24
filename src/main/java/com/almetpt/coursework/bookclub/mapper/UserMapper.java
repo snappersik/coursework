@@ -1,8 +1,12 @@
 package com.almetpt.coursework.bookclub.mapper;
 
 import com.almetpt.coursework.bookclub.dto.UserDTO;
+
 import com.almetpt.coursework.bookclub.model.User;
+
+import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
+
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,10 +14,11 @@ import java.util.List;
 @Component
 public class UserMapper extends GenericMapper<User, UserDTO> {
 
-    protected UserMapper(ModelMapper modelMapper) {
+    public UserMapper(ModelMapper modelMapper) {
         super(User.class, UserDTO.class, modelMapper);
     }
 
+    @PostConstruct
     @Override
     protected void setupMapper() {
         modelMapper.createTypeMap(User.class, UserDTO.class)
@@ -23,17 +28,7 @@ public class UserMapper extends GenericMapper<User, UserDTO> {
     }
 
     @Override
-    protected void mapSpecificFields(UserDTO source, User destination) {
-        // Дополнительный маппинг для полей User, если необходимо
-    }
-
-    @Override
-    protected void mapSpecificFields(User source, UserDTO destination) {
-        // Дополнительный маппинг для полей UserDTO, если необходимо
-    }
-
-    @Override
-    protected List<Long> getIds(User entity) {
+    protected List getIds(User entity) {
         return null;
     }
 }

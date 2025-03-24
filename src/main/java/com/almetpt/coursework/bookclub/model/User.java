@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -39,6 +40,9 @@ public class User extends GenericModel {
 
     @Column(name = "phone_number")
     private String phoneNumber;
+
+    @Column(name = "birth_date", nullable = false)
+    private LocalDate birthDate;
 
     @OneToMany(mappedBy = "role")
     private List<User> users;

@@ -1,8 +1,12 @@
 package com.almetpt.coursework.bookclub.mapper;
 
 import com.almetpt.coursework.bookclub.dto.EventDTO;
+
 import com.almetpt.coursework.bookclub.model.Event;
+
+import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
+
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,10 +14,11 @@ import java.util.List;
 @Component
 public class EventMapper extends GenericMapper<Event, EventDTO> {
 
-    protected EventMapper(ModelMapper modelMapper) {
+    public EventMapper(ModelMapper modelMapper) {
         super(Event.class, EventDTO.class, modelMapper);
     }
 
+    @PostConstruct
     @Override
     protected void setupMapper() {
         modelMapper.createTypeMap(Event.class, EventDTO.class)
@@ -23,17 +28,7 @@ public class EventMapper extends GenericMapper<Event, EventDTO> {
     }
 
     @Override
-    protected void mapSpecificFields(EventDTO source, Event destination) {
-        // Дополнительный маппинг для полей Event, если необходимо
-    }
-
-    @Override
-    protected void mapSpecificFields(Event source, EventDTO destination) {
-        // Дополнительный маппинг для полей EventDTO, если необходимо
-    }
-
-    @Override
-    protected List<Long> getIds(Event entity) {
+    protected List getIds(Event entity) {
         return null;
     }
 }

@@ -1,8 +1,12 @@
 package com.almetpt.coursework.bookclub.mapper;
 
 import com.almetpt.coursework.bookclub.dto.OrderDTO;
+
 import com.almetpt.coursework.bookclub.model.Order;
+
+import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
+
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,10 +14,11 @@ import java.util.List;
 @Component
 public class OrderMapper extends GenericMapper<Order, OrderDTO> {
 
-    protected OrderMapper(ModelMapper modelMapper) {
+    public OrderMapper(ModelMapper modelMapper) {
         super(Order.class, OrderDTO.class, modelMapper);
     }
 
+    @PostConstruct
     @Override
     protected void setupMapper() {
         modelMapper.createTypeMap(Order.class, OrderDTO.class)
@@ -23,15 +28,7 @@ public class OrderMapper extends GenericMapper<Order, OrderDTO> {
     }
 
     @Override
-    protected void mapSpecificFields(OrderDTO source, Order destination) {
-    }
-
-    @Override
-    protected void mapSpecificFields(Order source, OrderDTO destination) {
-    }
-
-    @Override
-    protected List<Long> getIds(Order entity) {
+    protected List getIds(Order entity) {
         return null;
     }
 }

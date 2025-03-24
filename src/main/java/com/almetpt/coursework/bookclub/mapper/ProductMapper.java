@@ -1,12 +1,17 @@
 package com.almetpt.coursework.bookclub.mapper;
 
 import com.almetpt.coursework.bookclub.dto.ProductDTO;
+
 import com.almetpt.coursework.bookclub.model.Product;
+
 import jakarta.annotation.PostConstruct;
+
 import org.modelmapper.ModelMapper;
+
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+
 import java.util.List;
 
 @Component
@@ -18,7 +23,7 @@ public class ProductMapper extends GenericMapper<Product, ProductDTO> {
 
     @PostConstruct
     @Override
-    public void setupMapper() {
+    protected void setupMapper() {
         modelMapper.createTypeMap(Product.class, ProductDTO.class)
                 .setPostConverter(toDTOConverter());
         modelMapper.createTypeMap(ProductDTO.class, Product.class)
@@ -26,7 +31,7 @@ public class ProductMapper extends GenericMapper<Product, ProductDTO> {
     }
 
     @Override
-    protected List<Long> getIds(Product entity) {
+    protected List getIds(Product entity) {
         return Collections.emptyList();
     }
 }
