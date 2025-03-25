@@ -9,12 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/rest/books")
-@Tag(name = "Книги",
-        description = "Контроллер для работы с книгами")
-public class BookController
-        extends GenericController<Book, BookDTO> {
+@Tag(name = "Книги", description = "Контроллер для работы с книгами")
+public class BookController extends GenericController<Book, BookDTO> {
+
     public BookController(BookService bookService) {
         super(bookService);
     }
-
 }

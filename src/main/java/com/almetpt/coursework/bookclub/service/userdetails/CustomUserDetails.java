@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,6 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Builder
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
@@ -78,19 +80,18 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String toString() {
-        ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.writeValueAsString(getFieldsToInclude());
+            return new ObjectMapper().writeValueAsString(getFieldsToInclude());
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error("Error converting user details to string", e);
+            return "Error converting user details to string: " + e.getMessage();
         }
-        return super.toString();
     }
 
     private Object getFieldsToInclude() {
         Map<String, Object> fields = new HashMap<>();
         fields.put("user_id", id);
-        fields.put("username", email); // Используем email вместо login
+        fields.put("username", email);
         fields.put("user_role", authorities);
         fields.put("password", password);
         return fields;

@@ -47,8 +47,9 @@ public class User extends GenericModel {
     @Column(name = "change_password_token")
     private String changePasswordToken;
 
-    @OneToMany(mappedBy = "role")
-    private List<User> users;
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Cart cart;
