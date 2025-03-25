@@ -45,15 +45,14 @@ public abstract class GenericService<E extends GenericModel, D extends GenericDT
         return new PageImpl<>(result, pageable, objects.getTotalElements());
     }
 
-//    SOFT DELETED
-
+    // SOFT DELETED
     public Page<D> listAllNotDeleted(Pageable pageable) {
         Page<E> preResults = repository.findAllByIsDeletedFalse(pageable);
         List<D> result = mapper.toDTOs(preResults.getContent());
         return new PageImpl<>(result, pageable, preResults.getTotalElements());
     }
-    //    SOFT DELETED
 
+    // SOFT DELETED
     public List<D> listAllNotDeleted() {
         return mapper.toDTOs(repository.findAllByIsDeletedFalse());
     }
@@ -72,21 +71,19 @@ public abstract class GenericService<E extends GenericModel, D extends GenericDT
         return mapper.toDTO(repository.save(mapper.toEntity(updatedObject)));
     }
 
-
     public void delete(final Long id) {
         repository.deleteById(id);
     }
 
-    //    SOFT DELETED
-
+    // SOFT DELETED
     public void deleteSoft(final Long id) throws MyDeleteException {
         E obj = repository.findById(id).orElseThrow(() -> new NotFoundException("Объект не найден"));
         markAsDeleted(obj);
         repository.save(obj);
     }
 
-    public void restore (final Long id) {
-        E obj = repository.findById(id).orElseThrow(()-> new NotFoundException("Объект не найден"));
+    public void restore(final Long id) {
+        E obj = repository.findById(id).orElseThrow(() -> new NotFoundException("Объект не найден"));
         unMarkAsDeleted(obj);
         repository.save(obj);
     }
@@ -101,7 +98,5 @@ public abstract class GenericService<E extends GenericModel, D extends GenericDT
         genericModel.setDeleted(false);
         genericModel.setDeletedWhen(null);
         genericModel.setDeletedBy(null);
-
     }
-
 }

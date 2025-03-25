@@ -9,34 +9,35 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends GenericRepository {
+public interface UserRepository extends GenericRepository<User> {
     User findUserByEmail(String email);
 
     User findUserByEmailAndIsDeletedFalse(String email);
 
     User findUserByChangePasswordToken(String uuid);
 
-    @Query(nativeQuery = true,
-            value = """
-           select u.*
-           from users u
-           where u.first_name ilike '%' || coalesce(:firstName, '%') || '%'
-           and u.last_name ilike '%' || coalesce(:lastName, '%') || '%'
-           and u.email ilike '%' || coalesce(:email, '%') || '%'
-           """)
+    @Query(nativeQuery = true, value = """
+    SELECT u.*
+    FROM users u
+    WHERE u.first_name ILIKE '%' || COALESCE(:firstName, '%') || '%'
+    AND u.last_name ILIKE '%' || COALESCE(:lastName, '%') || '%'
+    AND u.email ILIKE '%' || COALESCE(:email, '%') || '%'
+    """)
+
     Page<User> searchUsers(String firstName, String lastName, String email, Pageable pageable);
 
-    @Query(nativeQuery = true,
-            value = """
-                select u.email
-                from users u
-                join orders o on u.id = o.user_id
-                where o.status = 'DELIVERED' and o.created_when < now() - interval '14 days'
-                  and not exists(
-                      select 1
-                      from orders o2
-                      where o2.user_id = u.id and o2.status = 'DELIVERED' and o2.created_when >= now() - interval '14 days'
-                  )
-            """)
+    @Query(nativeQuery = true, value = """
+    SELECT u.email
+    FROM users u
+    JOIN orders o ON u.id = o.user_id
+    WHERE o.status = 'DELIVERED' AND o.created_when < NOW() - INTERVAL '14 days'
+    AND NOT EXISTS(
+        SELECT 1
+        FROM orders o2
+        WHERE o2.user_id = u.id AND o2.status = 'DELIVERED' AND o2.created_when >= NOW() - INTERVAL '14 days'
+    )
+    """)
+
     List<String> getDelayedEmails();
+
 }

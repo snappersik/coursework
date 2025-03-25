@@ -11,9 +11,13 @@ import org.springframework.stereotype.Repository;
 public interface ProductRepository extends GenericRepository<Product> {
 
     @Query(nativeQuery = true, value = """
-            SELECT p FROM Product p WHERE p.productName LIKE %:productName% AND p.category.name = :categoryName
-            """)
+    SELECT CASE WHEN COUNT(*) > 0 THEN false ELSE true END
+    FROM orders_products op
+    WHERE op.product_id = :productId
+    """)
+
     boolean isProductCanBeDeleted(@Param("productId") Long productId);
+
 
     Page<Product> findAllByProductNameAndCategory(@Param("productName") String productName,
                                                   @Param("categoryName") String categoryName,

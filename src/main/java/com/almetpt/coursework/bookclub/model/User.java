@@ -44,6 +44,9 @@ public class User extends GenericModel {
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
+    @Column(name = "change_password_token")
+    private String changePasswordToken;
+
     @OneToMany(mappedBy = "role")
     private List<User> users;
 

@@ -10,13 +10,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookRepository extends GenericRepository<Book> {
     @Query(nativeQuery = true, value = """
-            select * 
-            from books b
-            where (lower(b.title) LIKE lower(concat('%',:title,'%')) or :title is null)
-              and (lower(b.author) LIKE lower(concat('%',:author,'%')) or :author is null)
-              and (lower(b.genre) LIKE lower(concat('%',:genre,'%')) or :genre is null)
-              and b.is_deleted = false
-            """)
+    SELECT * FROM books b
+    WHERE (LOWER(b.title) LIKE LOWER(CONCAT('%',:title,'%')) OR :title IS NULL)
+    AND (LOWER(b.author) LIKE LOWER(CONCAT('%',:author,'%')) OR :author IS NULL)
+    AND (LOWER(b.genre) LIKE LOWER(CONCAT('%',:genre,'%')) OR :genre IS NULL)
+    AND b.is_deleted = false
+""")
+
     Page<Book> findAllByTitleAndAuthorAndGenre(@Param("title") String title,
                                                @Param("author") String author,
                                                @Param("genre") String genre,

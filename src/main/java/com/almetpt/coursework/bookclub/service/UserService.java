@@ -42,18 +42,30 @@ public class UserService
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setId(1L);
         newObject.setRole(roleDTO);
-        newObject.setPassword(bCryptPasswordEncoder.encode(newObject.getPassword()));
         newObject.setCreatedBy("REGISTRATION FORM");
         newObject.setCreatedWhen(LocalDateTime.now());
         return mapper.toDTO(repository.save(mapper.toEntity(newObject)));
     }
 
-    public UserDTO createOrganizer(UserDTO newObject) {
+    public UserDTO registerUser(UserDTO newObject, String password) {
+        RoleDTO roleDTO = new RoleDTO();
+        roleDTO.setId(1L);
+        newObject.setRole(roleDTO);
+        newObject.setCreatedBy("REGISTRATION FORM");
+        newObject.setCreatedWhen(LocalDateTime.now());
+        User user = mapper.toEntity(newObject);
+        user.setPassword(bCryptPasswordEncoder.encode(password));
+        return mapper.toDTO(repository.save(user));
+    }
+
+    public UserDTO createOrganizer(UserDTO newObject, String password) {
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setId(2L);
         newObject.setRole(roleDTO);
         newObject.setCreatedBy("ORGANIZER CREATION FORM");
-        return create(newObject);
+        User user = mapper.toEntity(newObject);
+        user.setPassword(bCryptPasswordEncoder.encode(password));
+        return mapper.toDTO(repository.save(user));
     }
 
     public UserDTO getUserByEmail(final String email) {
@@ -82,12 +94,10 @@ public class UserService
     }
 
     public void changePassword(String uuid, String password) {
-        UserDTO userDTO = mapper.toDTO(((UserRepository) repository).findUserByChangePasswordToken(uuid));
-
-        userDTO.setChangePasswordToken(null);
-        userDTO.setPassword(bCryptPasswordEncoder.encode(password));
-
-        update(userDTO);
+        User user = ((UserRepository) repository).findUserByChangePasswordToken(uuid);
+        user.setChangePasswordToken(null);
+        user.setPassword(bCryptPasswordEncoder.encode(password));
+        repository.save(user);
     }
 
     public List<String> getUserEmailsWithDelayedRentDate() {

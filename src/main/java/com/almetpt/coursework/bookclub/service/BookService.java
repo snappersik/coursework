@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class BookService extends GenericService<Book, BookDTO> {
+
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
 
@@ -19,9 +20,8 @@ public class BookService extends GenericService<Book, BookDTO> {
         this.bookMapper = bookMapper;
     }
 
-    public Page<BookDTO> searchBooks(String title, String author, String genre, Pageable pageable){
+    public Page<BookDTO> searchBooks(String title, String author, String genre, Pageable pageable) {
         Page<Book> books = bookRepository.findAllByTitleAndAuthorAndGenre(title, author, genre, pageable);
         return books.map(bookMapper::toDTO);
     }
 }
-

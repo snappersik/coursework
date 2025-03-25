@@ -15,4 +15,6 @@ public class EventDTO extends GenericDTO {
     private LocalDateTime date;
     private String description;
     private Integer maxParticipants;
+    private boolean isCancelled;
+    private String cancellationReason;
 }

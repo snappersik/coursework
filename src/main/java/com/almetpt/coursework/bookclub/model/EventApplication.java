@@ -24,5 +24,25 @@ public class EventApplication extends GenericModel {
 
     @Enumerated(EnumType.STRING)
     private ApplicationStatus status;
-}
+    @Column(name = "attended")
+    private boolean attended;
 
+    @Column(name = "qr_code", columnDefinition = "TEXT")
+    private String qrCode;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rejection_reason")
+    private RejectionReason rejectionReason;
+
+    public enum RejectionReason {
+        NO_CAPACITY("Нет свободных мест"),
+        EVENT_CANCELLED("Мероприятие отменено"),
+        OTHER("Другая причина");
+
+        private final String description;
+
+        RejectionReason(String description) {
+            this.description = description;
+        }
+    }
+}

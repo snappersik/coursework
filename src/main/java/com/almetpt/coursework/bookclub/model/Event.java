@@ -37,6 +37,12 @@ public class Event extends GenericModel {
     @Column(name = "max_participants")
     private Integer maxParticipants;
 
+    @Column(name = "cancellation_reason")
+    private String cancellationReason;
+
+    @Column(name = "is_cancelled")
+    private boolean isCancelled;
+
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private List<EventApplication> applications;
 
