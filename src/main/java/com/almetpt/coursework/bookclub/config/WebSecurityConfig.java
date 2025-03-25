@@ -32,13 +32,11 @@ public class WebSecurityConfig {
                 .cors().disable()
                 .csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(RESOURCES_WHITE_LIST.toArray(String[]::new)).permitAll()
-                        .requestMatchers(BOOKS_WHITE_LIST.toArray(String[]::new)).permitAll()
-                        .requestMatchers(USERS_WHITE_LIST.toArray(String[]::new)).permitAll()
-                        .requestMatchers(AUTHORS_WHITE_LIST.toArray(String[]::new)).permitAll()
-                        .requestMatchers(AUTHORS_PERMISSIONS_LIST.toArray(String[]::new)).hasAnyRole(ADMIN, ORGANIZER)
-                        .requestMatchers(BOOKS_PERMISSIONS_LIST.toArray(String[]::new)).hasAnyRole(ADMIN, ORGANIZER)
-                        .requestMatchers(USERS_PERMISSIONS_LIST.toArray(String[]::new)).hasAnyRole(ADMIN, USER, ORGANIZER)
+                        .requestMatchers(RESOURCE_WHITE_LIST.toArray(String[]::new)).permitAll()
+                        .requestMatchers(BOOK_WHITE_LIST.toArray(String[]::new)).permitAll()
+                        .requestMatchers(USER_WHITE_LIST.toArray(String[]::new)).permitAll()
+                        .requestMatchers(BOOK_PERMISSIONS_LIST.toArray(String[]::new)).hasAnyRole(ADMIN, ORGANIZER)
+                        .requestMatchers(USER_PERMISSIONS_LIST.toArray(String[]::new)).hasAnyRole(ADMIN, USER, ORGANIZER)
                         .anyRequest().authenticated() // Все прочие запросы доступны аутентифицированным пользователям
                 )
                 // Настраиваем вход в систему

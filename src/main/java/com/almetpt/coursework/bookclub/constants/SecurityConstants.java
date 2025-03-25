@@ -3,7 +3,23 @@ package com.almetpt.coursework.bookclub.constants;
 import java.util.List;
 
 public interface SecurityConstants {
-    List<String> RESOURCES_WHITE_LIST = List.of(
+    String SECRET_KEY = "bookclub_secret_key";
+    String TOKEN_PREFIX = "Bearer ";
+    String HEADER_STRING = "Authorization";
+    String SIGN_UP_URL = "/api/rest/users/registration";
+    String LOGIN_URL = "/api/rest/users/auth";
+    long EXPIRATION_TIME = 900_000; // 15 минут
+
+    // URLs
+    String USERS_URL = "/api/rest/users/**";
+    String BOOKS_URL = "/api/rest/books/**";
+    String PRODUCTS_URL = "/api/rest/products/**";
+    String ORDERS_URL = "/api/rest/orders/**";
+    String EVENTS_URL = "/api/rest/events/**";
+    String EVENT_APPLICATIONS_URL = "/api/rest/event-applications/**";
+    String CHECKIN_URL = "/api/checkin/**";
+
+    List<String> RESOURCE_WHITE_LIST = List.of(
             "/resources/",
             "/static/",
             "/js/",
@@ -16,30 +32,18 @@ public interface SecurityConstants {
             "/webjars/bootstrap/5.3.3/",
             "/v3/api-docs/**");
 
-    List<String> BOOKS_WHITE_LIST = List.of(
+    List<String> BOOK_WHITE_LIST = List.of(
             "/books",
             "/books/search",
             "/books/{id}");
 
-    List<String> AUTHORS_WHITE_LIST = List.of(
-            "/authors",
-            "/authors/search",
-            "/authors/search/books-by-authors",
-            "/authors/{id}");
-
-    List<String> BOOKS_PERMISSIONS_LIST = List.of(
+    List<String> BOOK_PERMISSIONS_LIST = List.of(
             "/books/add",
             "/books/update",
             "/books/delete",
             "/books/download/{bookId}");
 
-    List<String> AUTHORS_PERMISSIONS_LIST = List.of(
-            "/authors/add",
-            "authors/update",
-            "authors/delete"
-    );
-
-    List<String> USERS_WHITE_LIST = List.of(
+    List<String> USER_WHITE_LIST = List.of(
             "/login",
             "/users/registration",
             "/users/remember-password",
@@ -48,9 +52,21 @@ public interface SecurityConstants {
             "/rent/user-books/**"
     );
 
-    List<String> USERS_PERMISSIONS_LIST = List.of(
-            "/rent/book/*",
-            "/rent/user-books/*");
-    List<String> USERS_REST_WHITE_LIST = List.of("/users/auth");
+    List<String> ORGANIZER_PERMISSIONS_LIST = List.of(
+            "/events/add",
+            "/events/update",
+            "/events/cancel",
+            "/events/reschedule",
+            "/event-applications/approve",
+            "/event-applications/reject",
+            "/checkin"
+    );
 
+    List<String> USER_PERMISSIONS_LIST = List.of(
+            "/books/read",
+            "/products/read",
+            "/orders/create",
+            "/events/read",
+            "/event-applications/create"
+    );
 }

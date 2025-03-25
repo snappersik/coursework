@@ -27,5 +27,11 @@ public interface Errors {
         public static final String PRODUCT_DELETED_ERROR = "Невозможно удалить продукт, так как он связан с существующими заказами.";
     }
 
+    class Events {
+        public static final String EVENT_NOT_FOUND = "Мероприятие не найдено";
+        public static final String INVALID_QR_CODE = "Недействительный QR-код";
+        public static final String EVENT_ALREADY_CANCELLED = "Мероприятие уже отменено";
+        public static final String NO_CAPACITY = "Нет свободных мест";
+    }
 
 }
