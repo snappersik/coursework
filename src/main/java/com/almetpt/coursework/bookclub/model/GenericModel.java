@@ -19,7 +19,7 @@ public abstract class GenericModel {
     private Long id;
 
     @Column(name = "created_when")
-    private LocalDateTime createWhen;
+    private LocalDateTime createdWhen;
 
     @Column(name = "created_by")
     private String createdBy;

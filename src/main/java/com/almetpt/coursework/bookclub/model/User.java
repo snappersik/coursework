@@ -18,8 +18,8 @@ import java.util.List;
 public class User extends GenericModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq")
+    @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -38,8 +38,8 @@ public class User extends GenericModel {
 
     private String address;
 
-    @Column(name = "phone_number")
-    private String phoneNumber;
+    @Column(name = "phone", length = 20)
+    private String phone;
 
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "books")
@@ -39,4 +40,8 @@ public class Book extends GenericModel {
 
     @Column(name = "publication_date")
     private LocalDate publicationDate;
+
+    @OneToMany(mappedBy = "book")
+    private List<Event> events;
+
 }

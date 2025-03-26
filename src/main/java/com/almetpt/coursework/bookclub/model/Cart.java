@@ -32,4 +32,5 @@ public class Cart extends GenericModel {
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     private List<Product> products;
+
 }

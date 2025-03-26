@@ -2,6 +2,7 @@ package com.almetpt.coursework.bookclub.controllers;
 
 import com.almetpt.coursework.bookclub.config.jwt.JWTTokenUtil;
 import com.almetpt.coursework.bookclub.dto.LoginDTO;
+import com.almetpt.coursework.bookclub.dto.RegisterDTO;
 import com.almetpt.coursework.bookclub.dto.UserDTO;
 import com.almetpt.coursework.bookclub.service.UserService;
 import com.almetpt.coursework.bookclub.service.userdetails.CustomUserDetailsService;
@@ -47,11 +48,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO, @RequestParam String password) {
-        // Код для регистрации пользователя
-        UserDTO createdUser = userService.registerUser(userDTO, password);
+    public ResponseEntity<?> registerUser(@RequestBody RegisterDTO registerRequest) {
+        // registerRequest содержит все данные пользователя, включая пароль
+        UserDTO createdUser = userService.registerUser(registerRequest.getUserData(), registerRequest.getPassword());
         return ResponseEntity.ok(createdUser);
     }
+
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {

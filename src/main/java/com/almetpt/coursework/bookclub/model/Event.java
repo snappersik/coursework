@@ -46,4 +46,8 @@ public class Event extends GenericModel {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private List<EventApplication> applications;
 
+    @ManyToOne
+    @JoinColumn(name = "book_id")
+    private Book book;
+
 }

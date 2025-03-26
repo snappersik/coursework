@@ -4,7 +4,10 @@ import com.almetpt.coursework.bookclub.constants.MailConstants;
 import com.almetpt.coursework.bookclub.dto.RoleDTO;
 import com.almetpt.coursework.bookclub.dto.UserDTO;
 import com.almetpt.coursework.bookclub.mapper.GenericMapper;
+import com.almetpt.coursework.bookclub.mapper.UserMapper;
+import com.almetpt.coursework.bookclub.model.Cart;
 import com.almetpt.coursework.bookclub.model.User;
+import com.almetpt.coursework.bookclub.repository.CartRepository;
 import com.almetpt.coursework.bookclub.repository.GenericRepository;
 import com.almetpt.coursework.bookclub.repository.UserRepository;
 import com.almetpt.coursework.bookclub.utils.MailUtils;
@@ -17,6 +20,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,17 +28,21 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class UserService
-        extends GenericService<User, UserDTO> {
+public class UserService extends GenericService<User, UserDTO> {
+
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JavaMailSender javaMailSender;
+    private final CartRepository cartRepository;
 
     public UserService(GenericRepository<User> repository,
                        GenericMapper<User, UserDTO> mapper,
-                       BCryptPasswordEncoder bCryptPasswordEncoder, JavaMailSender javaMailSender) {
+                       BCryptPasswordEncoder bCryptPasswordEncoder,
+                       JavaMailSender javaMailSender,
+                       CartRepository cartRepository) {
         super(repository, mapper);
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.javaMailSender = javaMailSender;
+        this.cartRepository = cartRepository;
     }
 
     @Override
@@ -47,6 +55,7 @@ public class UserService
         return mapper.toDTO(repository.save(mapper.toEntity(newObject)));
     }
 
+    @Transactional
     public UserDTO registerUser(UserDTO newObject, String password) {
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setId(1L);
@@ -55,7 +64,14 @@ public class UserService
         newObject.setCreatedWhen(LocalDateTime.now());
         User user = mapper.toEntity(newObject);
         user.setPassword(bCryptPasswordEncoder.encode(password));
-        return mapper.toDTO(repository.save(user));
+        user = repository.save(user);
+
+        // Создание корзины для нового пользователя
+        Cart cart = new Cart();
+        cart.setUser(user);
+        cartRepository.save(cart);
+
+        return mapper.toDTO(user);
     }
 
     public UserDTO createOrganizer(UserDTO newObject, String password) {
@@ -77,19 +93,15 @@ public class UserService
     }
 
     public void sendChangePasswordEmail(final UserDTO userDTO) {
-        // Переписали для 11-й лекции (из-за cron)
         UUID uuid = UUID.randomUUID();
         log.info("Generated Token: {}", uuid);
-
         userDTO.setChangePasswordToken(uuid.toString());
         update(userDTO);
-
         SimpleMailMessage mailMessage = MailUtils.createMailMessage(
                 userDTO.getEmail(),
                 MailConstants.MAIL_SUBJECT_FOR_REMEMBER_PASSWORD,
                 MailConstants.MAIL_MESSAGE_FOR_REMEMBER_PASSWORD + uuid
         );
-
         javaMailSender.send(mailMessage);
     }
 
@@ -114,5 +126,4 @@ public class UserService
         List<UserDTO> result = mapper.toDTOs(users.getContent());
         return new PageImpl<>(result, pageable, users.getTotalElements());
     }
-
 }
