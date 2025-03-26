@@ -4,12 +4,10 @@ import com.almetpt.coursework.bookclub.dto.OrderDTO;
 import com.almetpt.coursework.bookclub.mapper.OrderMapper;
 import com.almetpt.coursework.bookclub.model.Order;
 import com.almetpt.coursework.bookclub.repository.OrderRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class OrderService extends GenericService<Order, OrderDTO> {
 
     private final OrderRepository orderRepository;

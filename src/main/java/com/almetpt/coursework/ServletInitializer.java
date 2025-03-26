@@ -1,5 +1,6 @@
 package com.almetpt.coursework;
 
+import com.almetpt.coursework.CourseworkApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 

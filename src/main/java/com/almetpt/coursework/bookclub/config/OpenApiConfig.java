@@ -17,14 +17,14 @@ import org.springframework.context.annotation.Configuration;
         scheme = "bearer"
 )
 public class OpenApiConfig {
-        @Bean
-        public OpenAPI libraryProject() {
-            return new OpenAPI()
-                    .info(new Info()
-                            .title("API библиотеки")
-                            .description("Сервис для аренды книг")
-                            .version("0.1")
-                            .license(new License().name("Apache 2.0").url("http::/ springdoc.org "))
-                            .contact(new Contact().name("Alexander N.").email("blablabla@yandex.ru")));
-        }
+    @Bean
+    public OpenAPI bookClubProject() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("API книжного клуба")
+                        .description("Сервис для книжного клуба с мероприятиями и магазином")
+                        .version("0.1")
+                        .license(new License().name("Apache 2.0").url("http://springdoc.org"))
+                        .contact(new Contact().name("APT").email("spring.project.42@mail.ru")));
     }
+}

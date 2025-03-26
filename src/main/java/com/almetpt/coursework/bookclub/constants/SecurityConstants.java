@@ -3,14 +3,7 @@ package com.almetpt.coursework.bookclub.constants;
 import java.util.List;
 
 public interface SecurityConstants {
-    String SECRET_KEY = "bookclub_secret_key";
-    String TOKEN_PREFIX = "Bearer ";
-    String HEADER_STRING = "Authorization";
-    String SIGN_UP_URL = "/api/rest/users/registration";
-    String LOGIN_URL = "/api/rest/users/auth";
-    long EXPIRATION_TIME = 900_000; // 15 минут
-
-    // URLs
+    // URLs для REST API
     String USERS_URL = "/api/rest/users/**";
     String BOOKS_URL = "/api/rest/books/**";
     String PRODUCTS_URL = "/api/rest/products/**";
@@ -19,6 +12,7 @@ public interface SecurityConstants {
     String EVENT_APPLICATIONS_URL = "/api/rest/event-applications/**";
     String CHECKIN_URL = "/api/checkin/**";
 
+    // Публичные ресурсы
     List<String> RESOURCE_WHITE_LIST = List.of(
             "/resources/",
             "/static/",
@@ -28,30 +22,61 @@ public interface SecurityConstants {
             "/carousel/",
             "/error",
             "/",
-            "/swagger-ui/",
-            "/webjars/bootstrap/5.3.3/",
-            "/v3/api-docs/**");
+            "/swagger-ui/**",  // Добавьте эту строку
+            "/swagger-ui.html", // И эту
+            "/v3/api-docs/**",  // И эту
+            "/webjars/bootstrap/5.3.3/"
+    );
 
+    // Публичные URL для книг
     List<String> BOOK_WHITE_LIST = List.of(
             "/books",
             "/books/search",
-            "/books/{id}");
+            "/books/{id}"
+    );
 
-    List<String> BOOK_PERMISSIONS_LIST = List.of(
-            "/books/add",
-            "/books/update",
-            "/books/delete",
-            "/books/download/{bookId}");
-
+    // Публичные URL для пользователей
     List<String> USER_WHITE_LIST = List.of(
             "/login",
             "/users/registration",
             "/users/remember-password",
-            "/users/change-password",
-            "/users/profile/**",
-            "/rent/user-books/**"
+            "/users/change-password"
     );
 
+    // Публичные URL для мероприятий
+    List<String> EVENT_WHITE_LIST = List.of(
+            "/events",
+            "/events/search",
+            "/events/{id}"
+    );
+
+    // Публичные URL для продуктов
+    List<String> PRODUCT_WHITE_LIST = List.of(
+            "/products",
+            "/products/search",
+            "/products/{id}"
+    );
+
+    // Защищенные URL
+    List<String> PROTECTED_URLS = List.of(
+            "/users/profile/**",
+            "/rent/user-books/**",
+            "/api/rest/users/**",
+            "/api/rest/carts/**",
+            "/api/rest/orders/**",
+            "/api/rest/event-applications/**",
+            "/api/checkin/**"
+    );
+
+    // Разрешения для книг
+    List<String> BOOK_PERMISSIONS_LIST = List.of(
+            "/books/add",
+            "/books/update",
+            "/books/delete",
+            "/books/download/{bookId}"
+    );
+
+    // Разрешения для организаторов
     List<String> ORGANIZER_PERMISSIONS_LIST = List.of(
             "/events/add",
             "/events/update",
@@ -62,11 +87,38 @@ public interface SecurityConstants {
             "/checkin"
     );
 
+    // Разрешения для пользователей
     List<String> USER_PERMISSIONS_LIST = List.of(
             "/books/read",
             "/products/read",
             "/orders/create",
             "/events/read",
-            "/event-applications/create"
+            "/event-applications/create",
+            "/cart/**"
+    );
+
+    // Разрешения для администраторов
+    List<String> ADMIN_PERMISSIONS_LIST = List.of(
+            "/users/add",
+            "/users/update",
+            "/users/delete",
+            "/books/add",
+            "/books/update",
+            "/books/delete",
+            "/products/add",
+            "/products/update",
+            "/products/delete",
+            "/events/add",
+            "/events/update",
+            "/events/delete",
+            "/events/cancel",
+            "/events/reschedule",
+            "/orders/update",
+            "/orders/delete"
+    );
+
+    List<String> AUTH_WHITE_LIST = List.of(
+            "/api/rest/auth/login",
+            "/api/rest/auth/register"
     );
 }

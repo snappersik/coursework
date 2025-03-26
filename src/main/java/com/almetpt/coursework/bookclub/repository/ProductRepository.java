@@ -19,7 +19,8 @@ public interface ProductRepository extends GenericRepository<Product> {
     boolean isProductCanBeDeleted(@Param("productId") Long productId);
 
 
-    Page<Product> findAllByProductNameAndCategory(@Param("productName") String productName,
-                                                  @Param("categoryName") String categoryName,
-                                                  Pageable pageable);
+    Page<Product> findAllByNameAndCategory(@Param("productName") String name,
+                                           @Param("categoryName") String category,
+                                           Pageable pageable);
+
 }

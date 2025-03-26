@@ -36,7 +36,7 @@ public class ProductService extends GenericService<Product, ProductDTO> {
     }
 
     public Page<ProductDTO> searchProducts(String name, String category, Pageable pageRequest) {
-        Page<Product> productsPaginated = productRepository.findAllByProductNameAndCategory(name, category, pageRequest);
+        Page<Product> productsPaginated = productRepository.findAllByNameAndCategory(name, category, pageRequest);
         List<ProductDTO> result = productsPaginated.map(productMapper::toDTO).getContent();
         return new PageImpl<>(result, pageRequest, productsPaginated.getTotalElements());
     }

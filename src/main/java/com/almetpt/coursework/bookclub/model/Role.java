@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
+public class Role extends GenericModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
