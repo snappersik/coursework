@@ -18,7 +18,8 @@ import java.util.List;
 public class Event extends GenericModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_generator")
+    @SequenceGenerator(name = "event_generator", sequenceName = "event_seq", allocationSize = 1)
     @Column(name = "event_id")
     private Long id;
 

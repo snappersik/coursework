@@ -4,8 +4,7 @@ import com.almetpt.coursework.bookclub.constants.MailConstants;
 import com.almetpt.coursework.bookclub.dto.RoleDTO;
 import com.almetpt.coursework.bookclub.dto.UserDTO;
 import com.almetpt.coursework.bookclub.mapper.GenericMapper;
-import com.almetpt.coursework.bookclub.mapper.UserMapper;
-import com.almetpt.coursework.bookclub.model.Cart;
+import com.almetpt.coursework.bookclub.service.CartService;
 import com.almetpt.coursework.bookclub.model.User;
 import com.almetpt.coursework.bookclub.repository.CartRepository;
 import com.almetpt.coursework.bookclub.repository.GenericRepository;
@@ -50,7 +49,7 @@ public class UserService extends GenericService<User, UserDTO> {
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setId(1L);
         newObject.setRole(roleDTO);
-        newObject.setCreatedBy("REGISTRATION FORM");
+        newObject.setCreatedBy("ADMIN");
         newObject.setCreatedWhen(LocalDateTime.now());
         return mapper.toDTO(repository.save(mapper.toEntity(newObject)));
     }
@@ -66,13 +65,11 @@ public class UserService extends GenericService<User, UserDTO> {
         user.setPassword(bCryptPasswordEncoder.encode(password));
         user = repository.save(user);
 
-        // Создание корзины для нового пользователя
-        Cart cart = new Cart();
-        cart.setUser(user);
-        cartRepository.save(cart);
+        cartService.createCartForUser(user);
 
         return mapper.toDTO(user);
     }
+
 
     public UserDTO createOrganizer(UserDTO newObject, String password) {
         RoleDTO roleDTO = new RoleDTO();

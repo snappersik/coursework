@@ -18,7 +18,8 @@ import java.util.List;
 public class Book extends GenericModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_generator")
+    @SequenceGenerator(name = "book_generator", sequenceName = "book_seq", allocationSize = 1)
     @Column(name = "book_id")
     private Long id;
 

@@ -18,8 +18,9 @@ import java.util.List;
 public class User extends GenericModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq")
-    @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_generator")
+    @SequenceGenerator(name = "user_generator", sequenceName = "user_seq", allocationSize = 1)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(nullable = false, unique = true)

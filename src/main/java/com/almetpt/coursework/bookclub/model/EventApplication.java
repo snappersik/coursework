@@ -14,6 +14,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class EventApplication extends GenericModel {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_application_generator")
+    @SequenceGenerator(name = "event_application_generator", sequenceName = "event_application_seq", allocationSize = 1)
+    @Column(name = "event_application_id")
+    private Long id;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -39,10 +45,7 @@ public class EventApplication extends GenericModel {
         EVENT_CANCELLED("Мероприятие отменено"),
         OTHER("Другая причина");
 
-        private final String description;
-
         RejectionReason(String description) {
-            this.description = description;
         }
     }
 }

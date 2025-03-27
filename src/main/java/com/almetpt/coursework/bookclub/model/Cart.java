@@ -17,7 +17,8 @@ import java.util.List;
 public class Cart extends GenericModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cart_generator")
+    @SequenceGenerator(name = "cart_generator", sequenceName = "cart_seq", allocationSize = 1)
     @Column(name = "cart_id")
     private Long id;
 

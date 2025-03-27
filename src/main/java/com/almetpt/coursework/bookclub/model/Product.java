@@ -19,7 +19,8 @@ import java.util.List;
 public class Product extends GenericModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_generator")
+    @SequenceGenerator(name = "product_generator", sequenceName = "product_seq", allocationSize = 1)
     @Column(name = "product_id")
     private Long id;
 
