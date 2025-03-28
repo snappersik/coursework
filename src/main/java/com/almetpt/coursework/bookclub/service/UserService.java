@@ -4,9 +4,7 @@ import com.almetpt.coursework.bookclub.constants.MailConstants;
 import com.almetpt.coursework.bookclub.dto.RoleDTO;
 import com.almetpt.coursework.bookclub.dto.UserDTO;
 import com.almetpt.coursework.bookclub.mapper.GenericMapper;
-import com.almetpt.coursework.bookclub.service.CartService;
 import com.almetpt.coursework.bookclub.model.User;
-import com.almetpt.coursework.bookclub.repository.CartRepository;
 import com.almetpt.coursework.bookclub.repository.GenericRepository;
 import com.almetpt.coursework.bookclub.repository.UserRepository;
 import com.almetpt.coursework.bookclub.utils.MailUtils;
@@ -31,17 +29,17 @@ public class UserService extends GenericService<User, UserDTO> {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JavaMailSender javaMailSender;
-    private final CartRepository cartRepository;
+    private final CartService cartService;
 
     public UserService(GenericRepository<User> repository,
                        GenericMapper<User, UserDTO> mapper,
                        BCryptPasswordEncoder bCryptPasswordEncoder,
                        JavaMailSender javaMailSender,
-                       CartRepository cartRepository) {
+                       CartService cartService) {
         super(repository, mapper);
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.javaMailSender = javaMailSender;
-        this.cartRepository = cartRepository;
+        this.cartService = cartService;
     }
 
     @Override

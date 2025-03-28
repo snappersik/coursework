@@ -33,7 +33,7 @@ public class CartService {
     public Cart createCartForUser(User user) {
         Cart cart = new Cart();
         cart.setUser(user);
-        cart.setCreatedBy("REGISTRATION FORM");
+        cart.setCreatedBy("AUTO");
         cart.setCreatedWhen(LocalDateTime.now());
         cart.setDeleted(false);
         return cartRepository.save(cart);

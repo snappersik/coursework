@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 
 public abstract class GenericModel {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "default_generator")

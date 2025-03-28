@@ -10,18 +10,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users",
+        uniqueConstraints = {@UniqueConstraint(name = "uniqueEmail", columnNames = "email")})
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends GenericModel {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_generator")
-    @SequenceGenerator(name = "user_generator", sequenceName = "user_seq", allocationSize = 1)
-    @Column(name = "user_id")
-    private Long id;
+@SequenceGenerator(name = "default_generator", sequenceName = "users_seq", allocationSize = 1)
+public class User extends GenericModel{
 
     @Column(nullable = false, unique = true)
     private String email;

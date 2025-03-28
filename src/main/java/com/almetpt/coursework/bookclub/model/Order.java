@@ -15,13 +15,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SequenceGenerator(name = "default_generator", sequenceName = "orders_seq", allocationSize = 1)
 public class Order extends GenericModel {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_generator")
-    @SequenceGenerator(name = "order_generator", sequenceName = "order_seq", allocationSize = 1)
-    @Column(name = "order_id")
-    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

@@ -14,13 +14,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SequenceGenerator(name = "default_generator", sequenceName = "carts_seq", allocationSize = 1)
 public class Cart extends GenericModel {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cart_generator")
-    @SequenceGenerator(name = "cart_generator", sequenceName = "cart_seq", allocationSize = 1)
-    @Column(name = "cart_id")
-    private Long id;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)

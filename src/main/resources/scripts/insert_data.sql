@@ -42,6 +42,14 @@ TRUNCATE TABLE products CASCADE;
 TRUNCATE TABLE books CASCADE;
 TRUNCATE TABLE users CASCADE;
 
+-- Сброс и настройка последовательности default_generator
+ALTER SEQUENCE default_generator INCREMENT 1;
+ALTER SEQUENCE default_generator MINVALUE 1;
+ALTER SEQUENCE default_generator RESTART WITH 1;
+
+-- Очистка таблиц для избежания конфликтов
+TRUNCATE TABLE carts CASCADE;
+TRUNCATE TABLE users CASCADE;
 
 
 

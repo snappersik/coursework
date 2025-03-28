@@ -57,8 +57,8 @@ public class CourseworkApplication {
 	@Bean
 	public CommandLineRunner printApplicationUrl() {
 		return args -> {
-			log.info("Swagger UI: http://localhost:" + serverPort + "/swagger-ui/index.html");
-			log.info("Application: http://localhost:" + serverPort + "/");
+            log.info("Swagger UI: http://localhost:{}/swagger-ui/index.html", serverPort);
+            log.info("Application: http://localhost:{}/", serverPort);
 		};
 	}
 }

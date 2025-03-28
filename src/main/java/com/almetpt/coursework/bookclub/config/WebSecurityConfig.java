@@ -29,15 +29,11 @@ import static com.almetpt.coursework.bookclub.constants.UserRoleConstants.*;
 @EnableMethodSecurity
 public class WebSecurityConfig {
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final CustomUserDetailsService customUserDetailsService;
     private final JWTCookieFilter jwtCookieFilter;
 
     public WebSecurityConfig(BCryptPasswordEncoder bCryptPasswordEncoder,
                              CustomUserDetailsService customUserDetailsService,
                              JWTCookieFilter jwtCookieFilter) {
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.customUserDetailsService = customUserDetailsService;
         this.jwtCookieFilter = jwtCookieFilter;
     }
 

@@ -15,13 +15,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SequenceGenerator(name = "default_generator", sequenceName = "events_seq", allocationSize = 1)
 public class Event extends GenericModel {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_generator")
-    @SequenceGenerator(name = "event_generator", sequenceName = "event_seq", allocationSize = 1)
-    @Column(name = "event_id")
-    private Long id;
 
     @Column(nullable = false)
     private String title;

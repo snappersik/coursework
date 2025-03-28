@@ -12,13 +12,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SequenceGenerator(name = "default_generator", sequenceName = "event_applications_seq", allocationSize = 1)
 public class EventApplication extends GenericModel {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "event_application_generator")
-    @SequenceGenerator(name = "event_application_generator", sequenceName = "event_application_seq", allocationSize = 1)
-    @Column(name = "event_application_id")
-    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

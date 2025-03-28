@@ -16,13 +16,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SequenceGenerator(name = "default_generator", sequenceName = "products_seq", allocationSize = 1)
 public class Product extends GenericModel {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_generator")
-    @SequenceGenerator(name = "product_generator", sequenceName = "product_seq", allocationSize = 1)
-    @Column(name = "product_id")
-    private Long id;
 
     @Column(nullable = false)
     private String name;
