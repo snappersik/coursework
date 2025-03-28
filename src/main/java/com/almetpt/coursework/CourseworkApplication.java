@@ -2,7 +2,6 @@ package com.almetpt.coursework;
 
 import com.almetpt.coursework.bookclub.model.Role;
 import com.almetpt.coursework.bookclub.repository.RoleRepository;
-import com.almetpt.coursework.bookclub.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -11,7 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Slf4j
 @SpringBootApplication
@@ -27,9 +25,7 @@ public class CourseworkApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initDatabase(RoleRepository roleRepository,
-										  UserRepository userRepository,
-										  BCryptPasswordEncoder bCryptPasswordEncoder) {
+	public CommandLineRunner initDatabase(RoleRepository roleRepository) {
 		return args -> {
 			// Инициализация ролей
 			if (roleRepository.count() == 0) {
@@ -62,3 +58,5 @@ public class CourseworkApplication {
 		};
 	}
 }
+
+//форматировать номер можно, передавать черз токен id password email

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,23 +29,28 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginDTO loginDTO, HttpServletResponse response) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
-        );
+    public ResponseEntity<String> createAuthenticationToken(@RequestBody LoginDTO loginDTO, HttpServletResponse response) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
+            );
+            final UserDetails userDetails = userDetailsService.loadUserByEmail(loginDTO.getEmail());
+            final String token = jwtTokenUtil.generateToken(userDetails);
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(loginDTO.getEmail());
-        final String token = jwtTokenUtil.generateToken(userDetails);
+            Cookie jwtCookie = new Cookie("jwt", token);
+            jwtCookie.setHttpOnly(true);
+            jwtCookie.setSecure(true); // для HTTPS
+            jwtCookie.setPath("/");
+            jwtCookie.setMaxAge(3600); // 1 час
 
-        Cookie jwtCookie = new Cookie("jwt", token);
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(true); // для HTTPS
-        jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(3600); // 1 час
-        response.addCookie(jwtCookie);
+            response.addCookie(jwtCookie);
 
-        return ResponseEntity.ok("Authentication successful");
+            return ResponseEntity.ok("Authentication successful");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed: " + e.getMessage());
+        }
     }
+
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterDTO registerRequest) {

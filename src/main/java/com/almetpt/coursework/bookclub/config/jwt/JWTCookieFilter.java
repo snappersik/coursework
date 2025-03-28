@@ -37,7 +37,7 @@ public class JWTCookieFilter extends OncePerRequestFilter {
 
         if (jwtToken != null) {
             try {
-                username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+                username = jwtTokenUtil.getEmailFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
                 log.error("Unable to get JWT Token");
             } catch (ExpiredJwtException e) {
@@ -47,7 +47,7 @@ public class JWTCookieFilter extends OncePerRequestFilter {
 
         // Проверяем валидность токена и устанавливаем аутентификацию
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = userDetailsService.loadUserByEmail(username);
 
             if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
