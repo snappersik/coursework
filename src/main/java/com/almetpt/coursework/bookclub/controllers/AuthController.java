@@ -61,7 +61,12 @@ public class AuthController {
      * Метод для регистрации нового пользователя
      */
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerUser(@RequestBody RegisterDTO registerRequest, HttpServletResponse response) {
+    public ResponseEntity<?> registerUser(@RequestBody RegisterDTO registerRequest, HttpServletResponse response) {
+        // Проверка совпадения паролей
+        if (!registerRequest.getPassword().equals(registerRequest.getConfirmPassword())) {
+            return ResponseEntity.badRequest().body("Пароли не совпадают");
+        }
+
         // Регистрация пользователя
         UserDTO createdUser = userService.registerUser(registerRequest.getUserData(), registerRequest.getPassword());
 
@@ -76,6 +81,7 @@ public class AuthController {
 
         return ResponseEntity.ok(createdUser);
     }
+
 
     /**
      * Метод для выхода пользователя
