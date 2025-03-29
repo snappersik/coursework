@@ -1,7 +1,6 @@
 package com.almetpt.coursework.bookclub.controllers;
 
 import com.almetpt.coursework.bookclub.config.jwt.JWTTokenUtil;
-import com.almetpt.coursework.bookclub.dto.LoginDTO;
 import com.almetpt.coursework.bookclub.dto.UserDTO;
 import com.almetpt.coursework.bookclub.model.User;
 import com.almetpt.coursework.bookclub.service.GenericService;
@@ -10,15 +9,7 @@ import com.almetpt.coursework.bookclub.service.userdetails.CustomUserDetailsServ
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @RestController

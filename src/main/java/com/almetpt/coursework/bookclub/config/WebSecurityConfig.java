@@ -18,12 +18,14 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 
-
 import java.util.Arrays;
 
 import static com.almetpt.coursework.bookclub.constants.SecurityConstants.*;
 import static com.almetpt.coursework.bookclub.constants.UserRoleConstants.*;
 
+/**
+ * Конфигурация безопасности приложения
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
