@@ -56,4 +56,9 @@ public class User extends GenericModel{
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<EventApplication> eventApplications;
+
+    public String getFullName() {
+        return lastName + " " + firstName + " " + patronymic;
+    }
+
 }

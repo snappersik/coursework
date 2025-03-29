@@ -19,4 +19,6 @@ public interface EventApplicationRepository extends GenericRepository<EventAppli
 
     Optional<EventApplication> findByQrCode(String qrCode);
 
+    @Query("SELECT ea FROM EventApplication ea WHERE ea.event.id = :eventId AND ea.status = 'APPROVED' AND ea.attended = false")
+    List<EventApplication> findApprovedNotAttendedApplicationsForEvent(@Param("eventId") Long eventId);
 }

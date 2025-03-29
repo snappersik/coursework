@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface EventRepository extends GenericRepository<Event> {
@@ -49,4 +50,7 @@ public interface EventRepository extends GenericRepository<Event> {
         AND ea.is_deleted = false
     """)
     int countTotalApplications(@Param("eventId") Long eventId);
+
+    @Query("SELECT e FROM Event e WHERE e.date < :cutoffDate")
+    List<Event> findEventsBeforeDate(@Param("cutoffDate") LocalDateTime cutoffDate);
 }
