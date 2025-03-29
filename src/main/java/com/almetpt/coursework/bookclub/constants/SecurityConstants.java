@@ -22,10 +22,10 @@ public interface SecurityConstants {
             "/carousel/",
             "/error",
             "/",
-            "/swagger-ui/**",  // Добавьте эту строку
-            "/swagger-ui.html", // И эту
-            "/v3/api-docs/**",  // И эту
-            "/webjars/bootstrap/5.3.3/"
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/v3/api-docs/**",
+            "/webjars/**"
     );
 
     // Публичные URL для книг
@@ -61,11 +61,13 @@ public interface SecurityConstants {
     List<String> PROTECTED_URLS = List.of(
             "/users/profile/**",
             "/rent/user-books/**",
-            "/api/rest/users/**",
-            "/api/rest/carts/**",
-            "/api/rest/orders/**",
             "/api/rest/event-applications/**",
-            "/api/checkin/**"
+            "/api/checkin/**",
+            "/users/profile/**",
+            "/api/users/**",
+            "/api/carts/**",
+            "/api/orders/**",
+            "/api/event-applications/**"
     );
 
     // Разрешения для книг
@@ -117,8 +119,10 @@ public interface SecurityConstants {
             "/orders/delete"
     );
 
+    // Публичные URL для аутентификации
     List<String> AUTH_WHITE_LIST = List.of(
-            "/api/rest/auth/login",
-            "/api/rest/auth/register"
+            "/api/auth/login",
+            "/api/auth/register"
     );
+
 }

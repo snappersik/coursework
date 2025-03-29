@@ -96,4 +96,5 @@ public class CustomUserDetails implements UserDetails {
         fields.put("password", password);
         return fields;
     }
+
 }

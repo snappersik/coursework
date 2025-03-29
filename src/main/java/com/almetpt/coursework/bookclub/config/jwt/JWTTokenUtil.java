@@ -15,45 +15,35 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-/**
- * Утилитарный класс для работы с JWT токенами
- */
+// Утилитарный класс для работы с JWT токенами
 @Component
 public class JWTTokenUtil {
 
-    // Секретный ключ из application.properties
+    // application.properties
     @Value("${jwt.secret}")
     private String secret;
 
-    // Время жизни токена в секундах (1 час)
     @Value("${jwt.expiration}")
     private Long expiration;
 
-    /**
-     * Извлекает имя пользователя из токена
-     */
+    // Извлекает имя пользователя из токена
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
-    /**
-     * Извлекает дату истечения срока действия из токена
-     */
+    // Извлекает дату истечения срока действия из токена
+
     public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
-    /**
-     * Извлекает конкретное поле из токена
-     */
+    // Извлекает конкретное поле из токена
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
 
-    /**
-     * Извлекает все поля из токена
-     */
+    // Извлекает все поля из токена
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
@@ -62,26 +52,20 @@ public class JWTTokenUtil {
                 .getBody();
     }
 
-    /**
-     * Проверяет, истек ли срок действия токена
-     */
+    // Проверяет, истек ли срок действия токена
     private Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
 
-    /**
-     * Генерирует токен для пользователя
-     */
+    // Генерирует токен для пользователя
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         // Здесь можно добавить дополнительные данные в токен
         return createToken(claims, userDetails.getUsername());
     }
 
-    /**
-     * Создает токен с указанными полями и именем пользователя
-     */
+    // Создает токен с указанными полями и именем пользователя
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
@@ -92,17 +76,13 @@ public class JWTTokenUtil {
                 .compact();
     }
 
-    /**
-     * Проверяет валидность токена
-     */
+    // Проверяет валидность токена
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    /**
-     * Получает ключ для подписи токена
-     */
+    // Получает ключ для подписи токена
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);

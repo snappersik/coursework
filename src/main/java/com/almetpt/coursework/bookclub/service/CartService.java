@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class CartService {
@@ -78,4 +79,9 @@ public class CartService {
                 "Название: " + product.getName();
         mailSender.send(MailUtils.createMailMessage(userEmail, subject, text));
     }
+
+    public Optional<Cart> findById(Long id) {
+        return cartRepository.findById(id);
+    }
+
 }
