@@ -20,6 +20,7 @@ button {
 	border: none;
 	background: none;
 	cursor: pointer;
+
 	&:focus {
 		outline: none;
 		border: none;
@@ -65,7 +66,7 @@ button {
 	display: grid;
 	place-items: center;
 
-	& > * {
+	&>* {
 		grid-area: 1 / -1;
 	}
 }
@@ -79,7 +80,8 @@ button {
 
 	display: grid;
 	place-items: center;
-	& > * {
+
+	&>* {
 		grid-area: 1 / -1;
 	}
 }
@@ -100,11 +102,8 @@ button {
 	user-select: none;
 	perspective: 800px;
 
-	transform: perspective(1000px)
-		translate3d(var(--slide-tx), var(--slide-ty), var(--slide-tz, 0))
-		rotateY(var(--slide-rotY)) scale(var(--slide-scale));
-	transition: transform var(--slide-transition-duration)
-		var(--slide-transition-easing);
+	transform: perspective(1000px) translate3d(var(--slide-tx), var(--slide-ty), var(--slide-tz, 0)) rotateY(var(--slide-rotY)) scale(var(--slide-scale));
+	transition: transform var(--slide-transition-duration) var(--slide-transition-easing);
 }
 
 .slide[data-current] {
@@ -176,10 +175,8 @@ button {
 	top: 50%;
 	left: 50%;
 	object-fit: cover;
-	transform: translate(-50%, -50%) scale(1.25)
-		translate3d(var(--bgPosX), var(--bgPosY), 0);
-	transition: filter var(--slide-transition-duration)
-		var(--slide-transition-easing);
+	transform: translate(-50%, -50%) scale(1.25) translate3d(var(--bgPosX), var(--bgPosY), 0);
+	transition: filter var(--slide-transition-duration) var(--slide-transition-easing);
 }
 
 .slide__bg {
@@ -339,12 +336,14 @@ button {
 	bottom: 10px;
 	padding: 10px;
 	display: flex;
+
 	a {
 		margin: 0 10px;
 		color: #fff;
 		font-size: 1.8rem;
 		backface-visibility: hidden;
 		transition: all 150ms ease;
+
 		&:hover {
 			transform: scale(1.1);
 		}
@@ -353,13 +352,86 @@ button {
 
 /* adaptive */
 @media (max-width: 768px) {
-.hero {
-height: 45vh;
-}
+	.hero {
+		height: 45vh;
+	}
 }
 
 @media (max-width: 375px) {
 	.hero {
 		height: 25vh;
-		}
+	}
+}
+
+html,
+body {
+	overflow-x: hidden;
+	/* Фикс для Firefox */
+}
+
+.slide {
+	will-change: transform;
+	transform-style: preserve-3d;
+	backface-visibility: hidden;
+	transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.slide[data-current] {
+	z-index: var(--z-index, 3) !important;
+}
+
+.slide[data-next] {
+	z-index: var(--z-index, 2) !important;
+}
+
+.slide[data-previous] {
+	z-index: var(--z-index, 1) !important;
+}
+
+.slide--image {
+	backface-visibility: hidden;
+	transform-style: preserve-3d;
+	image-rendering: -webkit-optimize-contrast;
+	/* Для Chrome/Safari */
+	image-rendering: crisp-edges;
+	/* Для Firefox */
+}
+
+.slide__inner {
+	transition: transform 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
+	will-change: transform;
+	transform-style: preserve-3d;
+	backface-visibility: hidden;
+}
+
+.slide__bg {
+	background-image: var(--bg);
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	transition: transform 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* Вендорные префиксы для лучшей совместимости */
+.slide,
+.slide__inner,
+.slide__bg,
+.slide-info {
+	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
+	backface-visibility: hidden;
+	-webkit-transform-style: preserve-3d;
+	-moz-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+}
+
+/* Плавные transition для всех элементов слайдера */
+.slide,
+.slide__inner,
+.slide__bg,
+.slide-info,
+.slide-info__inner,
+.slide--image,
+.slide--image__wrapper {
+	transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
