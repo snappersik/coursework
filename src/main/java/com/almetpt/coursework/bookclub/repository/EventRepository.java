@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -27,9 +28,10 @@ public interface EventRepository extends GenericRepository<Event> {
     Page<Event> findEventsByParameters(
             @Param("title") String title,
             @Param("eventType") String eventType,
-            @Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate,
+            @Param("startDate") @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm") LocalDateTime startDate,
+            @Param("endDate") @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm") LocalDateTime endDate,
             Pageable pageable);
+
 
     //Подсчет количества одобренных заявок на мероприятие
     @Query(nativeQuery = true, value = """
@@ -52,5 +54,6 @@ public interface EventRepository extends GenericRepository<Event> {
     int countTotalApplications(@Param("eventId") Long eventId);
 
     @Query("SELECT e FROM Event e WHERE e.date < :cutoffDate")
-    List<Event> findEventsBeforeDate(@Param("cutoffDate") LocalDateTime cutoffDate);
+    List<Event> findEventsBeforeDate(
+            @Param("cutoffDate") @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm") LocalDateTime cutoffDate);
 }

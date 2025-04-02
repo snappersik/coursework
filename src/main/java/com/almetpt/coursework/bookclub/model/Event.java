@@ -1,10 +1,12 @@
 package com.almetpt.coursework.bookclub.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,8 +28,8 @@ public class Event extends GenericModel {
 
     @Column(nullable = false)
     @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
-@DateTimeFormat(pattern = "dd.MM.yyyy HH:mm")
-private LocalDateTime date;
+    @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm")
+    private LocalDateTime date;
 
     @Column(columnDefinition = "TEXT")
     private String description;

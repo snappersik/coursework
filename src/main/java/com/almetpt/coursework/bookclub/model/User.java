@@ -1,10 +1,12 @@
 package com.almetpt.coursework.bookclub.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -39,6 +41,8 @@ public class User extends GenericModel{
     private String phone;
 
     @Column(name = "birth_date", nullable = false)
+    @JsonFormat(pattern = "dd.MM.yyyy")
+    @DateTimeFormat(pattern = "dd.MM.yyyy")
     private LocalDate birthDate;
 
     @Column(name = "change_password_token")

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -65,14 +66,17 @@ public class EventService extends GenericService<Event, EventDTO> {
         event.setDate(newDate);
         eventRepository.save(event);
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+
         List<EventApplication> applications = eventApplicationRepository.findApprovedApplicationsForEvent(eventId);
         applications.forEach(app -> {
             SimpleMailMessage message = MailUtils.createMailMessage(
                     app.getUser().getEmail(),
                     "Мероприятие перенесено",
-                    "Мероприятие '" + event.getTitle() + "' перенесено. Новая дата: " + newDate + ". Причина: " + rescheduleMessage
+                    "Мероприятие '" + event.getTitle() + "' перенесено. Новая дата: " + newDate.format(formatter) + ". Причина: " + rescheduleMessage
             );
             javaMailSender.send(message);
         });
     }
+
 }

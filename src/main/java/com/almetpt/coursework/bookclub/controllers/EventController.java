@@ -30,7 +30,7 @@ public class EventController extends GenericController<Event, EventDTO> {
     @PostMapping("/{eventId}/reschedule")
     public ResponseEntity<?> rescheduleEvent(
             @PathVariable Long eventId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime newDate,
+            @RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm") LocalDateTime newDate,
             @RequestParam String reason) {
         eventService.rescheduleEvent(eventId, newDate, reason);
         return ResponseEntity.ok().build();
