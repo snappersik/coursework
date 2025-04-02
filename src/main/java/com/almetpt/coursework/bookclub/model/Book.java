@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.List;
 
 @Entity
@@ -35,8 +34,6 @@ public class Book extends GenericModel {
     @Column(name = "is_reading")
     private boolean isReading;
 
-    @Column(name = "publication_date")
-    @JsonFormat(pattern = "dd.MM.yyyy")
     private LocalDate publicationDate;
 
     @OneToMany(mappedBy = "book")
