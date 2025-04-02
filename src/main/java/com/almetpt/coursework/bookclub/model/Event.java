@@ -25,7 +25,9 @@ public class Event extends GenericModel {
     private String eventType;
 
     @Column(nullable = false)
-    private LocalDateTime date;
+    @JsonFormat(pattern = "dd.MM.yyyy HH:mm")
+@DateTimeFormat(pattern = "dd.MM.yyyy HH:mm")
+private LocalDateTime date;
 
     @Column(columnDefinition = "TEXT")
     private String description;

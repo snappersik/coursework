@@ -35,4 +35,5 @@ public class EventController extends GenericController<Event, EventDTO> {
         eventService.rescheduleEvent(eventId, newDate, reason);
         return ResponseEntity.ok().build();
     }
+
 }
