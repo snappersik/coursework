@@ -8,14 +8,12 @@ import com.almetpt.coursework.bookclub.model.EventApplication;
 import com.almetpt.coursework.bookclub.repository.EventApplicationRepository;
 import com.almetpt.coursework.bookclub.repository.EventRepository;
 import com.almetpt.coursework.bookclub.utils.MailUtils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,7 +39,6 @@ public class EventService extends GenericService<Event, EventDTO> {
     public void cancelEvent(Long eventId, String cancellationReason) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event not found"));
-
         event.setCancelled(true);
         event.setCancellationReason(cancellationReason);
         eventRepository.save(event);
@@ -54,7 +51,6 @@ public class EventService extends GenericService<Event, EventDTO> {
                     "Мероприятие '" + event.getTitle() + "' отменено. Причина: " + cancellationReason
             );
             javaMailSender.send(message);
-
             app.setStatus(ApplicationStatus.REJECTED);
             app.setRejectionReason(EventApplication.RejectionReason.EVENT_CANCELLED);
             eventApplicationRepository.save(app);
@@ -65,7 +61,6 @@ public class EventService extends GenericService<Event, EventDTO> {
     public void rescheduleEvent(Long eventId, LocalDateTime newDate, String rescheduleMessage) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event not found"));
-
         LocalDateTime oldDate = event.getDate();
         event.setDate(newDate);
         eventRepository.save(event);

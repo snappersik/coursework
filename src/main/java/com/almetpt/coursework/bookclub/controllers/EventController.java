@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 
 @RestController
@@ -23,13 +22,13 @@ public class EventController extends GenericController<Event, EventDTO> {
     }
 
     @PostMapping("/{eventId}/cancel")
-    public ResponseEntity<Void> cancelEvent(@PathVariable Long eventId, @RequestParam String reason) {
+    public ResponseEntity<?> cancelEvent(@PathVariable Long eventId, @RequestParam String reason) {
         eventService.cancelEvent(eventId, reason);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{eventId}/reschedule")
-    public ResponseEntity<Void> rescheduleEvent(
+    public ResponseEntity<?> rescheduleEvent(
             @PathVariable Long eventId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime newDate,
             @RequestParam String reason) {

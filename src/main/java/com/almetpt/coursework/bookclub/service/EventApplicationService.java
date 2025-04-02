@@ -25,16 +25,26 @@ public class EventApplicationService extends GenericService<EventApplication, Ev
 
     public EventApplicationService(
             EventApplicationRepository eventApplicationRepository,
+            UserRepository userRepository,
             EventRepository eventRepository,
             JavaMailSender javaMailSender,
             EventApplicationMapper eventApplicationMapper) {
         super(eventApplicationRepository, eventApplicationMapper);
         this.eventApplicationRepository = eventApplicationRepository;
+        this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
         this.javaMailSender = javaMailSender;
     }
 
+    @Override
     @Transactional
-    public EventApplication createApplication(User user, Event event) {
+    public EventApplicationDTO create(EventApplicationDTO dto) {
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + dto.getUserId()));
+
+        Event event = eventRepository.findById(dto.getEventId())
+                .orElseThrow(() -> new RuntimeException("Event not found with id: " + dto.getEventId()));
+
         EventApplication application = new EventApplication();
         application.setUser(user);
         application.setEvent(event);
@@ -53,19 +63,8 @@ public class EventApplicationService extends GenericService<EventApplication, Ev
             application.setRejectionReason(EventApplication.RejectionReason.NO_CAPACITY);
         }
 
-        return eventApplicationRepository.save(application);
-    }
-
-    @Transactional
-    public EventApplicationDTO createApplicationFromDTO(EventApplicationDTO dto) {
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + dto.getUserId()));
-
-        Event event = eventRepository.findById(dto.getEventId())
-                .orElseThrow(() -> new RuntimeException("Event not found with id: " + dto.getEventId()));
-
-        EventApplication application = createApplication(user, event);
-        return ((EventApplicationMapper) mapper).toDTO(application);
+        application = eventApplicationRepository.save(application);
+        return mapper.toDTO(application);
     }
 
 
@@ -73,7 +72,6 @@ public class EventApplicationService extends GenericService<EventApplication, Ev
     public void markAsAttended(String qrCode) {
         EventApplication application = eventApplicationRepository.findByQrCode(qrCode)
                 .orElseThrow(() -> new RuntimeException("Invalid QR code"));
-
         application.setAttended(true);
         eventApplicationRepository.save(application);
     }
