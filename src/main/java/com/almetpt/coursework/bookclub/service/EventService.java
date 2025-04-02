@@ -3,8 +3,10 @@ package com.almetpt.coursework.bookclub.service;
 import com.almetpt.coursework.bookclub.dto.EventDTO;
 import com.almetpt.coursework.bookclub.mapper.EventMapper;
 import com.almetpt.coursework.bookclub.model.ApplicationStatus;
+import com.almetpt.coursework.bookclub.model.Book;
 import com.almetpt.coursework.bookclub.model.Event;
 import com.almetpt.coursework.bookclub.model.EventApplication;
+import com.almetpt.coursework.bookclub.repository.BookRepository;
 import com.almetpt.coursework.bookclub.repository.EventApplicationRepository;
 import com.almetpt.coursework.bookclub.repository.EventRepository;
 import com.almetpt.coursework.bookclub.utils.MailUtils;
@@ -25,16 +27,42 @@ public class EventService extends GenericService<Event, EventDTO> {
     private final EventRepository eventRepository;
     private final EventApplicationRepository eventApplicationRepository;
     private final JavaMailSender javaMailSender;
+    private final BookRepository bookRepository;
 
     public EventService(EventRepository eventRepository,
                         EventApplicationRepository eventApplicationRepository,
+                        BookRepository bookRepository,
                         JavaMailSender javaMailSender,
                         EventMapper eventMapper) {
         super(eventRepository, eventMapper);
         this.eventRepository = eventRepository;
         this.eventApplicationRepository = eventApplicationRepository;
+        this.bookRepository = bookRepository;
         this.javaMailSender = javaMailSender;
     }
+
+    @Override
+    @Transactional
+    public EventDTO create(EventDTO dto) {
+        Event event = (Event) mapper.toEntity(dto);
+
+        // Установка времени создания
+        event.setCreatedWhen(LocalDateTime.now());
+
+        // Если указан ID книги, устанавливаем связь с книгой
+        if (dto.getBookId() != null) {
+            Book book = bookRepository.findById(dto.getBookId())
+                    .orElseThrow(() -> new NotFoundException("Book not found with id: " + dto.getBookId()));
+            event.setBook(book);
+        }
+
+        // Сохраняем мероприятие
+        event = eventRepository.save(event);
+
+        // Преобразуем обратно в DTO и возвращаем
+        return (EventDTO) mapper.toDTO(event);
+    }
+
 
     @Transactional
     public void cancelEvent(Long eventId, String cancellationReason) {
