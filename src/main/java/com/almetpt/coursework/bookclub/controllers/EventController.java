@@ -2,6 +2,7 @@ package com.almetpt.coursework.bookclub.controllers;
 
 import com.almetpt.coursework.bookclub.dto.EventDTO;
 import com.almetpt.coursework.bookclub.model.Event;
+import com.almetpt.coursework.bookclub.model.RescheduleRequest;
 import com.almetpt.coursework.bookclub.service.EventService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -30,10 +31,8 @@ public class EventController extends GenericController<Event, EventDTO> {
     @PostMapping("/{eventId}/reschedule")
     public ResponseEntity<?> rescheduleEvent(
             @PathVariable Long eventId,
-            @RequestParam @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm") LocalDateTime newDate,
-            @RequestParam String reason) {
-        eventService.rescheduleEvent(eventId, newDate, reason);
+            @RequestBody RescheduleRequest request) {
+        eventService.rescheduleEvent(eventId, request.getNewDate(), request.getReason());
         return ResponseEntity.ok().build();
     }
-
 }
