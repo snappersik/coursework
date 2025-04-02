@@ -8,6 +8,7 @@ import com.almetpt.coursework.bookclub.model.EventApplication;
 import com.almetpt.coursework.bookclub.model.User;
 import com.almetpt.coursework.bookclub.repository.EventApplicationRepository;
 import com.almetpt.coursework.bookclub.repository.EventRepository;
+import com.almetpt.coursework.bookclub.repository.UserRepository;
 import com.almetpt.coursework.bookclub.utils.MailUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -19,6 +20,8 @@ public class EventApplicationService extends GenericService<EventApplication, Ev
 
     private final EventApplicationRepository eventApplicationRepository;
     private final JavaMailSender javaMailSender;
+    private final UserRepository userRepository;
+    private final EventRepository eventRepository;
 
     public EventApplicationService(
             EventApplicationRepository eventApplicationRepository,
@@ -52,6 +55,19 @@ public class EventApplicationService extends GenericService<EventApplication, Ev
 
         return eventApplicationRepository.save(application);
     }
+
+    @Transactional
+    public EventApplicationDTO createApplicationFromDTO(EventApplicationDTO dto) {
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + dto.getUserId()));
+
+        Event event = eventRepository.findById(dto.getEventId())
+                .orElseThrow(() -> new RuntimeException("Event not found with id: " + dto.getEventId()));
+
+        EventApplication application = createApplication(user, event);
+        return ((EventApplicationMapper) mapper).toDTO(application);
+    }
+
 
     @Transactional
     public void markAsAttended(String qrCode) {

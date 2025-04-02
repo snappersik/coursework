@@ -19,6 +19,16 @@ public class EventApplicationController extends GenericController<EventApplicati
         this.eventApplicationService = eventApplicationService;
     }
 
+    @PostMapping
+    public ResponseEntity<EventApplicationDTO> createEventApplication(@RequestBody EventApplicationDTO dto) {
+        EventApplicationDTO created = eventApplicationService.createApplicationFromDTO(dto);
+        return ResponseEntity.ok(created);
+    }
+
+
+
+
+
     @PostMapping("/mark-attended/{qrCode}")
     public ResponseEntity<Void> markAsAttended(@PathVariable String qrCode) {
         eventApplicationService.markAsAttended(qrCode);
