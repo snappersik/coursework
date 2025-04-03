@@ -1,6 +1,7 @@
 package com.almetpt.coursework.bookclub.service;
 
 import com.almetpt.coursework.bookclub.constants.MailConstants;
+import com.almetpt.coursework.bookclub.dto.RegisterDTO;
 import com.almetpt.coursework.bookclub.dto.RoleDTO;
 import com.almetpt.coursework.bookclub.dto.UserDTO;
 import com.almetpt.coursework.bookclub.mapper.GenericMapper;
@@ -42,15 +43,24 @@ public class UserService extends GenericService<User, UserDTO> {
         this.cartService = cartService;
     }
 
-    @Override
-    public UserDTO create(UserDTO newObject) {
-        RoleDTO roleDTO = new RoleDTO();
-        roleDTO.setId(1L);
-        newObject.setRole(roleDTO);
-        newObject.setCreatedBy("ADMIN");
-        newObject.setCreatedWhen(LocalDateTime.now());
-        return mapper.toDTO(repository.save(mapper.toEntity(newObject)));
-    }
+//    @Override
+//    @Transactional
+//    public UserDTO create(RegisterDTO registerDTO) {
+//        UserDTO newObject = registerDTO.getUserData();
+//        if (newObject.getRole() == null || newObject.getRole().getId() == null) {
+//            throw new IllegalArgumentException("Роль обязательна для заполнения");
+//        }
+//        newObject.setCreatedBy("ADMIN");
+//        newObject.setCreatedWhen(LocalDateTime.now());
+//        User user = mapper.toEntity(newObject);
+//        if (registerDTO.getPassword() != null) {
+//            user.setPassword(bCryptPasswordEncoder.encode(registerDTO.getPassword()));
+//        } else {
+//            throw new IllegalArgumentException("Пароль обязателен для заполнения");
+//        }
+//        user = repository.save(user);
+//        return mapper.toDTO(user);
+//    }
 
     @Transactional
     public UserDTO registerUser(UserDTO newObject, String password) {
