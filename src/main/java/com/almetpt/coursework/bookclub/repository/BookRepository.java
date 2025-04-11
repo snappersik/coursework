@@ -15,11 +15,19 @@ public interface BookRepository extends GenericRepository<Book> {
     AND (LOWER(b.author) LIKE LOWER(CONCAT('%',:author,'%')) OR :author IS NULL)
     AND (LOWER(b.genre) LIKE LOWER(CONCAT('%',:genre,'%')) OR :genre IS NULL)
     AND b.is_deleted = false
-""")
+    """)
 
     Page<Book> findAllByTitleAndAuthorAndGenre(@Param("title") String title,
                                                @Param("author") String author,
                                                @Param("genre") String genre,
                                                Pageable pageable);
+
+    @Query("""
+        select case when count(e) > 0 then false else true end
+        from Event e
+        where e.book.id = :id and e.isCancelled = false and e.date > CURRENT_TIMESTAMP
+        """)
+    boolean isBookCanBeDeleted(@Param("id") Long id);
+    
 }
 

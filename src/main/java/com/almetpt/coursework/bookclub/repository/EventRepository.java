@@ -53,7 +53,16 @@ public interface EventRepository extends GenericRepository<Event> {
     """)
     int countTotalApplications(@Param("eventId") Long eventId);
 
+    // SOFT DELETE
     @Query("SELECT e FROM Event e WHERE e.date < :cutoffDate")
     List<Event> findEventsBeforeDate(
             @Param("cutoffDate") @DateTimeFormat(pattern = "dd.MM.yyyy HH:mm") LocalDateTime cutoffDate);
+
+            @Query("""
+                select case when count(e) > 0 then false else true end
+                from Event e join EventApplication ea on e.id = ea.event.id
+                where e.id = :id and ea.status = 'APPROVED' and e.date > CURRENT_TIMESTAMP
+            """)
+            boolean isEventCanBeDeleted(@Param("id") Long id);            
+    
 }

@@ -1,12 +1,14 @@
 package com.almetpt.coursework.bookclub.controllers;
 
 import com.almetpt.coursework.bookclub.dto.GenericDTO;
+import com.almetpt.coursework.bookclub.exception.MyDeleteException;
 import com.almetpt.coursework.bookclub.model.GenericModel;
 import com.almetpt.coursework.bookclub.service.GenericService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,12 +31,21 @@ public abstract class GenericController<E extends GenericModel, D extends Generi
                 .body(service.getOne(id));
     }
 
-    @Operation(description = "Получить все записи", method = "getAll")
-    @GetMapping
+    @Operation(description = "Получить все записи (включая удаленные)", method = "getAll")
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')") // Только для администраторов
     public ResponseEntity<List<D>> getAll() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.listAll());
+    }
+
+    @Operation(description = "Получить все неудаленные записи", method = "getAllActive")
+    @GetMapping
+    public ResponseEntity<List<D>> getAllActive() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.listAllNotDeleted());
     }
 
     @Operation(description = "Создать запись", method = "create")
@@ -46,9 +57,17 @@ public abstract class GenericController<E extends GenericModel, D extends Generi
     @Operation(description = "Обновить запись", method = "update")
     @PutMapping("/{id}")
     public ResponseEntity<D> update(@RequestBody D updateEntity,
-                                    @PathVariable(value = "id") Long id) {
+            @PathVariable(value = "id") Long id) {
         updateEntity.setId(id);
         return ResponseEntity.status(HttpStatus.OK).body(service.update(updateEntity));
+    }
+
+    @Operation(description = "Частично обновить запись", method = "partialUpdate")
+    @PatchMapping("/{id}")
+    public ResponseEntity<D> partialUpdate(@RequestBody D patchEntity,
+            @PathVariable(value = "id") Long id) {
+        patchEntity.setId(id);
+        return ResponseEntity.status(HttpStatus.OK).body(service.partialUpdate(patchEntity));
     }
 
     @Operation(description = "Удалить запись", method = "delete")
@@ -57,4 +76,19 @@ public abstract class GenericController<E extends GenericModel, D extends Generi
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(description = "Мягкое удаление записи", method = "softDelete")
+    @DeleteMapping("/soft/{id}")
+    public ResponseEntity<Void> softDelete(@PathVariable(value = "id") Long id) throws MyDeleteException {
+        service.deleteSoft(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(description = "Восстановить удаленную запись", method = "restore")
+    @PatchMapping("/restore/{id}")
+    public ResponseEntity<Void> restore(@PathVariable(value = "id") Long id) {
+        service.restore(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

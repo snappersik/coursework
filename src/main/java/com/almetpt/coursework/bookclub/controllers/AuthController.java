@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,14 +28,15 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Аутентификация", description = "Контроллер для аутентификации и регистрации")
 public class AuthController {
 
+    @Value("${jwt.expiration}")
+    private int jwtExpiration;
     private final AuthenticationManager authenticationManager;
     private final JWTTokenUtil jwtTokenUtil;
     private final CustomUserDetailsService userDetailsService;
     private final UserService userService;
 
-    /**
-     * Метод для входа пользователя
-     */
+    // Метод для входа пользователя
+    
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginDTO loginDTO, HttpServletResponse response) {
         try {
@@ -57,9 +60,8 @@ public class AuthController {
         }
     }
 
-    /**
-     * Метод для регистрации нового пользователя
-     */
+    // Метод для регистрации нового пользователя
+    
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegisterDTO registerRequest, HttpServletResponse response) {
         // Проверка совпадения паролей
@@ -83,9 +85,8 @@ public class AuthController {
     }
 
 
-    /**
-     * Метод для выхода пользователя
-     */
+    // Метод для выхода пользователя
+     
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
         // Удаление cookie при выходе
@@ -99,15 +100,16 @@ public class AuthController {
         return ResponseEntity.ok("Logout successful");
     }
 
-    /**
-     * Вспомогательный метод для добавления JWT токена в cookie
-     */
+    //Вспомогательный метод для добавления JWT токена в cookie
+
     private void addJwtCookie(HttpServletResponse response, String token) {
         Cookie jwtCookie = new Cookie("jwt", token);
         jwtCookie.setHttpOnly(true);  // Предотвращает доступ к cookie через JavaScript
         jwtCookie.setSecure(true);    // Отправка cookie только по HTTPS
         jwtCookie.setPath("/");       // Доступно для всех путей
-        jwtCookie.setMaxAge(3600);    // Время жизни cookie в секундах (1 час)
+        jwtCookie.setMaxAge(jwtExpiration);    // Использование значения из properties
         response.addCookie(jwtCookie);
     }
 }
+
+

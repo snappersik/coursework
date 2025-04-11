@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -28,7 +29,7 @@ public class UserMapper extends GenericMapper<User, UserDTO> {
     }
 
     @Override
-    protected List getIds(User entity) {
-        return null;
+    protected List<Long> getIds(User entity) {
+        return Collections.emptyList();
     }
 }

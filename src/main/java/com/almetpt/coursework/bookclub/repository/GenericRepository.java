@@ -13,13 +13,13 @@ import java.util.List;
  * Необходим для работы абстрактного сервиса
  * т.к. в абстрактном сервисе мы не можем использовать конкретный репозиторий,
  * а должны указывать параметризованный (GenericRepository)
- * @param <T> - Сущность, с которой работает репозиторий
+ * @param <E> - Сущность, с которой работает репозиторий
  */
 
-@NoRepositoryBean // Не даст создать репозиторий, т.к. он абстрактный.
-public interface GenericRepository<T extends GenericModel> extends JpaRepository<T, Long> {
+@NoRepositoryBean // не даст создать репозиторий, т.к. он абстрактный. Аналог @MappedSuperclass у GenericModel
+public interface GenericRepository <T extends GenericModel> extends JpaRepository<T, Long> { // Ограничиваем работу
+
     Page<T> findAllByIsDeletedFalse(Pageable pageable);
     List<T> findAllByIsDeletedFalse();
+
 }
-
-

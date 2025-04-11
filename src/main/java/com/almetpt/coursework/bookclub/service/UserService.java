@@ -1,5 +1,6 @@
 package com.almetpt.coursework.bookclub.service;
 
+import com.almetpt.coursework.bookclub.constants.Errors;
 import com.almetpt.coursework.bookclub.constants.MailConstants;
 import com.almetpt.coursework.bookclub.dto.RegisterDTO;
 import com.almetpt.coursework.bookclub.dto.RoleDTO;
@@ -19,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,34 +35,31 @@ public class UserService extends GenericService<User, UserDTO> {
     private final CartService cartService;
 
     public UserService(GenericRepository<User> repository,
-                       GenericMapper<User, UserDTO> mapper,
-                       BCryptPasswordEncoder bCryptPasswordEncoder,
-                       JavaMailSender javaMailSender,
-                       CartService cartService) {
+            GenericMapper<User, UserDTO> mapper,
+            BCryptPasswordEncoder bCryptPasswordEncoder,
+            JavaMailSender javaMailSender,
+            CartService cartService) {
         super(repository, mapper);
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.javaMailSender = javaMailSender;
         this.cartService = cartService;
     }
 
-//    @Override
-//    @Transactional
-//    public UserDTO create(RegisterDTO registerDTO) {
-//        UserDTO newObject = registerDTO.getUserData();
-//        if (newObject.getRole() == null || newObject.getRole().getId() == null) {
-//            throw new IllegalArgumentException("Роль обязательна для заполнения");
-//        }
-//        newObject.setCreatedBy("ADMIN");
-//        newObject.setCreatedWhen(LocalDateTime.now());
-//        User user = mapper.toEntity(newObject);
-//        if (registerDTO.getPassword() != null) {
-//            user.setPassword(bCryptPasswordEncoder.encode(registerDTO.getPassword()));
-//        } else {
-//            throw new IllegalArgumentException("Пароль обязателен для заполнения");
-//        }
-//        user = repository.save(user);
-//        return mapper.toDTO(user);
-//    }
+    @Transactional
+    public UserDTO createUser(RegisterDTO registerDTO) {
+        UserDTO newObject = registerDTO.getUserData();
+        if (newObject.getRole() == null || newObject.getRole().getId() == null) {
+            throw new IllegalArgumentException("Роль обязательна для заполнения");
+        }
+        newObject.setCreatedBy("ADMIN");
+        newObject.setCreatedWhen(LocalDateTime.now());
+        User user = mapper.toEntity(newObject);
+        user.setPassword(bCryptPasswordEncoder.encode(registerDTO.getPassword()));
+
+        user = repository.save(user);
+
+        return mapper.toDTO(user);
+    }
 
     @Transactional
     public UserDTO registerUser(UserDTO newObject, String password) {
@@ -76,17 +75,6 @@ public class UserService extends GenericService<User, UserDTO> {
         cartService.createCartForUser(user);
 
         return mapper.toDTO(user);
-    }
-
-
-    public UserDTO createOrganizer(UserDTO newObject, String password) {
-        RoleDTO roleDTO = new RoleDTO();
-        roleDTO.setId(2L);
-        newObject.setRole(roleDTO);
-        newObject.setCreatedBy("ORGANIZER CREATION FORM");
-        User user = mapper.toEntity(newObject);
-        user.setPassword(bCryptPasswordEncoder.encode(password));
-        return mapper.toDTO(repository.save(user));
     }
 
     public UserDTO getUserByEmail(final String email) {
@@ -105,8 +93,7 @@ public class UserService extends GenericService<User, UserDTO> {
         SimpleMailMessage mailMessage = MailUtils.createMailMessage(
                 userDTO.getEmail(),
                 MailConstants.MAIL_SUBJECT_FOR_REMEMBER_PASSWORD,
-                MailConstants.MAIL_MESSAGE_FOR_REMEMBER_PASSWORD + uuid
-        );
+                MailConstants.MAIL_MESSAGE_FOR_REMEMBER_PASSWORD + uuid);
         javaMailSender.send(mailMessage);
     }
 
@@ -126,9 +113,13 @@ public class UserService extends GenericService<User, UserDTO> {
                 userDTO.getFirstName(),
                 userDTO.getLastName(),
                 userDTO.getEmail(),
-                pageable
-        );
+                pageable);
         List<UserDTO> result = mapper.toDTOs(users.getContent());
         return new PageImpl<>(result, pageable, users.getTotalElements());
     }
+
+    protected NotFoundException createNotFoundException(Long id) {
+        return new NotFoundException(String.format(Errors.Users.USER_NOT_FOUND_ERROR, id));
+    }
+
 }

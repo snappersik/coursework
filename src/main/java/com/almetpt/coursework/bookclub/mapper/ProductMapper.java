@@ -31,7 +31,7 @@ public class ProductMapper extends GenericMapper<Product, ProductDTO> {
     }
 
     @Override
-    protected List getIds(Product entity) {
+    protected List<Long> getIds(Product entity) {
         return Collections.emptyList();
     }
 }

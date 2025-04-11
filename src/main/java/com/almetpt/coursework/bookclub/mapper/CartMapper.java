@@ -1,17 +1,9 @@
 package com.almetpt.coursework.bookclub.mapper;
 
 import com.almetpt.coursework.bookclub.dto.CartDTO;
-
-import com.almetpt.coursework.bookclub.dto.ProductDTO;
-
 import com.almetpt.coursework.bookclub.model.Cart;
-
-import com.almetpt.coursework.bookclub.model.Product;
-
 import jakarta.annotation.PostConstruct;
-
 import org.modelmapper.ModelMapper;
-
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -36,8 +28,8 @@ public class CartMapper extends GenericMapper<Cart, CartDTO> {
     }
 
     @Override
-    protected List getIds(Cart entity) {
-        return Collections.emptyList(); // Возвращает пустой список, так как не используется
+    protected List<Long> getIds(Cart entity) {
+        return Collections.emptyList(); // Пока идентификаторы не нужны
     }
 
     @Override
@@ -47,8 +39,7 @@ public class CartMapper extends GenericMapper<Cart, CartDTO> {
                 cart.getUser().getId(),
                 cart.getProducts().stream()
                         .map(productMapper::toDTO)
-                        .collect(Collectors.toList())
-        );
+                        .collect(Collectors.toList()));
     }
 
     @Override

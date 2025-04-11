@@ -1,6 +1,8 @@
 package com.almetpt.coursework.bookclub.service;
 
+import com.almetpt.coursework.bookclub.constants.Errors;
 import com.almetpt.coursework.bookclub.dto.EventDTO;
+import com.almetpt.coursework.bookclub.exception.MyDeleteException;
 import com.almetpt.coursework.bookclub.mapper.EventMapper;
 import com.almetpt.coursework.bookclub.model.ApplicationStatus;
 import com.almetpt.coursework.bookclub.model.Book;
@@ -30,10 +32,10 @@ public class EventService extends GenericService<Event, EventDTO> {
     private final BookRepository bookRepository;
 
     public EventService(EventRepository eventRepository,
-                        EventApplicationRepository eventApplicationRepository,
-                        BookRepository bookRepository,
-                        JavaMailSender javaMailSender,
-                        EventMapper eventMapper) {
+            EventApplicationRepository eventApplicationRepository,
+            BookRepository bookRepository,
+            JavaMailSender javaMailSender,
+            EventMapper eventMapper) {
         super(eventRepository, eventMapper);
         this.eventRepository = eventRepository;
         this.eventApplicationRepository = eventApplicationRepository;
@@ -63,7 +65,6 @@ public class EventService extends GenericService<Event, EventDTO> {
         return (EventDTO) mapper.toDTO(event);
     }
 
-
     @Transactional
     public void cancelEvent(Long eventId, String cancellationReason) {
         Event event = eventRepository.findById(eventId)
@@ -77,8 +78,7 @@ public class EventService extends GenericService<Event, EventDTO> {
             SimpleMailMessage message = MailUtils.createMailMessage(
                     app.getUser().getEmail(),
                     "Мероприятие отменено",
-                    "Мероприятие '" + event.getTitle() + "' отменено. Причина: " + cancellationReason
-            );
+                    "Мероприятие '" + event.getTitle() + "' отменено. Причина: " + cancellationReason);
             javaMailSender.send(message);
             app.setStatus(ApplicationStatus.REJECTED);
             app.setRejectionReason(EventApplication.RejectionReason.EVENT_CANCELLED);
@@ -90,7 +90,7 @@ public class EventService extends GenericService<Event, EventDTO> {
     public void rescheduleEvent(Long eventId, LocalDateTime newDate, String rescheduleMessage) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event not found"));
-        LocalDateTime oldDate = event.getDate();
+        // LocalDateTime oldDate = event.getDate();
         event.setDate(newDate);
         eventRepository.save(event);
 
@@ -101,10 +101,32 @@ public class EventService extends GenericService<Event, EventDTO> {
             SimpleMailMessage message = MailUtils.createMailMessage(
                     app.getUser().getEmail(),
                     "Мероприятие перенесено",
-                    "Мероприятие '" + event.getTitle() + "' перенесено. Новая дата: " + newDate.format(formatter) + ". Причина: " + rescheduleMessage
-            );
+                    "Мероприятие '" + event.getTitle() + "' перенесено. Новая дата: " + newDate.format(formatter)
+                            + ". Причина: " + rescheduleMessage);
             javaMailSender.send(message);
         });
+    }
+
+    @Override
+    public void deleteSoft(final Long id) throws MyDeleteException {
+        Event event = repository.findById(id).orElseThrow(
+                () -> new NotFoundException("Мероприятие не найдено"));
+        boolean eventCanBeDeleted = ((EventRepository) repository).isEventCanBeDeleted(id);
+        if (eventCanBeDeleted) {
+            markAsDeleted(event);
+            repository.save(event);
+        } else {
+            throw new MyDeleteException(Errors.Events.EVENT_DELETED_ERROR);
+        }
+    }
+
+    protected NotFoundException createNotFoundException(Long id) {
+        return new NotFoundException(String.format(Errors.Events.EVENT_NOT_FOUND, id));
+    }
+
+    private void markAsDeleted(Event event) {
+        event.setDeletedWhen(LocalDateTime.now());
+        event.setDeleted(true);
     }
 
 }

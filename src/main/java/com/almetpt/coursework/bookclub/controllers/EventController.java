@@ -5,10 +5,8 @@ import com.almetpt.coursework.bookclub.model.Event;
 import com.almetpt.coursework.bookclub.model.RescheduleRequest;
 import com.almetpt.coursework.bookclub.service.EventService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/rest/events")

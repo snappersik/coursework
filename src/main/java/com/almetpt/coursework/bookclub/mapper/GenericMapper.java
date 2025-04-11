@@ -81,7 +81,7 @@ public abstract class GenericMapper<E extends GenericModel,
      protected void setupMapper() {
      }
 
-     protected List getIds(E entity) {
+     protected List<Long> getIds(E entity) {
           return Collections.emptyList();
      }
 }

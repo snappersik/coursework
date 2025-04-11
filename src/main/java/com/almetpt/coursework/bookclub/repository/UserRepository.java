@@ -40,4 +40,5 @@ public interface UserRepository extends GenericRepository<User> {
 
     List<String> getDelayedEmails();
 
+    
 }

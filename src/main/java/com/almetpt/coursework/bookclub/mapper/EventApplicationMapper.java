@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -28,7 +29,7 @@ public class EventApplicationMapper extends GenericMapper<EventApplication, Even
     }
 
     @Override
-    protected List getIds(EventApplication entity) {
-        return null;
+    protected List<Long> getIds(EventApplication entity) {
+        return Collections.emptyList();
     }
 }

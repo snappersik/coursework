@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -28,7 +29,7 @@ public class OrderMapper extends GenericMapper<Order, OrderDTO> {
     }
 
     @Override
-    protected List getIds(Order entity) {
-        return null;
+    protected List<Long> getIds(Order entity) {
+        return Collections.emptyList(); // Пока идентификаторы не нужны
     }
 }

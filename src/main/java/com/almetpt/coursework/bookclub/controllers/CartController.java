@@ -74,13 +74,6 @@ public class CartController {
         return ResponseEntity.ok(cartMapper.toDTO(cart));
     }
 
-
-    private boolean hasAdminRole(Authentication authentication) {
-        return authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-    }
-
-
     @Operation(description = "Добавить товар в корзину пользователя")
     @PostMapping("/{userId}/products/{productId}")
     public ResponseEntity<Void> addProductToCart(@PathVariable Long userId, @PathVariable Long productId) {
