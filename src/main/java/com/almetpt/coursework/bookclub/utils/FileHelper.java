@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
@@ -24,7 +23,7 @@ public class FileHelper {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         String resultFileName = "";
         try {
-            Path path = Paths.get(BOOKS_UPLOAD_DIRECTORY + "/" + fileName).toAbsolutePath().normalize();
+            Path path = Path.of(BOOKS_UPLOAD_DIRECTORY + "/" + fileName).toAbsolutePath().normalize();
             if (!path.toFile().exists()) {
                 Files.createDirectories(path);
             }

@@ -11,11 +11,13 @@ import com.almetpt.coursework.bookclub.repository.GenericRepository;
 import com.almetpt.coursework.bookclub.repository.UserRepository;
 import com.almetpt.coursework.bookclub.utils.MailUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -51,12 +53,15 @@ public class UserService extends GenericService<User, UserDTO> {
         if (newObject.getRole() == null || newObject.getRole().getId() == null) {
             throw new IllegalArgumentException("Роль обязательна для заполнения");
         }
+
         newObject.setCreatedBy("ADMIN");
         newObject.setCreatedWhen(LocalDateTime.now());
         User user = mapper.toEntity(newObject);
         user.setPassword(bCryptPasswordEncoder.encode(registerDTO.getPassword()));
-
         user = repository.save(user);
+
+        // Создаем корзину для пользователя
+        cartService.createCartForUser(user);
 
         return mapper.toDTO(user);
     }
@@ -118,8 +123,54 @@ public class UserService extends GenericService<User, UserDTO> {
         return new PageImpl<>(result, pageable, users.getTotalElements());
     }
 
+    @Transactional(readOnly = true)
+    public UserDTO getCurrentUserProfile() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = ((UserRepository) repository).findUserByEmailAndIsDeletedFalse(email);
+        if (currentUser == null) {
+            throw new NotFoundException("Текущий пользователь не найден");
+        }
+        return mapper.toDTO(currentUser);
+    }
+
+    @Transactional
+    public UserDTO updateProfile(UserDTO userDTO) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = ((UserRepository) repository).findUserByEmailAndIsDeletedFalse(email);
+        if (currentUser == null) {
+            throw new NotFoundException("Текущий пользователь не найден");
+        }
+
+        // Проверяем, что пользователь обновляет свой профиль или является
+        // администратором
+        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication()
+                .getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!currentUser.getId().equals(userDTO.getId()) && !isAdmin) {
+            throw new AccessDeniedException("Вы можете обновлять только свой профиль");
+        }
+
+        // Обновляем только разрешенные поля
+        User userToUpdate = mapper.toEntity(userDTO);
+        currentUser.setFirstName(userToUpdate.getFirstName());
+        currentUser.setLastName(userToUpdate.getLastName());
+        currentUser.setPhone(userToUpdate.getPhone());
+        currentUser.setAddress(userToUpdate.getAddress());
+
+        // Только администратор может менять роль
+        if (isAdmin && userToUpdate.getRole() != null) {
+            currentUser.setRole(userToUpdate.getRole());
+        }
+
+        currentUser.setUpdatedBy(email);
+        currentUser.setUpdatedWhen(LocalDateTime.now());
+
+        return mapper.toDTO(repository.save(currentUser));
+    }
+
     protected NotFoundException createNotFoundException(Long id) {
-        return new NotFoundException(String.format(Errors.Users.USER_NOT_FOUND_ERROR, id));
+        return new NotFoundException(Errors.Users.USER_NOT_FOUND_ERROR.formatted(id));
     }
 
 }

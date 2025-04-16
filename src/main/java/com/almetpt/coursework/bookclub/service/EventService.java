@@ -121,7 +121,7 @@ public class EventService extends GenericService<Event, EventDTO> {
     }
 
     protected NotFoundException createNotFoundException(Long id) {
-        return new NotFoundException(String.format(Errors.Events.EVENT_NOT_FOUND, id));
+        return new NotFoundException(Errors.Events.EVENT_NOT_FOUND.formatted(id));
     }
 
     private void markAsDeleted(Event event) {

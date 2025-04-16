@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
 )
 public class OpenApiConfig {
     @Bean
-    public OpenAPI bookClubProject() {
+    OpenAPI bookClubProject() {
         return new OpenAPI()
                 .info(new Info()
                         .title("API книжного клуба")

@@ -57,7 +57,7 @@ public class ProductService extends GenericService<Product, ProductDTO> {
     }
 
     protected NotFoundException createNotFoundException(Long id) {
-        return new NotFoundException(String.format(Errors.Products.PRODUCT_NOT_FOUND_ERROR, id));
+        return new NotFoundException(Errors.Products.PRODUCT_NOT_FOUND_ERROR.formatted(id));
     }
 
     private void markAsDeleted(Product product) {

@@ -76,7 +76,7 @@ public interface SecurityConstants {
 
         // Права для управления мероприятиями (для организатора)
         // Организатор может создавать, обновлять, отменять и переносить мероприятия,
-        // но не может полностью удалять или восстанавливать удаленные мероприятия
+        // но не может удалять или восстанавливать удаленные мероприятия
         List<String> EVENTS_ORGANIZER_MANAGEMENT_LIST = prefixPaths(
                         "/events/create",
                         "/events/*/update",
@@ -102,6 +102,10 @@ public interface SecurityConstants {
                         "/event-applications/*/reject",
                         "/event-applications/mark-attended/*");
 
+        // Права для управления check-in (для админа и организатора)
+        List<String> CHECK_IN_MANAGEMENT_LIST = prefixPaths(
+                        "/checkin/**");
+
         // Права для управления заказами (для админа)
         List<String> ORDERS_ADMIN_LIST = prefixPaths(
                         "/orders/all",
@@ -120,7 +124,7 @@ public interface SecurityConstants {
 
         // Общие права авторизованных пользователей
         List<String> AUTHENTICATED_PERMISSIONS = prefixPaths(
-                        "/cart/**",
+                        "/carts/**",
                         "/orders/create",
                         "/orders/my",
                         "/profile/**",
@@ -129,22 +133,23 @@ public interface SecurityConstants {
                         "/event-applications/my");
 
         // Объединение всех прав администратора
-        // Админ имеет все права в системе, кроме доступа к корзинам пользователей
         List<String> ADMIN_PERMISSIONS_LIST = Stream.of(
                         BOOKS_MANAGEMENT_LIST,
                         PRODUCTS_MANAGEMENT_LIST,
                         EVENTS_ADMIN_MANAGEMENT_LIST,
                         EVENT_APPLICATIONS_ADMIN_LIST,
                         ORDERS_ADMIN_LIST,
-                        USERS_MANAGEMENT_LIST).flatMap(List::stream).collect(Collectors.toList());
+                        USERS_MANAGEMENT_LIST,
+                        CHECK_IN_MANAGEMENT_LIST).flatMap(List::stream).collect(Collectors.toList());
 
         // Объединение всех прав организатора
         // Организатор имеет права на управление книгами, мероприятиями и заявками,
         // но не имеет доступа к управлению пользователями, заказами и корзинами
         List<String> ORGANIZER_PERMISSIONS_LIST = Stream.of(
                         BOOKS_MANAGEMENT_LIST,
-                        PRODUCTS_MANAGEMENT_LIST, // Добавлено право на управление продуктами
+                        PRODUCTS_MANAGEMENT_LIST,
                         EVENTS_ORGANIZER_MANAGEMENT_LIST,
-                        EVENT_APPLICATIONS_ORGANIZER_LIST).flatMap(List::stream).collect(Collectors.toList());
+                        EVENT_APPLICATIONS_ORGANIZER_LIST,
+                        CHECK_IN_MANAGEMENT_LIST).flatMap(List::stream).collect(Collectors.toList());
 
 }

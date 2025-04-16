@@ -1,6 +1,7 @@
 package com.almetpt.coursework.bookclub.dto;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

@@ -1,3 +1,7 @@
+
+SELECT * FROM audit_entries ORDER BY timestamp DESC LIMIT 10;
+
+
 -- Сброс последовательности default_generator
 ALTER SEQUENCE public.default_generator INCREMENT 1;
 ALTER SEQUENCE default_generator RESTART WITH 1;

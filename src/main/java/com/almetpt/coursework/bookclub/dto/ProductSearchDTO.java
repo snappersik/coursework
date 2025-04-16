@@ -2,7 +2,9 @@ package com.almetpt.coursework.bookclub.dto;
 
 import com.almetpt.coursework.bookclub.model.ProductCategory;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter

@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -15,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 @EnableJpaAuditing
+@EnableAspectJAutoProxy
 public class CourseworkApplication {
 
 	@Value("${server.port}")
@@ -24,8 +26,8 @@ public class CourseworkApplication {
 		SpringApplication.run(CourseworkApplication.class, args);
 	}
 
-	@Bean
-	public CommandLineRunner initDatabase(RoleRepository roleRepository) {
+    @Bean
+    CommandLineRunner initDatabase(RoleRepository roleRepository) {
 		return args -> {
 			// Инициализация ролей
 			if (roleRepository.count() == 0) {
@@ -50,8 +52,8 @@ public class CourseworkApplication {
 		};
 	}
 
-	@Bean
-	public CommandLineRunner printApplicationUrl() {
+    @Bean
+    CommandLineRunner printApplicationUrl() {
 		return args -> {
             log.info("Swagger UI: http://localhost:{}/swagger-ui/index.html", serverPort);
             log.info("Application: http://localhost:{}/", serverPort);

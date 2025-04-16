@@ -45,7 +45,7 @@ public class BookService extends GenericService<Book, BookDTO> {
     }
     
     protected NotFoundException createNotFoundException(Long id) {
-        return new NotFoundException(String.format(Errors.Books.BOOK_NOT_FOUND_ERROR, id));
+        return new NotFoundException(Errors.Books.BOOK_NOT_FOUND_ERROR.formatted(id));
     }    
 
     private void markAsDeleted(Book book) {
