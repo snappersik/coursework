@@ -20,8 +20,16 @@ public class BookMapper extends GenericMapper<Book, BookDTO> {
     @Override
     protected void setupMapper() {
         modelMapper.createTypeMap(Book.class, BookDTO.class)
+                .addMappings(mapping -> {
+                    mapping.map(Book::getCoverImageUrl, BookDTO::setCoverImageUrl);
+                    mapping.map(src -> src.hasLocalImage(), BookDTO::setHasLocalImage);
+                })
                 .setPostConverter(toDTOConverter());
+                
         modelMapper.createTypeMap(BookDTO.class, Book.class)
+                .addMappings(mapping -> {
+                    mapping.map(BookDTO::getCoverImageUrl, Book::setCoverImageUrl);
+                })
                 .setPostConverter(toEntityConverter());
     }
 

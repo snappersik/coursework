@@ -40,6 +40,8 @@ public interface SecurityConstants {
         List<String> PUBLIC_GET_LIST = prefixPaths(
                         "/books",
                         "/books/*",
+                        "/books/*/cover",
+                        "/books/*/image-info",
                         "/products",
                         "/products/*",
                         "/events",
@@ -114,6 +116,12 @@ public interface SecurityConstants {
                         "/orders/soft/*",
                         "/orders/restore/*");
 
+        // Пути для управления изображениями (только для администраторов)
+        List<String> BOOK_IMAGES_ADMIN_LIST = prefixPaths(
+                        "/books/*/upload",
+                        "/books/*/upload-binary",
+                        "/books/url");
+
         // Права для управления пользователями (только для админа)
         List<String> USERS_MANAGEMENT_LIST = prefixPaths(
                         "/users",
@@ -135,6 +143,7 @@ public interface SecurityConstants {
         // Объединение всех прав администратора
         List<String> ADMIN_PERMISSIONS_LIST = Stream.of(
                         BOOKS_MANAGEMENT_LIST,
+                        BOOK_IMAGES_ADMIN_LIST,
                         PRODUCTS_MANAGEMENT_LIST,
                         EVENTS_ADMIN_MANAGEMENT_LIST,
                         EVENT_APPLICATIONS_ADMIN_LIST,

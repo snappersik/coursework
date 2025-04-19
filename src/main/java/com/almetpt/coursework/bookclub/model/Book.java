@@ -36,6 +36,25 @@ public class Book extends GenericModel {
 
     private LocalDate publicationDate;
 
+    @Column(name = "cover_image_url")
+    private String coverImageUrl;
+
+    @Column(name = "cover_image_filename")
+    private String coverImageFilename;
+
+    @Column(name = "original_cover_image_filename")
+    private String originalCoverImageFilename;
+
+    @Lob
+    @Column(name = "cover_image_data")
+    private byte[] coverImageData;
+
+    // Вспомогательный метод для определения наличия локального изображения
+    public boolean hasLocalImage() {
+        return (coverImageFilename != null && !coverImageFilename.isBlank())
+                || (coverImageData != null && coverImageData.length > 0);
+    }
+
     @OneToMany(mappedBy = "book")
     private List<Event> events;
 

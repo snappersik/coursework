@@ -32,17 +32,14 @@ public class CourseworkApplication {
 			// Инициализация ролей
 			if (roleRepository.count() == 0) {
 				Role userRole = new Role();
-				userRole.setId(1L);
 				userRole.setName("USER");
 				roleRepository.save(userRole);
 
 				Role organizerRole = new Role();
-				organizerRole.setId(2L);
 				organizerRole.setName("ORGANIZER");
 				roleRepository.save(organizerRole);
 
 				Role adminRole = new Role();
-				adminRole.setId(3L);
 				adminRole.setName("ADMIN");
 				roleRepository.save(adminRole);
 

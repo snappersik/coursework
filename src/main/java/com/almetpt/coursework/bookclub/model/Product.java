@@ -31,6 +31,22 @@ public class Product extends GenericModel {
     @Enumerated(EnumType.STRING)
     private ProductCategory category;
 
+    @Column(name = "cover_image_url")
+    private String coverImageUrl;
+    
+    @Column(name = "cover_image_filename")
+    private String coverImageFilename;
+    
+    @Lob
+    @Column(name = "cover_image_data")
+    private byte[] coverImageData;
+    
+    // Вспомогательный метод для определения наличия локального изображения
+    @Transient
+    public boolean hasLocalImage() {
+        return coverImageData != null && coverImageData.length > 0;
+    }
+
     @ManyToMany(mappedBy = "products")
     private List<Cart> carts;
 

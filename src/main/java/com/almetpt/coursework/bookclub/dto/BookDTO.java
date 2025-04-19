@@ -16,4 +16,8 @@ public class BookDTO extends GenericDTO {
     private String description;
     private BookGenre genre;
     private boolean isReading;
+    
+    // Новые поля для изображений
+    private String coverImageUrl;
+    private boolean hasLocalImage;
 }
