@@ -1,0 +1,434 @@
+.profile-page {
+    background-color: #4A4A4A;
+    min-height: 100vh;
+    padding: 40px;
+    color: #fff;
+    font-family: serif;
+  }
+  
+  .profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #333333;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+  
+  .profile-header {
+    padding: 30px;
+    background-color: #222222;
+    border-bottom: 1px solid #444;
+  }
+  
+  .profile-title {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #ffb100;
+  }
+  
+  .profile-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .profile-tab {
+    padding: 10px 20px;
+    background-color: transparent;
+    color: #fff;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .profile-tab:hover {
+    color: #ffb100;
+  }
+  
+  .profile-tab.active {
+    color: #ffb100;
+    border-bottom-color: #ffb100;
+  }
+  
+  .profile-content {
+    padding: 30px;
+  }
+  
+  /* Стили для вкладки профиля */
+  .profile-info-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+  }
+  
+  .avatar-section {
+    flex: 0 0 200px;
+  }
+  
+  .avatar-wrapper {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #444;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .avatar-upload-button {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    text-align: center;
+    padding: 8px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .avatar-upload-button:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+  
+  .profile-details {
+    flex: 1;
+    min-width: 300px;
+  }
+  
+  .info-group {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .info-label {
+    font-weight: bold;
+    color: #ffb100;
+    width: 120px;
+    flex-shrink: 0;
+  }
+  
+  .info-value {
+    color: #fff;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-weight: bold;
+    color: #ffb100;
+    margin-bottom: 5px;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 10px;
+    background-color: #444;
+    border: 1px solid #555;
+    border-radius: 5px;
+    color: #fff;
+  }
+  
+  .form-value {
+    color: #aaa;
+    font-style: italic;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  .edit-button, .save-button, .cancel-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  .edit-button {
+    background-color: #ffb100;
+    color: #333;
+  }
+  
+  .edit-button:hover {
+    background-color: #ffc233;
+  }
+  
+  .save-button {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .save-button:hover {
+    background-color: #45a049;
+  }
+  
+  .cancel-button {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .cancel-button:hover {
+    background-color: #d32f2f;
+  }
+  
+  /* Стили для вкладки заказов */
+  .orders-container, .events-container {
+    color: #fff;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #ffb100;
+  }
+  
+  .subsection-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #ddd;
+  }
+  
+  .orders-list, .applications-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .order-card, .application-card {
+    background-color: #444;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .order-header, .application-header {
+    padding: 15px;
+    background-color: #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .order-info, .application-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .order-number, .application-number {
+    font-weight: bold;
+    color: #fff;
+  }
+  
+  .order-date, .application-date {
+    font-size: 14px;
+    color: #aaa;
+  }
+  
+  .order-status, .application-status {
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  .status-completed, .status-approved {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .status-cancelled, .status-rejected {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .status-pending {
+    background-color: #FFC107;
+    color: #333;
+  }
+  
+  .order-products {
+    padding: 15px;
+  }
+  
+  .products-preview {
+    display: flex;
+    align-items: center;
+  }
+  
+  .product-preview {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-right: 10px;
+  }
+  
+  .product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .product-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: #555;
+  }
+  
+  .more-products {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    background-color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #fff;
+  }
+  
+  .order-footer, .application-footer {
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #555;
+  }
+  
+  .order-total {
+    display: flex;
+    align-items: center;
+  }
+  
+  .total-label {
+    margin-right: 5px;
+    color: #aaa;
+  }
+  
+  .total-value {
+    font-weight: bold;
+    color: #ffb100;
+  }
+  
+  .view-details-button, .cancel-button, .restore-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+  }
+  
+  .view-details-button {
+    background-color: #2196F3;
+    color: white;
+  }
+  
+  .view-details-button:hover {
+    background-color: #0b7dda;
+  }
+  
+  .cancel-button {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .cancel-button:hover {
+    background-color: #d32f2f;
+  }
+  
+  .restore-button {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .restore-button:hover {
+    background-color: #45a049;
+  }
+  
+  .application-card.deleted {
+    opacity: 0.7;
+  }
+  
+  .applications-section {
+    margin-bottom: 30px;
+  }
+  
+  .applications-section.deleted {
+    margin-top: 40px;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #444;
+    border-radius: 10px;
+  }
+  
+  .empty-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+  
+  .empty-state h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #ffb100;
+  }
+  
+  .empty-state p {
+    color: #aaa;
+  }
+  
+  .loading, .error {
+    text-align: center;
+    padding: 50px;
+    font-size: 18px;
+  }
+  
+  .error {
+    color: #f44336;
+  }
+  
+  /* Адаптивность */
+  @media (max-width: 768px) {
+    .profile-page {
+      padding: 20px;
+    }
+    
+    .profile-tabs {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .profile-info-container {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .orders-list, .applications-list {
+      grid-template-columns: 1fr;
+    }
+  }
+  

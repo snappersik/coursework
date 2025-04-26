@@ -1,0 +1,46 @@
+.book-carousel {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .carousel-item {
+    padding: 0 10px;
+    transition: all 0.3s ease;
+  }
+  
+  .book-item {
+    display: flex;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+  
+  .book-item img {
+    transition: all 0.3s ease;
+  }
+  
+  /* Эффект при наведении */
+  .book-carousel:hover .book-item img {
+    filter: grayscale(100%);
+    opacity: 0.7;
+  }
+  
+  .book-item:hover img {
+    filter: grayscale(0%) !important;
+    opacity: 1 !important;
+    transform: scale(1.05);
+    z-index: 2;
+  }
+  
+  /* Адаптивность */
+  @media (max-width: 768px) {
+    .book-item img {
+      height: 250px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .book-item img {
+      height: 180px;
+    }
+  }
+  
