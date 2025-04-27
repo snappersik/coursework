@@ -1,6 +1,10 @@
 
 SELECT * FROM audit_entries ORDER BY timestamp DESC LIMIT 10;
 
+ALTER SEQUENCE products_seq RESTART WITH 1;
+
+
+
 
 -- Сброс последовательности default_generator
 ALTER SEQUENCE public.default_generator INCREMENT 1;

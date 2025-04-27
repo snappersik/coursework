@@ -20,7 +20,7 @@ public interface Errors {
     }
 
     class Products {
-        public static final String PRODUCT_DELETED_ERROR = "Невозможно удалить продукт, так как он связан с существующими заказами.";
+        public static final String PRODUCT_DELETE_FORBIDDEN_ERROR = "Невозможно удалить продукт, так как он связан с существующими заказами.";
         public static final String PRODUCT_NOT_FOUND_ERROR = "Продукт с id %d не найден";
     }
 
