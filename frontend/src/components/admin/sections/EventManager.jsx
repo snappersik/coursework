@@ -159,7 +159,7 @@ const EventManager = () => {
         </button>
       </div>
 
-      <div className="bg-[#424242] shadow-md rounded-lg overflow-hidden text-black">
+      <div className="bg-white shadow-md rounded-lg overflow-hidden text-black">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -172,7 +172,7 @@ const EventManager = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Действия</th>
               </tr>
             </thead>
-            <tbody className="bg-[#424242] divide-y divide-gray-200">
+            <tbody className="bg-white divide-y divide-gray-200">
               {events.map(event => (
                 <tr key={event.id}>
                   <td className="px-6 py-4 whitespace-nowrap">{event.title}</td>

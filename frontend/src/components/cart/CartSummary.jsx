@@ -1,56 +1,25 @@
 import React from 'react';
 
-const CartSummary = ({ items, userId }) => {
-    const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const fee = 299;
-    const discount = 0;
-    const finalTotal = total + fee - discount;
+const CartSummary = ({ products }) => {
+  const totalPrice = products.reduce((acc, product) => acc + product.price, 0);
 
-    const handleOrder = () => {
-        console.log(`Оформление заказа для пользователя ${userId}`);
-        alert('Заказ оформлен!');
-    };
-
-    return (
-        <div style={{ backgroundColor: '#666', padding: '20px', borderRadius: '8px' }}>
-            <h2 style={{ color: '#fff', fontSize: '1.5rem', marginBottom: '15px' }}>Оплата</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: '#ccc' }}>Итого:</span>
-                    <span style={{ color: '#fff' }}>{total.toFixed(2)} ₽</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: '#ccc' }}>Пошлина:</span>
-                    <span style={{ color: '#fff' }}>{fee.toFixed(2)} ₽</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: '#ccc' }}>Скидка:</span>
-                    <span style={{ color: '#fff' }}>{discount.toFixed(2)} ₽</span>
-                </div>
-                <div style={{ borderTop: '1px solid #ccc', paddingTop: '10px', marginTop: '10px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
-                        <span style={{ color: '#ccc' }}>К оплате:</span>
-                        <span style={{ color: '#fff' }}>{finalTotal.toFixed(2)} ₽</span>
-                    </div>
-                </div>
-                <button
-                    onClick={handleOrder}
-                    style={{
-                        width: '100%',
-                        padding: '10px',
-                        backgroundColor: '#FFC107',
-                        color: '#fff',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        marginTop: '15px',
-                    }}
-                >
-                    Оформить
-                </button>
-            </div>
-        </div>
-    );
+  return (
+    <div className="p-4 bg-white rounded shadow-md">
+      <h2 className="text-xl font-semibold mb-4">Итог заказа</h2>
+      <ul className="divide-y divide-gray-200 mb-4">
+        {products.map((product) => (
+          <li key={product.id} className="flex justify-between py-2">
+            <span className="text-gray-700">{product.name}</span>
+            <span className="font-medium text-gray-900">{product.price} ₽</span>
+          </li>
+        ))}
+      </ul>
+      <div className="flex justify-between text-lg font-bold">
+        <span>Итого:</span>
+        <span>{totalPrice} ₽</span>
+      </div>
+    </div>
+  );
 };
 
 export default CartSummary;

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Header = ({ activeSection, userRole }) => {
   return (
-    <header className="bg-[#424242] shadow-sm">
+    <header className="bg-white shadow-sm">
       <div className="px-4 py-3 flex justify-between items-center">
         <h1 className="text-2xl font-semibold text-gray-800">
           {activeSection === 'dashboard' && 'Дашборд'}

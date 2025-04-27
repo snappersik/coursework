@@ -122,7 +122,7 @@ const ProductManager = () => {
         </button>
       </div>
 
-      <div className="bg-[#424242] shadow-md rounded-lg overflow-hidden text-black">
+      <div className="bg-white shadow-md rounded-lg overflow-hidden text-black">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -134,7 +134,7 @@ const ProductManager = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Действия</th>
               </tr>
             </thead>
-            <tbody className="bg-[#424242] divide-y divide-gray-200">
+            <tbody className="bg-white divide-y divide-gray-200">
               {products.map(product => (
                 <tr key={product.id}>
                   <td className="px-6 py-4 whitespace-nowrap">{product.id}</td>
@@ -165,7 +165,7 @@ const ProductManager = () => {
       {/* Модальное окно для добавления/редактирования продукта */}
       {showModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#424242] rounded-lg shadow-xl p-6 w-full max-w-md">
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">
                 {currentProduct ? 'Редактировать продукт' : 'Добавить продукт'}

@@ -54,7 +54,7 @@ const OrderManager = () => {
     <div>
       <h2 className="text-xl font-semibold mb-6">Управление заказами</h2>
 
-      <div className="bg-[#424242] shadow-md rounded-lg overflow-hidden text-black">
+      <div className="bg-white shadow-md rounded-lg overflow-hidden text-black">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -67,7 +67,7 @@ const OrderManager = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Действия</th>
               </tr>
             </thead>
-            <tbody className="bg-[#424242] divide-y divide-gray-200">
+            <tbody className="bg-white divide-y divide-gray-200">
               {orders.map(order => (
                 <tr key={order.id}>
                   <td className="px-6 py-4 whitespace-nowrap">{order.id}</td>
@@ -112,7 +112,7 @@ const OrderManager = () => {
       {/* Модальное окно с деталями заказа */}
       {showDetails && selectedOrder && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#424242] rounded-lg shadow-xl p-6 w-full max-w-2xl">
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">
                 Детали заказа #{selectedOrder.id}
@@ -145,7 +145,7 @@ const OrderManager = () => {
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Итого</th>
                   </tr>
                 </thead>
-                <tbody className="bg-[#424242] divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-gray-200">
                   {selectedOrder.items?.map((item, index) => (
                     <tr key={index}>
                       <td className="px-4 py-2 whitespace-nowrap">{item.product?.title || 'Неизвестно'}</td>

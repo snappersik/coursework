@@ -68,26 +68,6 @@ public class BookService extends GenericService<Book, BookDTO> {
         return bookMapper.toDTOs(bookRepository.findByOrderByCreatedWhenDesc(pageable));
     }
 
-    // Добавить жанр к книге
-    @Transactional
-    public BookDTO addGenre(Long bookId, BookGenre genre) {
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> createNotFoundException(bookId));
-        book.addGenre(genre);
-        bookRepository.save(book);
-        return bookMapper.toDTO(book);
-    }
-
-    // Удалить жанр у книги
-    @Transactional
-    public BookDTO removeGenre(Long bookId, BookGenre genre) {
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> createNotFoundException(bookId));
-        book.removeGenre(genre);
-        bookRepository.save(book);
-        return bookMapper.toDTO(book);
-    }
-
     // Установить несколько жанров для книги
     @Transactional
     public BookDTO setGenres(Long bookId, Set<BookGenre> genres) {

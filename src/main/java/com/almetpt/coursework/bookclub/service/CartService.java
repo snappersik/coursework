@@ -26,8 +26,14 @@ public class CartService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Transactional(readOnly = true)
     public Cart getCartByUserId(Long userId) {
-        return cartRepository.findByUserId(userId);
+        Cart cart = cartRepository.findByUserId(userId);
+        // Принудительная инициализация коллекции продуктов
+        if (cart != null && cart.getProducts() != null) {
+            cart.getProducts().size();
+        }
+        return cart;
     }
 
     @Transactional
@@ -40,6 +46,7 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
+    @Transactional
     public void addProductToCart(Long userId, Long productId) {
         Cart cart = getCartByUserId(userId);
         Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
@@ -49,6 +56,7 @@ public class CartService {
         }
     }
 
+    @Transactional
     public void removeProductFromCart(Long userId, Long productId) {
         Cart cart = getCartByUserId(userId);
         Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
@@ -58,6 +66,7 @@ public class CartService {
         }
     }
 
+    @Transactional
     public void purchaseProduct(Long userId, Long productId, String userEmail) {
         Cart cart = getCartByUserId(userId);
         Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
@@ -83,5 +92,4 @@ public class CartService {
     public Optional<Cart> findById(Long id) {
         return cartRepository.findById(id);
     }
-
 }

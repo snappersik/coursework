@@ -16,7 +16,7 @@ const SuccessPurchaseModal = ({ isOpen, onClose }) => {
             onClick={onClose}
           />
           <motion.div 
-            className="bg-wgite rounded-lg shadow-xl overflow-hidden w-full max-w-md relative z-10"
+            className="bg-[#424242] rounded-lg shadow-xl overflow-hidden w-full max-w-md relative z-10"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
@@ -28,14 +28,14 @@ const SuccessPurchaseModal = ({ isOpen, onClose }) => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-center text-gray-900 mb-2">Покупка совершена успешно!</h3>
-              <p className="text-center text-gray-600 mb-6">
+              <h3 className="text-xl font-bold text-center text-yellow-400 mb-2">Покупка совершена успешно!</h3>
+              <p className="text-center text-white mb-6">
                 Спасибо за ваш заказ. Вы можете просмотреть детали заказа в разделе "Покупки" вашего профиля.
               </p>
               <div className="flex justify-center">
                 <button
                   onClick={onClose}
-                  className="px-6 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors"
+                  className="px-6 py-2 bg-[#505050] text-white rounded-md hover:bg-[#555555] transition-colors"
                 >
                   Закрыть
                 </button>

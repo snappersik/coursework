@@ -212,7 +212,7 @@ const SliderManager = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Секция с книгами в слайдере */}
-        <div className="bg-[#424242] p-6 rounded-lg shadow-lg">
+        <div className="bg-white p-6 rounded-lg shadow-lg">
           <h2 className="text-xl font-semibold mb-4">Книги в слайдере</h2>
 
           <DragDropContext onDragEnd={handleDragEnd}>
@@ -310,7 +310,7 @@ const SliderManager = () => {
         </div>
 
         {/* Секция с доступными книгами */}
-        <div className="bg-[#424242] p-6 rounded-lg shadow-lg">
+        <div className="bg-white p-6 rounded-lg shadow-lg">
           <h2 className="text-xl font-semibold mb-4">Доступные книги</h2>
 
           <div className="mb-4">
