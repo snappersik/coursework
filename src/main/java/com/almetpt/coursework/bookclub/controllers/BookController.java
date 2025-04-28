@@ -40,7 +40,7 @@ public class BookController extends GenericController<Book, BookDTO> {
         super(bookService);
         this.bookService = bookService;
         this.bookImageService = bookImageService;
-    }  
+    }
 
     @Operation(summary = "Получить страницу книг", description = "Возвращает страницу книг с пагинацией и сортировкой")
     @GetMapping("/paginated")
@@ -55,6 +55,38 @@ public class BookController extends GenericController<Book, BookDTO> {
         return ResponseEntity.ok(books);
     }
 
+    @Operation(description = "Создать запись", method = "create")
+    @PostMapping(consumes = "multipart/form-data")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ORGANIZER')")
+    public ResponseEntity<BookDTO> create(
+            @RequestPart("book") BookDTO bookDTO,
+            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+        BookDTO createdBook = bookService.create(bookDTO);
+        if (file != null) {
+            bookImageService.uploadImage(createdBook.getId(), file);
+        }
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(createdBook);
+    }
+
+    @Operation(description = "Обновить запись", method = "update")
+    @PutMapping(value = "/{id}", consumes = "multipart/form-data")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ORGANIZER')")
+    public ResponseEntity<BookDTO> update(
+            @PathVariable Long id,
+            @RequestPart("book") BookDTO bookDTO,
+            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+        bookDTO.setId(id);
+        BookDTO updatedBook = bookService.update(bookDTO);
+        if (file != null) {
+            bookImageService.uploadImage(id, file);
+        }
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(updatedBook);
+    }
+
     @Operation(summary = "Загрузить изображение обложки книги", description = "Загружает изображение обложки для указанной книги в виде файла")
     @PostMapping(path = "/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
@@ -67,7 +99,7 @@ public class BookController extends GenericController<Book, BookDTO> {
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }    
+    }
 
     @Operation(summary = "Загрузить изображение обложки книги из URL", description = "Устанавливает URL внешнего изображения в качестве обложки книги")
     @PostMapping("/url")
@@ -76,7 +108,7 @@ public class BookController extends GenericController<Book, BookDTO> {
             @Parameter(description = "Информация об изображении") @RequestBody BookImageUploadDTO dto) {
         BookImageDTO result = bookImageService.uploadImageFromUrl(dto);
         return ResponseEntity.ok(result);
-    }    
+    }
 
     @Operation(summary = "Загрузить бинарные данные изображения книги", description = "Загружает и сохраняет бинарные данные изображения обложки книги")
     @PostMapping(path = "/{id}/upload-binary", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -90,7 +122,7 @@ public class BookController extends GenericController<Book, BookDTO> {
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }    
+    }
 
     @Operation(summary = "Получить информацию об изображении книги", description = "Возвращает информацию об изображении обложки книги")
     @GetMapping("/{id}/image-info")
@@ -98,66 +130,66 @@ public class BookController extends GenericController<Book, BookDTO> {
             @Parameter(description = "ID книги") @PathVariable Long id) {
         BookImageDTO result = bookImageService.getBookImageInfo(id);
         return ResponseEntity.ok(result);
-    }    
+    }
 
     @GetMapping("/{id}/cover")
     public ResponseEntity<byte[]> getBookCover(@PathVariable Long id) {
         try {
             BookDTO book = bookService.getOne(id);
-            
+
             // Если нет данных об обложке
             if (book == null || (book.getCoverImageUrl() == null && book.getCoverImageFilename() == null)) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             byte[] imageData;
-            
+
             // Если есть внешний URL - загружаем через прокси
             if (book.getCoverImageUrl() != null && !book.getCoverImageUrl().isEmpty()) {
                 try {
                     log.info("Загрузка изображения с внешнего URL: {}", book.getCoverImageUrl());
                     imageData = downloadExternalImage(book.getCoverImageUrl());
-                    
+
                     // Опционально: сохраняем загруженное изображение для будущего использования
                     bookImageService.saveDownloadedImage(id, imageData);
-                    
+
                     return ResponseEntity.ok()
-                        .contentType(MediaType.IMAGE_JPEG)
-                        .cacheControl(CacheControl.maxAge(7, TimeUnit.DAYS))
-                        .body(imageData);
+                            .contentType(MediaType.IMAGE_JPEG)
+                            .cacheControl(CacheControl.maxAge(7, TimeUnit.DAYS))
+                            .body(imageData);
                 } catch (Exception e) {
                     log.error("Ошибка загрузки внешнего изображения: {}", book.getCoverImageUrl(), e);
-                    
+
                     // Если есть локальный файл - используем его как запасной вариант
                     if (book.getCoverImageFilename() != null) {
                         imageData = bookImageService.getBookCoverImageData(id);
                         return ResponseEntity.ok()
-                            .contentType(MediaType.parseMediaType(determineContentType(book.getCoverImageFilename())))
-                            .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS))
-                            .body(imageData);
+                                .contentType(MediaType.parseMediaType(determineContentType(book.getCoverImageFilename())))
+                                .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS))
+                                .body(imageData);
                     }
-                    
+
                     // Если нет локального файла - возвращаем 404
                     return ResponseEntity.notFound().build();
                 }
             }
-            
+
             // Если есть локальный файл
             if (book.getCoverImageFilename() != null) {
                 imageData = bookImageService.getBookCoverImageData(id);
                 return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(determineContentType(book.getCoverImageFilename())))
-                    .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS))
-                    .body(imageData);
+                        .contentType(MediaType.parseMediaType(determineContentType(book.getCoverImageFilename())))
+                        .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS))
+                        .body(imageData);
             }
-            
+
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             log.error("Ошибка при получении обложки книги с id={}", id, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    
+
     private byte[] downloadExternalImage(String url) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -171,7 +203,7 @@ public class BookController extends GenericController<Book, BookDTO> {
             throw e;
         }
     }
-    
+
     // Определение типа контента по расширению файла
     private String determineContentType(String filename) {
         if (filename.endsWith(".webp"))

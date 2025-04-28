@@ -11,6 +11,7 @@ import BookManager from './sections/BookManager';
 import UserManager from './sections/UserManager';
 import SliderManager from './sections/SliderManager';
 import OrderManager from './sections/OrderManager';
+import ActionManage from './sections/ActionManage.jsx'
 import EventManager from './sections/EventManager';
 import ProductManager from './sections/ProductManager';
 
@@ -83,6 +84,7 @@ const AdminPanel = () => {
               <Route path="/events" element={<EventManager />} />
               <Route path="/products" element={<ProductManager />} />
               <Route path="/slider" element={<SliderManager />} />
+              <Route path="/activity" element={<ActionManage />} />
             </Routes>
           </main>
         </div>

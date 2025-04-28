@@ -3,27 +3,36 @@ import { makeAutoObservable } from 'mobx';
 class AuthStore {
   isAuthorized = false;
   userRole = null;
+  userId = null; // Добавляем поле для userId
 
   constructor() {
     makeAutoObservable(this);
-    
-    // Инициализация состояния из localStorage при создании хранилища
+
+    // Инициализация из localStorage
     const storedRole = localStorage.getItem('userRole');
-    if (storedRole) {
+    const storedUserId = localStorage.getItem('userId');
+    if (storedRole && storedUserId) {
       this.isAuthorized = true;
       this.userRole = storedRole;
-      console.log('Инициализация AuthStore из localStorage:', { isAuthorized: this.isAuthorized, userRole: this.userRole });
+      this.userId = storedUserId;
+      console.log('Инициализация AuthStore из localStorage:', {
+        isAuthorized: this.isAuthorized,
+        userRole: this.userRole,
+        userId: this.userId
+      });
     }
   }
 
-  setAuthorized(isAuthorized, userRole) {
-    console.log('Обновление состояния авторизации:', { isAuthorized, userRole });
+  setAuthorized(isAuthorized, userRole, userId) {
+    console.log('Обновление состояния авторизации:', { isAuthorized, userRole, userId });
     this.isAuthorized = isAuthorized;
     this.userRole = userRole;
-    
-    // Сохраняем роль в localStorage при авторизации
-    if (isAuthorized && userRole) {
+    this.userId = userId;
+
+    // Сохраняем в localStorage
+    if (isAuthorized && userRole && userId) {
       localStorage.setItem('userRole', userRole);
+      localStorage.setItem('userId', userId);
     }
   }
 
@@ -31,7 +40,9 @@ class AuthStore {
     console.log('Выход из системы');
     this.isAuthorized = false;
     this.userRole = null;
+    this.userId = null;
     localStorage.removeItem('userRole');
+    localStorage.removeItem('userId');
   }
 }
 

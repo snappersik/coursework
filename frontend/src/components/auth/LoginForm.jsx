@@ -3,9 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { login, testAuthentication } from '../../api/apiClient';
 import { authStore } from '../../store/store.js';
 
-// Функция для преобразования ID роли в её строковое название
-
-
 const LoginForm = ({ onSwitchToRegister }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ login: '', password: '' });
@@ -20,14 +17,10 @@ const LoginForm = ({ onSwitchToRegister }) => {
 
   const getRoleNameById = (roleId) => {
     switch (roleId) {
-      case 1:
-        return 'USER';
-      case 2:
-        return 'ORGANIZER';
-      case 3:
-        return 'ADMIN';
-      default:
-        return 'USER'; // По умолчанию, если ID не распознан
+      case 1: return 'USER';
+      case 2: return 'ORGANIZER';
+      case 3: return 'ADMIN';
+      default: return 'USER';
     }
   };
 
@@ -40,27 +33,19 @@ const LoginForm = ({ onSwitchToRegister }) => {
       const result = await login(formData.login, formData.password);
 
       if (result.success && result.userInfo) {
-        // Логирование для отладки
         console.log('Данные пользователя:', result.userInfo);
-        console.log('Роль пользователя:', result.userInfo.role);
 
-        // Извлечение ID роли
-        let roleId;
-        if (typeof result.userInfo.role === 'number') {
-          roleId = result.userInfo.role; // Если role — просто число (ID)
-        } else if (result.userInfo.role && typeof result.userInfo.role === 'object') {
-          roleId = result.userInfo.role.id; // Если role — объект с полем id
-        } else {
-          roleId = 1; // По умолчанию ID для USER
+        // Извлекаем roleId и userId
+        let roleId = result.userInfo.role?.id || result.userInfo.role || 1;
+        const userRole = getRoleNameById(roleId);
+        const userId = result.userInfo.id; // Предполагаем, что сервер возвращает id пользователя
+
+        if (!userId) {
+          throw new Error('Не удалось получить ID пользователя с сервера');
         }
 
-        // Преобразование ID в строковое название роли
-        const userRole = getRoleNameById(roleId);
-        console.log('Устанавливаемая роль:', userRole);
-
-        // Сохранение роли и установка состояния авторизации
-        localStorage.setItem('userRole', userRole);
-        authStore.setAuthorized(true, userRole);
+        // Сохраняем данные в authStore
+        authStore.setAuthorized(true, userRole, userId);
 
         await testAuthentication();
         navigate('/');

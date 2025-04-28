@@ -1,51 +1,74 @@
-// src/store/cartStore.js
 import { makeAutoObservable } from 'mobx';
-import { createOrder as apiCreateOrder } from "../api/apiClient";
+import { addToCart, removeFromCart, createOrder as apiCreateOrder } from "../api/apiClient";
+import { authStore } from './store.js'; // Импортируем authStore для получения userId
 
 class CartStore {
   items = [];
-  
+
   constructor() {
     makeAutoObservable(this);
-    
-    // Initialize from localStorage if available
+    // Загружаем корзину из localStorage при инициализации
     const savedCart = localStorage.getItem('cartItems');
     if (savedCart) {
       this.items = JSON.parse(savedCart);
     }
   }
-  
-  addItem(product) {
-    const existingItem = this.items.find(item => item.id === product.id);
-    
-    if (existingItem) {
-      // If item already exists, increase quantity
-      existingItem.quantity += 1;
-    } else {
-      // Otherwise add new item
-      this.items.push({
-        ...product,
-        quantity: 1
-      });
+
+  async addItem(product) {
+    if (!authStore.isAuthorized) {
+      throw new Error('Необходимо авторизоваться');
     }
-    
-    this.saveToLocalStorage();
+
+    const userId = authStore.userId; // Предполагаем, что userId будет добавлен в authStore
+    if (!userId) {
+      throw new Error('Не удалось определить пользователя');
+    }
+
+    try {
+      // Отправляем запрос на сервер
+      await addToCart(userId, product.id);
+
+      // Обновляем локальное состояние
+      const existingItem = this.items.find(item => item.id === product.id);
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        this.items.push({ ...product, quantity: 1 });
+      }
+      this.saveToLocalStorage();
+    } catch (error) {
+      throw error;
+    }
   }
-  
-  removeItem(productId) {
-    this.items = this.items.filter(item => item.id !== productId);
-    this.saveToLocalStorage();
+
+  async removeItem(productId) {
+    if (!authStore.isAuthorized) {
+      throw new Error('Необходимо авторизоваться');
+    }
+
+    const userId = authStore.userId;
+    if (!userId) {
+      throw new Error('Не удалось определить пользователя');
+    }
+
+    try {
+      await removeFromCart(userId, productId);
+      this.items = this.items.filter(item => item.id !== productId);
+      this.saveToLocalStorage();
+    } catch (error) {
+      throw error;
+    }
   }
-  
+
   clearCart() {
     this.items = [];
     this.saveToLocalStorage();
   }
-  
+
   saveToLocalStorage() {
     localStorage.setItem('cartItems', JSON.stringify(this.items));
   }
-  
+
   async createOrder() {
     try {
       const result = await apiCreateOrder();
@@ -55,11 +78,11 @@ class CartStore {
       throw error;
     }
   }
-  
+
   get totalPrice() {
     return this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   }
-  
+
   get itemCount() {
     return this.items.length;
   }

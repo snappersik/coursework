@@ -111,6 +111,7 @@ public interface SecurityConstants {
 
         // Права для управления check-in (для админа и организатора)
         List<String> CHECK_IN_MANAGEMENT_LIST = prefixPaths(
+                "/audit/",
                         "/checkin/**");
 
         // Права для управления заказами (для админа)

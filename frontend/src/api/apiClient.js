@@ -169,8 +169,6 @@ export const testAuthentication = async () => {
   console.groupEnd();
 };
 
-
-// Функция для добавления товара в корзину
 export const addToCart = async (userId, productId) => {
   try {
     const response = await apiClient.post(`/carts/${userId}/products/${productId}`);
@@ -181,7 +179,6 @@ export const addToCart = async (userId, productId) => {
   }
 };
 
-// Функция для удаления товара из корзины
 export const removeFromCart = async (userId, productId) => {
   try {
     const response = await apiClient.delete(`/carts/${userId}/products/${productId}`);
@@ -192,7 +189,6 @@ export const removeFromCart = async (userId, productId) => {
   }
 };
 
-// Функция для создания заказа из корзины
 export const createOrder = async () => {
   try {
     const response = await apiClient.post('/orders/create');
@@ -203,7 +199,6 @@ export const createOrder = async () => {
   }
 };
 
-// Функция для получения заказов пользователя
 export const getUserOrders = async () => {
   try {
     const response = await apiClient.get('/orders/my');
@@ -214,7 +209,6 @@ export const getUserOrders = async () => {
   }
 };
 
-// Функция для получения заявок на мероприятия пользователя
 export const getUserEventApplications = async () => {
   try {
     const response = await apiClient.get('/event-applications/my');
@@ -225,7 +219,6 @@ export const getUserEventApplications = async () => {
   }
 };
 
-// Функция для отмены заявки на мероприятие
 export const cancelEventApplication = async (applicationId) => {
   try {
     const response = await apiClient.put(`/event-applications/${applicationId}/cancel`);
@@ -236,7 +229,6 @@ export const cancelEventApplication = async (applicationId) => {
   }
 };
 
-// Функция для восстановления заявки на мероприятие
 export const restoreEventApplication = async (applicationId) => {
   try {
     const response = await apiClient.put(`/event-applications/${applicationId}/restore`);
@@ -247,7 +239,6 @@ export const restoreEventApplication = async (applicationId) => {
   }
 };
 
-// Функция для получения данных о мероприятии по ID
 export const getEventById = async (eventId) => {
   try {
     const response = await apiClient.get(`/events/${eventId}`);
@@ -258,5 +249,14 @@ export const getEventById = async (eventId) => {
   }
 };
 
+export const getAuditEntries = async () => {
+  try {
+    const response = await apiClient.get('/audit'); // Исправлено с '/rest/audit' на '/audit'
+    return response.data;
+  } catch (error) {
+    console.error('Get audit entries error:', error);
+    throw new Error(error.response?.data || 'Не удалось получить данные аудита');
+  }
+};
 
 export default apiClient;
