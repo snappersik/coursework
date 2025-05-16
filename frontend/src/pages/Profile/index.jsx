@@ -114,15 +114,6 @@ const ProfilePage = observer(() => {
       <div className="max-w-6xl mx-auto bg-gray-700 rounded-xl overflow-hidden shadow-2xl">
         {/* Полосатая шапка на всю ширину */}
         <div className="w-full relative overflow-hidden">
-          {/* Полосатый фон */}
-          <div className="absolute inset-0 grid grid-cols-12 gap-1 transform -skew-y-12">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div
-                key={i}
-                className={`h-full ${i % 2 === 0 ? 'bg-yellow-500 bg-opacity-20' : 'bg-gray-800 bg-opacity-40'}`}
-              />
-            ))}
-          </div>
 
           {/* Содержимое шапки */}
           <div className="p-6 md:p-8 bg-gray-900 border-b border-gray-600">

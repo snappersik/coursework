@@ -1,6 +1,5 @@
 package com.almetpt.coursework.bookclub.service;
 
-import com.almetpt.coursework.bookclub.constants.Errors;
 import com.almetpt.coursework.bookclub.dto.OrderDTO;
 import com.almetpt.coursework.bookclub.mapper.OrderMapper;
 import com.almetpt.coursework.bookclub.model.Cart;
@@ -122,23 +121,19 @@ public class OrderService extends GenericService<Order, OrderDTO> {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
 
-        // Преобразуем строку в enum OrderStatus
         OrderStatus status;
         try {
-            status = OrderStatus.valueOf(statusStr);
+            status = OrderStatus.valueOf(statusStr.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Недопустимый статус заказа: " + statusStr +
-                    ". Допустимые значения: PENDING, COMPLETED, CANCELLED");
+            throw new IllegalArgumentException("Недопустимый статус заказа: " + statusStr);
         }
 
         order.setStatus(status);
         order.setUpdatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
         order.setUpdatedWhen(LocalDateTime.now());
 
-        return orderMapper.toDTO(orderRepository.save(order));
+        Order savedOrder = orderRepository.save(order);
+        return orderMapper.toDTO(savedOrder);
     }
 
-    protected NotFoundException createNotFoundException(Long id) {
-        return new NotFoundException(Errors.Orders.ORDER_NOT_FOUND_ERROR.formatted(id));
-    }
 }

@@ -3,6 +3,7 @@ package com.almetpt.coursework.bookclub.mapper;
 import com.almetpt.coursework.bookclub.dto.OrderDTO;
 
 import com.almetpt.coursework.bookclub.model.Order;
+import com.almetpt.coursework.bookclub.model.OrderStatus;
 
 import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
@@ -23,13 +24,22 @@ public class OrderMapper extends GenericMapper<Order, OrderDTO> {
     @Override
     protected void setupMapper() {
         modelMapper.createTypeMap(Order.class, OrderDTO.class)
-                .setPostConverter(toDTOConverter());
+            .addMappings(mapping -> {
+                mapping.map(src -> src.getTotal(), OrderDTO::setTotal);
+                mapping.map(src -> src.getStatus() != null ? src.getStatus().name() : null, OrderDTO::setOrderStatus);
+            })
+            .setPostConverter(toDTOConverter());
+
         modelMapper.createTypeMap(OrderDTO.class, Order.class)
-                .setPostConverter(toEntityConverter());
+            .addMappings(mapping -> {
+                mapping.map(OrderDTO::getTotal, Order::setTotal);
+                mapping.map(src -> src.getOrderStatus() != null ? OrderStatus.valueOf(src.getOrderStatus()) : null, Order::setStatus);
+            })
+            .setPostConverter(toEntityConverter());
     }
 
     @Override
     protected List<Long> getIds(Order entity) {
-        return Collections.emptyList(); // Пока идентификаторы не нужны
+        return Collections.emptyList();
     }
 }

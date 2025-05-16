@@ -26,6 +26,7 @@ import java.util.Arrays;
 import static com.almetpt.coursework.bookclub.constants.SecurityConstants.*;
 import static com.almetpt.coursework.bookclub.constants.UserRoleConstants.ADMIN;
 import static com.almetpt.coursework.bookclub.constants.UserRoleConstants.ORGANIZER;
+
 import org.springframework.http.HttpMethod;
 
 @Configuration
@@ -34,62 +35,94 @@ import org.springframework.http.HttpMethod;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private final JWTCookieFilter jwtCookieFilter;
+        private final JWTCookieFilter jwtCookieFilter;
 
-    @Value("${jwt.expiration}")
-    private Long expiration;
+        @Value("${jwt.expiration}")
+        private Long expiration;
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(RESOURCES_WHITE_LIST.toArray(String[]::new)).permitAll()
-                        .requestMatchers(AUTH_WHITE_LIST.toArray(String[]::new)).permitAll()
-                        .requestMatchers(PUBLIC_GET_LIST.toArray(String[]::new)).permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/rest/orders/create").authenticated()
-                        .requestMatchers("/api/rest/users/profile").authenticated()
-                        .requestMatchers("/api/rest/audit").hasRole(ADMIN) // Добавлено разрешение для /api/rest/audit
-                        // Разрешаем доступ к обложкам книг всем пользователям
-                        .requestMatchers("/api/rest/books/*/cover").permitAll()
-                        .requestMatchers(ADMIN_PERMISSIONS_LIST.toArray(String[]::new)).hasRole(ADMIN)
-                        .requestMatchers(ORGANIZER_PERMISSIONS_LIST.toArray(String[]::new)).hasRole(ORGANIZER)
-                        .requestMatchers(AUTHENTICATED_PERMISSIONS.toArray(String[]::new)).authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/rest/admin/**").hasRole(ADMIN)
-                        .anyRequest().denyAll())
-                .addFilterBefore(jwtCookieFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
+        @Bean
+        SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                                .csrf(AbstractHttpConfigurer::disable)
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .authorizeHttpRequests(auth -> auth
+                                                // Публичные ресурсы и документация
+                                                .requestMatchers(RESOURCES_WHITE_LIST.toArray(String[]::new))
+                                                .permitAll()
+                                                .requestMatchers(AUTH_WHITE_LIST.toArray(String[]::new)).permitAll()
+                                                .requestMatchers(PUBLIC_GET_LIST.toArray(String[]::new)).permitAll()
+                                                .requestMatchers(SWAGGER_RESOURCES.toArray(String[]::new)).permitAll()
+                                                .requestMatchers(BOOK_COVERS.toArray(String[]::new)).permitAll()
+                                                // Доступ к профилю пользователя
+                                                .requestMatchers(USER_PROFILE.toArray(String[]::new)).authenticated()
+                                                // Доступ к аудиту только админу
+                                                .requestMatchers(AUDIT_PATHS.toArray(String[]::new)).hasRole(ADMIN)
+                                                // Доступ к созданию заказа только аутентифицированным
+                                                .requestMatchers(HttpMethod.POST,
+                                                                ORDERS_USER_PATHS.toArray(String[]::new))
+                                                .authenticated()
+                                                // Доступ к своим заказам только аутентифицированным пользователям
+                                                .requestMatchers(HttpMethod.GET,
+                                                                ORDERS_USER_PATHS.toArray(String[]::new))
+                                                .authenticated()
+                                                // Доступ к crud заказов только админу
+                                                .requestMatchers(HttpMethod.GET, ORDERS_GET_ALL.toArray(String[]::new))
+                                                .hasRole(ADMIN)
+                                                .requestMatchers(HttpMethod.PUT,
+                                                                ORDERS_PUT_STATUS.toArray(String[]::new))
+                                                .hasRole(ADMIN)
+                                                .requestMatchers(HttpMethod.DELETE,
+                                                                ORDERS_DELETE.toArray(String[]::new))
+                                                .hasRole(ADMIN)
+                                                .requestMatchers(HttpMethod.POST,
+                                                                ORDERS_POST_SOFT.toArray(String[]::new))
+                                                .hasRole(ADMIN)
+                                                .requestMatchers(HttpMethod.PATCH,
+                                                                ORDERS_PATCH_RESTORE.toArray(String[]::new))
+                                                .hasRole(ADMIN)
+                                                // Остальные права для админа и организатора
+                                                .requestMatchers(ADMIN_PERMISSIONS_LIST.toArray(String[]::new))
+                                                .hasRole(ADMIN)
+                                                .requestMatchers(ORGANIZER_PERMISSIONS_LIST.toArray(String[]::new))
+                                                .hasRole(ORGANIZER)
+                                                .requestMatchers(AUTHENTICATED_PERMISSIONS.toArray(String[]::new))
+                                                .authenticated()
+                                                .requestMatchers(HttpMethod.GET, ADMIN_PANEL.toArray(String[]::new))
+                                                .hasRole(ADMIN)
+                                                // Запретить всё остальное
+                                                .anyRequest().denyAll())
+                                .addFilterBefore(jwtCookieFilter, UsernamePasswordAuthenticationFilter.class);
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailsService);
-        authenticationProvider.setPasswordEncoder(passwordEncoder);
-        return new ProviderManager(authenticationProvider);
-    }
+                return http.build();
+        }
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(
-                Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Cookie"));
-        config.setExposedHeaders(Arrays.asList(
-                "X-Auth-Token",
-                "Access-Control-Allow-Origin",
-                "Access-Control-Allow-Credentials"));
-        config.setAllowCredentials(true);
-        config.setMaxAge(expiration);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
-    }
+        @Bean
+        public AuthenticationManager authenticationManager(
+                        UserDetailsService userDetailsService,
+                        PasswordEncoder passwordEncoder) {
+                DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+                authenticationProvider.setUserDetailsService(userDetailsService);
+                authenticationProvider.setPasswordEncoder(passwordEncoder);
+                return new ProviderManager(authenticationProvider);
+        }
+
+        @Bean
+        CorsConfigurationSource corsConfigurationSource() {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+                config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+                config.setAllowedHeaders(
+                                Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Cookie"));
+                config.setExposedHeaders(Arrays.asList(
+                                "X-Auth-Token",
+                                "Access-Control-Allow-Origin",
+                                "Access-Control-Allow-Credentials"));
+                config.setAllowCredentials(true);
+                config.setMaxAge(expiration);
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", config);
+                return source;
+        }
 }

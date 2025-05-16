@@ -11,8 +11,10 @@ const EventManager = () => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    eventDate: '',
+    date: '',
+    eventType: '',
     location: '',
+    bookId: '',
     maxParticipants: 20
   });
 
@@ -45,25 +47,29 @@ const EventManager = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
+      // Создаем копию данных формы для модификации
+      const eventData = {
+        ...formData,
+        // Преобразуем дату в правильный формат с секундами
+        date: formData.date ? formData.date + ":00" : null,
+        // Преобразуем bookId в число
+        bookId: formData.bookId ? parseInt(formData.bookId, 10) : null
+      };
+
       if (currentEvent) {
-        // Обновление мероприятия
-        await axios.put(`${API_URL}/rest/events/${currentEvent.id}`, formData, {
-          withCredentials: true
-        });
+        await axios.put(`${API_URL}/rest/events/${currentEvent.id}`, eventData, { withCredentials: true });
         toast.success('Мероприятие успешно обновлено');
       } else {
-        // Создание нового мероприятия
-        await axios.post(`${API_URL}/rest/events`, formData, {
-          withCredentials: true
-        });
+        await axios.post(`${API_URL}/rest/events`, eventData, { withCredentials: true });
         toast.success('Мероприятие успешно создано');
       }
       setShowModal(false);
       fetchEvents();
     } catch (error) {
       console.error('Ошибка сохранения мероприятия:', error);
-      toast.error('Не удалось сохранить мероприятие');
+      toast.error(`Не удалось сохранить мероприятие: ${error.response?.data?.message || error.message}`);
     }
   };
 
@@ -72,8 +78,10 @@ const EventManager = () => {
     setFormData({
       title: event.title,
       description: event.description || '',
-      eventDate: event.eventDate ? new Date(event.eventDate).toISOString().slice(0, 16) : '',
+      date: event.date ? new Date(event.date).toISOString().slice(0, 16) : '',
+      eventType: event.eventType || '',
       location: event.location || '',
+      bookId: event.bookId || '',
       maxParticipants: event.maxParticipants || 20
     });
     setShowModal(true);
@@ -113,7 +121,7 @@ const EventManager = () => {
   const handleReschedule = async (id) => {
     const newDate = prompt('Введите новую дату и время (YYYY-MM-DD HH:MM):');
     const reason = prompt('Укажите причину переноса мероприятия:');
-    
+
     if (newDate && reason) {
       try {
         await axios.post(`${API_URL}/rest/events/${id}/reschedule`, {
@@ -136,8 +144,10 @@ const EventManager = () => {
     setFormData({
       title: '',
       description: '',
-      eventDate: '',
+      date: '',
+      eventType: '',
       location: '',
+      bookId: '',
       maxParticipants: 20
     });
     setShowModal(true);
@@ -185,9 +195,9 @@ const EventManager = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                      ${event.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 
-                        event.status === 'CANCELLED' ? 'bg-red-100 text-red-800' : 
-                        'bg-yellow-100 text-yellow-800'}`}>
+                      ${event.status === 'ACTIVE' ? 'bg-green-100 text-green-800' :
+                        event.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :
+                          'bg-yellow-100 text-yellow-800'}`}>
                       {event.status}
                     </span>
                   </td>
@@ -227,9 +237,9 @@ const EventManager = () => {
       {/* Модальное окно для добавления/редактирования мероприятия */}
       {showModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#424242] rounded-lg shadow-xl p-6 w-full max-w-md">
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">
+              <h3 className="text-lg font-semibold text-indigo-600">
                 {currentEvent ? 'Редактировать мероприятие' : 'Добавить мероприятие'}
               </h3>
               <button
@@ -241,91 +251,104 @@ const EventManager = () => {
                 </svg>
               </button>
             </div>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
-                  Название
-                </label>
-                <input
-                  type="text"
-                  id="title"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleInputChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
-                  Описание
-                </label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  rows="3"
-                ></textarea>
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="eventDate">
-                  Дата и время
-                </label>
-                <input
-                  type="datetime-local"
-                  id="eventDate"
-                  name="eventDate"
-                  value={formData.eventDate}
-                  onChange={handleInputChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="location">
-                  Место проведения
-                </label>
-                <input
-                  type="text"
-                  id="location"
-                  name="location"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-              </div>
-              <div className="mb-6">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="maxParticipants">
-                  Максимальное количество участников
-                </label>
-                <input
-                  type="number"
-                  id="maxParticipants"
-                  name="maxParticipants"
-                  value={formData.maxParticipants}
-                  onChange={handleInputChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  min="1"
-                />
-              </div>
-              <div className="flex items-center justify-end">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="mr-3 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                >
-                  Отмена
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                >
-                  Сохранить
-                </button>
-              </div>
-            </form>
+              <form onSubmit={handleSubmit}>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
+                    Название
+                  </label>
+                  <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-0 focus:border-[#ffb100]"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="eventType">
+                    Тип мероприятия
+                  </label>
+                  <input
+                    type="text"
+                    id="eventType"
+                    name="eventType"
+                    value={formData.eventType}
+                    onChange={handleInputChange}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-0 focus:border-[#ffb100]"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="bookId">
+                    Книга
+                  </label>
+                  <select
+                    id="bookId"
+                    name="bookId"
+                    value={formData.bookId}
+                    onChange={handleInputChange}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-0 focus:border-[#ffb100]"
+                    required
+                  >
+                    <option value="">Выберите книгу</option>
+                    {books.map(book => (
+                      <option key={book.id} value={book.id}>{book.title}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="date">
+                    Дата и время
+                  </label>
+                  <input
+                    type="datetime-local"
+                    id="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleInputChange}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-0 focus:border-[#ffb100]"
+                    required
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
+                    Описание
+                  </label>
+                  <textarea
+                    id="description"
+                    name="description"
+                    rows="3"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-0 focus:border-[#ffb100]"
+                  ></textarea>
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="maxParticipants">
+                    Максимальное количество участников
+                  </label>
+                  <input
+                    type="number"
+                    id="maxParticipants"
+                    name="maxParticipants"
+                    min="1"
+                    value={formData.maxParticipants}
+                    onChange={handleInputChange}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-0 focus:border-[#ffb100]"
+                  />
+                </div>
+
+                <div className="modal-footer">
+                  <button type="button" className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2" onClick={() => setShowModal(false)}>Отмена</button>
+                  <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Сохранить</button>
+                </div>
+              </form>
           </div>
         </div>
       )}

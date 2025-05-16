@@ -9,4 +9,3 @@ import org.springframework.stereotype.Repository;
 public interface OrderRepository extends GenericRepository<Order> {
     Page<Order> findByUserId(Long userId, Pageable pageable);
 }
-
