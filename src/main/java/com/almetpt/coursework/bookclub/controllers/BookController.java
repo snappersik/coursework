@@ -4,6 +4,7 @@ import com.almetpt.coursework.bookclub.dto.BookDTO;
 import com.almetpt.coursework.bookclub.dto.BookImageDTO;
 import com.almetpt.coursework.bookclub.dto.BookImageUploadDTO;
 import com.almetpt.coursework.bookclub.model.Book;
+import com.almetpt.coursework.bookclub.model.BookGenre;
 import com.almetpt.coursework.bookclub.service.BookImageService;
 import com.almetpt.coursework.bookclub.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
@@ -26,7 +28,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/rest/books")
@@ -42,17 +49,41 @@ public class BookController extends GenericController<Book, BookDTO> {
         this.bookImageService = bookImageService;
     }
 
-    @Operation(summary = "Получить страницу книг", description = "Возвращает страницу книг с пагинацией и сортировкой")
+    @Operation(summary = "Получить все доступные жанры книг")
+    @GetMapping("/genres")
+    public ResponseEntity<List<Map<String, String>>> getAllGenres() {
+        List<Map<String, String>> genres = Arrays.stream(BookGenre.values())
+                .map(genre -> {
+                    Map<String, String> genreMap = new HashMap<>();
+                    genreMap.put("name", genre.name());
+                    genreMap.put("displayName", genre.getDescription());
+                    return genreMap;
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(genres);
+    }
+
+    @Operation(summary = "Получить страницу активных книг", description = "Возвращает страницу активных книг с пагинацией и сортировкой")
     @GetMapping("/paginated")
-    public ResponseEntity<Page<BookDTO>> getBooksPaginated(
+    public ResponseEntity<Page<BookDTO>> getActiveBooksPaginated(
             @Parameter(description = "Номер страницы (начиная с 0)") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Размер страницы") @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "Поле для сортировки") @RequestParam(defaultValue = "title") String sortBy,
             @Parameter(description = "Направление сортировки (ASC или DESC)") @RequestParam(defaultValue = "ASC") String direction) {
         Sort.Direction sortDirection = direction.equalsIgnoreCase("DESC") ? Sort.Direction.DESC : Sort.Direction.ASC;
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
-        Page<BookDTO> books = bookService.listAll(pageRequest);
+        // Используем listAllNotDeleted для получения только активных книг
+        Page<BookDTO> books = bookService.listAllNotDeleted(pageRequest);
         return ResponseEntity.ok(books);
+    }
+
+    // Если нужен эндпоинт для всех книг (включая удаленные) с пагинацией:
+    @Operation(summary = "Получить страницу всех книг (включая удаленные, только для админа)", description = "Возвращает страницу всех книг с пагинацией")
+    @GetMapping("/all/paginated")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<BookDTO>> getAllBooksIncludingDeletedPaginated(Pageable pageable) {
+        Page<BookDTO> page = bookService.listAll(pageable); // Этот метод есть в GenericService
+        return ResponseEntity.ok(page);
     }
 
     @Operation(description = "Создать запись", method = "create")
@@ -164,7 +195,8 @@ public class BookController extends GenericController<Book, BookDTO> {
                     if (book.getCoverImageFilename() != null) {
                         imageData = bookImageService.getBookCoverImageData(id);
                         return ResponseEntity.ok()
-                                .contentType(MediaType.parseMediaType(determineContentType(book.getCoverImageFilename())))
+                                .contentType(
+                                        MediaType.parseMediaType(determineContentType(book.getCoverImageFilename())))
                                 .cacheControl(CacheControl.maxAge(30, TimeUnit.DAYS))
                                 .body(imageData);
                     }

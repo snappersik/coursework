@@ -8,6 +8,10 @@ import com.almetpt.coursework.bookclub.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +25,29 @@ public class EventController extends GenericController<Event, EventDTO> {
     public EventController(EventService eventService) {
         super(eventService);
         this.eventService = eventService;
+    }
+
+    // Новый метод для обработки пагинированного запроса
+    @Operation(summary = "Получить список мероприятий с пагинацией",
+            description = "Возвращает список неудаленных мероприятий с учетом пагинации и сортировки")
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<EventDTO>> getPaginatedEvents(
+            @Parameter(description = "Номер страницы (начиная с 0)")
+            @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Размер страницы")
+            @RequestParam(defaultValue = "100") int size,
+            @Parameter(description = "Поле для сортировки")
+            @RequestParam(defaultValue = "id") String sortBy,
+            @Parameter(description = "Направление сортировки (ASC или DESC)")
+            @RequestParam(defaultValue = "ASC") String direction) {
+        // Создаем объект сортировки
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
+        // Создаем объект пагинации
+        Pageable pageable = PageRequest.of(page, size, sort);
+        // Получаем данные из сервиса
+        Page<EventDTO> eventPage = eventService.listAllNotDeleted(pageable);
+        // Возвращаем результат
+        return ResponseEntity.ok(eventPage);
     }
 
     @Operation(summary = "Отменить мероприятие", description = "Позволяет отменить мероприятие с указанием причины отмены. Доступно администраторам и организаторам.")

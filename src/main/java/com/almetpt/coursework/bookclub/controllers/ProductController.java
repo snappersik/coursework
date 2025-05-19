@@ -61,6 +61,82 @@ public class ProductController extends GenericController<Product, ProductDTO> {
         return productService.searchProducts(name, category, pageable);
     }
 
+    // @Override
+    // @Operation(description = "Создать запись", method = "create")
+    // @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    // @PreAuthorize("hasRole('ADMIN') or hasRole('ORGANIZER')")
+    // public ResponseEntity<ProductDTO> create(
+    //         @RequestPart("product") ProductDTO productDTO,
+    //         @RequestPart(value = "file", required = false) MultipartFile file) {
+
+    //     try {
+    //         // Создаем продукт
+    //         ProductDTO createdProduct = productService.create(productDTO);
+
+    //         // Если есть файл, загружаем его
+    //         if (file != null && !file.isEmpty()) {
+    //             productImageService.uploadImage(createdProduct.getId(), file);
+    //         }
+
+    //         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
+    //     } catch (Exception e) {
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    //     }
+    // }
+
+    @Override
+    @Operation(description = "Обновить запись", method = "update")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ORGANIZER')")
+    public ResponseEntity<ProductDTO> update(
+            @RequestPart("product") ProductDTO productDTO,
+            @PathVariable Long id) {
+
+        try {
+            productDTO.setId(id);
+            ProductDTO updatedProduct = productService.update(productDTO);
+
+            // Если есть файл, загружаем его
+            MultipartFile file = null;
+            try {
+                file = (MultipartFile) productDTO.getClass().getMethod("getFile").invoke(productDTO);
+            } catch (Exception ignored) {
+            }
+
+            if (file != null && !file.isEmpty()) {
+                productImageService.uploadImage(id, file);
+            }
+
+            return ResponseEntity.ok(updatedProduct);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    // Специальный метод для обновления с файлом
+    @Operation(description = "Обновить запись с файлом", method = "updateWithFile")
+    @PutMapping(value = "/{id}/with-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ADMIN') or hasRole('ORGANIZER')")
+    public ResponseEntity<ProductDTO> updateWithFile(
+            @PathVariable Long id,
+            @RequestPart("product") ProductDTO productDTO,
+            @RequestPart(value = "file", required = false) MultipartFile file) {
+
+        try {
+            productDTO.setId(id);
+            ProductDTO updatedProduct = productService.update(productDTO);
+
+            // Если есть файл, загружаем его
+            if (file != null && !file.isEmpty()) {
+                productImageService.uploadImage(id, file);
+            }
+
+            return ResponseEntity.ok(updatedProduct);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
     @Operation(summary = "Загрузить изображение обложки продукта", description = "Загружает изображение обложки для указанного продукта в виде файла")
     @PostMapping(path = "/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
@@ -111,6 +187,7 @@ public class ProductController extends GenericController<Product, ProductDTO> {
         try {
             // Получаем информацию о продукте
             ProductDTO product = productService.getOne(id);
+
             // Если есть URL, делаем редирект
             if (product.getCoverImageUrl() != null && !product.getCoverImageUrl().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.FOUND)
@@ -158,7 +235,6 @@ public class ProductController extends GenericController<Product, ProductDTO> {
         List<CategoryInfo> categories = Arrays.stream(ProductCategory.values())
                 .map(category -> new CategoryInfo(category.name(), category.getDescription()))
                 .collect(Collectors.toList());
-
         return ResponseEntity.ok(categories);
     }
 
@@ -182,5 +258,4 @@ public class ProductController extends GenericController<Product, ProductDTO> {
             return description;
         }
     }
-
 }

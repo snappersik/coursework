@@ -96,11 +96,11 @@ const Dashboard = () => {
         <h2 className="text-xl font-semibold mb-4">Последние действия</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-[#505050] text">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Действие</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Пользователь</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Дата</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider">Действие</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider">Пользователь</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider">Дата</th>
               </tr>
             </thead>
             <tbody className="bg-[#424242] divide-y divide-gray-200">

@@ -17,7 +17,7 @@ const Slider = ({ backgroundUrl = null }) => {
     const fetchSliderBooks = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_URL}/rest/slider/books`, {
+        const response = await fetch(`${API_URL}/slider/books`, {
           credentials: 'include', // Для отправки куки с JWT
         });
         if (!response.ok) {
@@ -168,7 +168,7 @@ const Slider = ({ backgroundUrl = null }) => {
             <div className="slides">
               {books.map((book, index) => {
                 // Используем URL бэкенда для загрузки обложки
-                const coverUrl = `${API_URL}/rest/books/${book.id}/cover`;
+                const coverUrl = `${API_URL}/books/${book.id}/cover`;
                 console.log(`Trying to load image for book ${book.id}: ${coverUrl}`); // Логирование для отладки
 
                 return (

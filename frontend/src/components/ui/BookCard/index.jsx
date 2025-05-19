@@ -15,32 +15,37 @@ const BookCard = ({ book }) => {
       setIsLoading(false);
       return;
     }
-    
+
     const fetchImage = async () => {
       try {
         setIsLoading(true);
-        // Проверяем, что здесь используется правильный путь API
-        const infoResponse = await fetch(`${API_URL}/rest/books/${book.id}/image-info`);
-        
+        console.log(`Загрузка информации об изображении для книги ${book.id}`);
+
+        // Получаем информацию об изображении
+        const infoResponse = await fetch(`${API_URL}/books/${book.id}/image-info`);
+
         if (!infoResponse.ok) {
-          throw new Error('Не удалось получить информацию об изображении');
+          throw new Error(`Ошибка получения информации: ${infoResponse.status}`);
         }
-        
+
         const imageInfo = await infoResponse.json();
-        
-        // В зависимости от типа изображения формируем URL
+        console.log('Информация об изображении:', imageInfo);
+
+        // Добавляем временную метку для предотвращения кэширования
+        const timestamp = new Date().getTime();
+
         if (imageInfo.coverImageUrl) {
-          // Если есть прямая ссылка на изображение
+          console.log(`Установка URL изображения: ${imageInfo.coverImageUrl}`);
           setImageUrl(imageInfo.coverImageUrl);
         } else if (imageInfo.hasLocalImage || imageInfo.coverImageFilename) {
-          // Если есть локальное изображение или файл на сервере
-          // Также исправляем этот путь
-          setImageUrl(`${API_URL}/rest/books/${book.id}/cover`);
+          const coverUrl = `${API_URL}/books/${book.id}/cover?t=${timestamp}`;
+          console.log(`Установка локального изображения: ${coverUrl}`);
+          setImageUrl(coverUrl);
         } else {
-          // Если изображения нет, используем плейсхолдер
+          console.log('Изображение не найдено, использую плейсхолдер');
           setImageUrl(placeholderImage);
         }
-        
+
         setHasError(false);
       } catch (error) {
         console.error('Ошибка загрузки изображения:', error);
@@ -50,10 +55,10 @@ const BookCard = ({ book }) => {
         setIsLoading(false);
       }
     };
-    
+
     fetchImage();
   }, [book]);
-  
+
   // Обработчик ошибки загрузки
   const handleImageError = () => {
     setImageUrl(placeholderImage);

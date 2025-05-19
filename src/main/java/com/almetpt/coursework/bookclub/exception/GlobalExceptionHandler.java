@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.webjars.NotFoundException;
 
+import com.almetpt.coursework.bookclub.service.UserService;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,11 +51,10 @@ public class GlobalExceptionHandler {
         log.error("Ошибка валидации: {}", ex.getMessage());
         Map<String, Object> response = new HashMap<>();
         Map<String, String> errors = new HashMap<>();
-        
-        ex.getBindingResult().getFieldErrors().forEach(error -> 
-            errors.put(error.getField(), error.getDefaultMessage())
-        );
-        
+
+        ex.getBindingResult().getFieldErrors()
+                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+
         response.put("error", "Ошибка валидации");
         response.put("details", errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -76,4 +77,23 @@ public class GlobalExceptionHandler {
         response.put("message", "Произошла непредвиденная ошибка. Пожалуйста, попробуйте позже.");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
+
+    @ExceptionHandler(UserService.InvalidTokenException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidTokenException(UserService.InvalidTokenException ex) {
+        log.warn("Invalid token processing: {}", ex.getMessage());
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Invalid Token");
+        response.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(UserService.TokenExpiredException.class)
+    public ResponseEntity<Map<String, String>> handleTokenExpiredException(UserService.TokenExpiredException ex) {
+        log.warn("Expired token processing: {}", ex.getMessage());
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Token Expired");
+        response.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
 }

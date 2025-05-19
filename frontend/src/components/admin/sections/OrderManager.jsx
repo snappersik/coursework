@@ -16,7 +16,7 @@ const OrderManager = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/rest/orders`, {
+      const response = await axios.get(`${API_URL}/orders`, {
         withCredentials: true
       });
       setOrders(response.data);
@@ -30,7 +30,7 @@ const OrderManager = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      const response = await axios.put(`${API_URL}/rest/orders/${orderId}/status?status=${newStatus}`, {}, {
+      const response = await axios.put(`${API_URL}/orders/${orderId}/status?status=${newStatus}`, {}, {
         withCredentials: true
       });
       if (response.status === 200) {

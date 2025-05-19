@@ -37,13 +37,17 @@ class AuthStore {
   }
 
   logout() {
-    console.log('Выход из системы');
+    console.log('[AuthStore] Полная очистка состояния');
     this.isAuthorized = false;
     this.userRole = null;
     this.userId = null;
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('userId');
+
+    // Атомарная очистка хранилища
+    ['userRole', 'userId'].forEach(key =>
+      localStorage.removeItem(key)
+    );
   }
+
 }
 
 export const authStore = new AuthStore();

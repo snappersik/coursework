@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.jsx';
 import { authStore } from './store/store.js';
-import Cookies from "js-cookie"; // Import authStore
+import Cookies from "js-cookie";
 const authToken = Cookies.get('authToken');
 const userRole = localStorage.getItem('userRole');
 if (authToken && userRole && !authStore.isAuthorized) {

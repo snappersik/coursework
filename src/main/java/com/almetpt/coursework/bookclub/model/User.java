@@ -10,14 +10,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "users",
-        uniqueConstraints = {@UniqueConstraint(name = "uniqueEmail", columnNames = "email")})
+@Table(name = "users", uniqueConstraints = { @UniqueConstraint(name = "uniqueEmail", columnNames = "email") })
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SequenceGenerator(name = "default_generator", sequenceName = "users_seq", allocationSize = 1)
-public class User extends GenericModel{
+public class User extends GenericModel {
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -43,6 +42,9 @@ public class User extends GenericModel{
 
     @Column(name = "change_password_token")
     private String changePasswordToken;
+
+    @Column(name = "avatar_url")
+    private String avatarUrl;
 
     @ManyToOne
     @JoinColumn(name = "role_id")

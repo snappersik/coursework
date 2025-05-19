@@ -1,106 +1,108 @@
-import axios from 'axios';
+import axios from 'axios'
+import { authStore } from '../store/store.js'
 
-export const API_URL = 'http://localhost:8080/api/rest';
+// Базовый URL API
+export const API_URL = 'http://localhost:8080/api/rest'
 
+// Создаём инстанс axios
 const apiClient = axios.create({
   baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  withCredentials: true,
-});
+  headers: { 'Content-Type': 'application/json' },
+  withCredentials: true
+})
 
+// Лог запросов
 apiClient.interceptors.request.use(
-    (config) => {
-      console.log('🔄 Исходящий запрос:', {
-        url: config.url,
-        method: config.method,
-        headers: config.headers,
-        withCredentials: config.withCredentials,
-        cookies: document.cookie,
-      });
-      return config;
-    },
-    (error) => {
-      console.error('❌ Ошибка при подготовке запроса:', error);
-      return Promise.reject(error);
-    }
-);
+  config => {
+    console.log('🔄 Запрос:', config.method?.toUpperCase(), config.url)
+    return config
+  },
+  error => {
+    console.error('❌ Ошибка при подготовке запроса:', error)
+    return Promise.reject(error)
+  }
+)
 
+// Лог ответов и ошибок
 apiClient.interceptors.response.use(
-    (response) => {
-      console.log('✅ Успешный ответ:', {
-        url: response.config.url,
-        status: response.status,
-      });
-      return response;
-    },
-    (error) => {
-      console.error('❌ Ошибка ответа:', {
-        url: error.config?.url,
-        status: error.response?.status,
-        data: error.response?.data,
-        message: error.message,
-      });
-      if (error.response?.status === 401) {
-        console.error('🔒 Ошибка аутентификации. Необходимо войти в систему.');
-      } else if (error.response?.status === 403) {
-        console.error('🚫 Ошибка доступа. Недостаточно прав.');
+  response => response,
+  error => {
+    if (error.response?.status === 401) {
+      authStore.logout();
+      if (!window.location.pathname.includes('/auth')) {
+        window.location.href = '/auth';
       }
-      return Promise.reject(error);
     }
+    return Promise.reject(error);
+  }
 );
 
+// === AUTH ===
+
+// POST /auth/login
 export const login = async (email, password) => {
   try {
-    const response = await apiClient.post('/auth/login', { email, password });
-    if (response.status === 200) {
-      const userInfo = await getUserInfo();
-      return { success: true, userInfo };
+    const res = await apiClient.post('/auth/login', { email, password });
+
+    if (res.status === 200) {
+      try {
+        const userInfo = await getUserInfo();
+        return { success: true, userInfo };
+      } catch (error) {
+        console.error('Ошибка получения информации о пользователе:', error);
+        return { success: false, error: 'Не удалось получить данные пользователя' };
+      }
     }
+
     return { success: false, error: 'Ошибка входа' };
   } catch (error) {
-    console.error('Login error:', error);
-    throw error;
+    console.error('Ошибка при входе:', error);
+
+    // Обработка конкретных ошибок
+    if (error.response) {
+      const status = error.response.status;
+      const errorMessage = error.response.data?.message;
+
+      if (status === 401) {
+        return { success: false, error: 'Неверный логин или пароль' };
+      } else if (status === 404) {
+        return { success: false, error: 'Пользователь не найден' };
+      } else if (errorMessage) {
+        return { success: false, error: errorMessage };
+      }
+    }
+
+    return { success: false, error: 'Произошла ошибка при входе' };
   }
 };
 
+
+// POST /auth/logout
 export const logout = async () => {
   try {
-    const response = await apiClient.post('/auth/logout');
-    return {
-      success: response.status === 200,
-    };
+    const res = await apiClient.post('/auth/logout');
+    return { success: res.status === 200 };
   } catch (error) {
-    console.error('Logout error:', error);
-    return {
-      success: false,
-      error: error.response?.data || 'Произошла ошибка при выходе',
-    };
+    console.error('Ошибка при выходе:', error);
+    return { success: false };
+  } finally {
+    authStore.logout(); // Гарантированная очистка состояния
   }
 };
 
+// GET /users/profile
 export const checkAuth = async () => {
   try {
-    const response = await apiClient.get('/users/profile');
-    if (response.status === 200) {
-      return {
-        success: true,
-        userInfo: response.data,
-      };
-    }
-    return {
-      success: false,
-    };
+    const res = await apiClient.get('/users/profile')
+    return res.status === 200
+      ? { success: true, userInfo: res.data }
+      : { success: false }
   } catch (error) {
-    console.error('Auth check error:', error);
-    return {
-      success: false,
-      error: error.response?.data || 'Ошибка проверки аутентификации',
-    };
+    return { success: false, error: error.response?.data || error.message }
   }
-};
+}
 
+// GET /users/profile
 export const getUserInfo = async () => {
   try {
     const response = await apiClient.get('/users/profile');
@@ -117,12 +119,27 @@ export const getUserInfo = async () => {
 export const updateUserProfile = async (userData) => {
   try {
     const response = await apiClient.put('/users/profile', userData);
-    if (response.status === 200) {
+    if (response.status === 200 && response.data) {
       return response.data;
     }
     throw new Error('Не удалось обновить профиль');
   } catch (error) {
     console.error('Update profile error:', error);
+    throw error;
+  }
+};
+
+// Добавьте функцию для загрузки аватара
+export const uploadUserAvatar = async (formData) => {
+  try {
+    const response = await apiClient.post('/users/profile/avatar-upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Upload avatar error:', error);
     throw error;
   }
 };
@@ -143,6 +160,66 @@ export const registerUser = async (registerData) => {
   }
 };
 
+// === PASSWORD MANAGEMENT ===
+
+export const requestPasswordReset = async (email) => {
+  try {
+    const response = await apiClient.post('/auth/forgot-password', { email });
+    return { success: true, message: response.data };
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      return { success: false, error: error.response.data.message };
+    }
+    return { success: true, message: "Если указанный email зарегистрирован, на него будет отправлено письмо с инструкциями по сбросу пароля." };
+  }
+};
+
+// For resetting the password using a token
+export const resetPasswordWithToken = async (token, newPassword, confirmPassword) => {
+  try {
+    const response = await apiClient.post('/auth/reset-password', { token, newPassword, confirmPassword });
+    return { success: true, message: response.data }; // Assuming backend returns a success message
+  } catch (error) {
+    return {
+      success: false,
+      error: error.response?.data?.message || error.response?.data || 'Ошибка сброса пароля'
+    };
+  }
+};
+
+// For authenticated users changing their password
+export const changeUserPassword = async (oldPassword, newPassword, confirmPassword) => {
+  try {
+    // This endpoint needs to be created on the backend for authenticated users
+    // It should verify oldPassword and then update to newPassword
+    // Let's assume PUT /users/profile/password
+    // It should also check if newPassword and confirmPassword match server-side, but client-side check is good too.
+    if (newPassword !== confirmPassword) {
+      return { success: false, error: "Новый пароль и подтверждение не совпадают" };
+    }
+    const response = await apiClient.put('/users/profile/password', { oldPassword, newPassword });
+    return { success: true, message: response.data.message || "Пароль успешно изменен" };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.response?.data?.message || error.response?.data || 'Ошибка смены пароля'
+    };
+  }
+};
+
+// GET    /auth/validate-reset-token  (already in your backend AuthController)
+export const validateResetToken = async (token) => {
+  try {
+    const response = await apiClient.get(`/auth/validate-reset-token?token=${token}`);
+    return { success: true, message: response.data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.response?.data?.message || error.response?.data || 'Ошибка валидации токена',
+    };
+  }
+};
+
 export const testAuthentication = async () => {
   console.group('🔐 Тестирование методов аутентификации');
   try {
@@ -155,7 +232,6 @@ export const testAuthentication = async () => {
     } catch (error) {
       console.error('❌ Аутентификация через cookies не работает:', error.response?.status);
     }
-
     console.log('2️⃣ Тест с использованием apiClient');
     try {
       const clientResponse = await apiClient.get('/users/profile');
@@ -251,7 +327,7 @@ export const getEventById = async (eventId) => {
 
 export const getAuditEntries = async () => {
   try {
-    const response = await apiClient.get('/audit'); // Исправлено с '/rest/audit' на '/audit'
+    const response = await apiClient.get('/audit');
     return response.data;
   } catch (error) {
     console.error('Get audit entries error:', error);

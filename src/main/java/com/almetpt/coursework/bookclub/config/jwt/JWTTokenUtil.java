@@ -1,11 +1,13 @@
 package com.almetpt.coursework.bookclub.config.jwt;
 
+import com.almetpt.coursework.bookclub.service.userdetails.CustomUserDetails; // Убедитесь, что импорт есть
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority; // Для извлечения роли
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -15,36 +17,39 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-// Утилитарный класс для работы с JWT токенами
 @Component
 public class JWTTokenUtil {
 
-    // application.properties
     @Value("${jwt.secret}")
     private String secret;
 
     @Value("${jwt.expiration}")
-    private Long expiration;
+    private Long expiration; // в секундах
 
-    // Извлекает имя пользователя из токена
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
-
-    // Извлекает дату истечения срока действия из токена
 
     public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
-    // Извлекает конкретное поле из токена
+    // Методы для извлечения пользовательских claims из токена (если потребуется на бэкенде)
+    public Integer getUserIdFromToken(String token) {
+        return getClaimFromToken(token, claims -> claims.get("userId", Integer.class));
+    }
+
+    public String getUserRoleFromToken(String token) {
+        return getClaimFromToken(token, claims -> claims.get("userRole", String.class));
+    }
+
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
 
-    // Извлекает все поля из токена
     private Claims getAllClaimsFromToken(String token) {
+        // Jwts.parserBuilder() автоматически обрабатывает ExpiredJwtException, MalformedJwtException и т.д.
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
@@ -52,20 +57,30 @@ public class JWTTokenUtil {
                 .getBody();
     }
 
-    // Проверяет, истек ли срок действия токена
     private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
+        try {
+            final Date expirationDate = getExpirationDateFromToken(token);
+            return expirationDate.before(new Date());
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            return true; // Если сам парсинг токена вызвал исключение истечения срока
+        }
     }
 
-    // Генерирует токен для пользователя
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        // Здесь можно добавить дополнительные данные в токен
-        return createToken(claims, userDetails.getUsername());
+        if (userDetails instanceof CustomUserDetails customUserDetails) {
+            claims.put("userId", customUserDetails.getUserId()); // userId уже Integer в CustomUserDetails
+            // Извлекаем строку роли, например, "USER", "ADMIN"
+            String role = customUserDetails.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .map(auth -> auth.startsWith("ROLE_") ? auth.substring(5) : auth) // Убираем префикс "ROLE_"
+                    .findFirst() // Предполагаем одну основную роль для простоты в этом claim
+                    .orElse("USER"); // Значение по умолчанию или обработка по необходимости
+            claims.put("userRole", role);
+        }
+        return createToken(claims, userDetails.getUsername()); // userDetails.getUsername() это email
     }
 
-    // Создает токен с указанными полями и именем пользователя
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
@@ -76,13 +91,16 @@ public class JWTTokenUtil {
                 .compact();
     }
 
-    // Проверяет валидность токена
     public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        try {
+            final String username = getUsernameFromToken(token);
+            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        } catch (io.jsonwebtoken.JwtException e) { // Ловим общие JWT исключения (Expired, Malformed, etc.)
+            // logger.warn("Token validation error: {}", e.getMessage()); // Если есть logger
+            return false;
+        }
     }
 
-    // Получает ключ для подписи токена
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);

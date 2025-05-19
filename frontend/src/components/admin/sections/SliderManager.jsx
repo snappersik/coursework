@@ -1,366 +1,344 @@
-import React, { useState, useEffect } from 'react';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import axios from 'axios';
-import { API_URL } from '../../../config';
+import React, { useState, useEffect, useCallback } from 'react'
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
+import { useDropzone } from 'react-dropzone'
+import axios from 'axios'
+import { toast } from 'react-toastify'
+import { API_URL } from '../../../config'
+import apiClient from '../../../api/apiClient'
 
 const SliderManager = () => {
-  const [sliderBooks, setSliderBooks] = useState([]);
-  const [allBooks, setAllBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [customDescriptions, setCustomDescriptions] = useState({});
+  const [sliderItems, setSliderItems] = useState([])
+  const [allBooks, setAllBooks] = useState([])
+  const [filter, setFilter] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [descriptions, setDescriptions] = useState({})
+  const [bgFiles, setBgFiles] = useState({})
+  const [bgUrls, setBgUrls] = useState({})
+  const [activeUploadId, setActiveUploadId] = useState(null)
 
-  // Загрузка данных
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
+    fetchData()
+  }, [])
 
-        // Запрос книг слайдера
-        const sliderResponse = await axios.get(`${API_URL}/rest/slider/books`);
+  const fetchData = async () => {
+    setLoading(true)
+    try {
+      const [sliderRes, booksRes] = await Promise.all([
+        fetchSliderBooks(),
+        apiClient.get('/books')
+      ])
+      setSliderItems(sliderRes.data)
+      setAllBooks(booksRes.data)
+      const initDesc = {}
+      sliderRes.data.forEach(item => {
+        initDesc[item.id] = item.customDescription || ''
+      })
+      setDescriptions(initDesc)
+    } catch {
+      toast.error('Не удалось загрузить данные')
+    }
+    setLoading(false)
+  }
 
-        // Запрос всех доступных книг
-        const booksResponse = await axios.get(`${API_URL}/rest/books`);
+  const fetchSliderBooks = async () => {
+    return axios.get(`${API_URL}/slider/admin/books`, { withCredentials: true })
+  }
 
-        setSliderBooks(sliderResponse.data);
-        setAllBooks(booksResponse.data);
+  const onDrop = useCallback(files => {
+    if (activeUploadId !== null) {
+      setBgFiles(prev => ({ ...prev, [activeUploadId]: files[0] }))
+    }
+  }, [activeUploadId])
 
-        // Инициализация кастомных описаний
-        const descriptions = {};
-        sliderResponse.data.forEach(book => {
-          descriptions[book.id] = book.description || '';
-        });
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    multiple: false
+  })
 
-        setCustomDescriptions(descriptions);
-        setLoading(false);
-      } catch (error) {
-        console.error('Ошибка загрузки данных:', error);
-        toast.error('Не удалось загрузить данные');
-        setLoading(false);
+  const handleDragEnd = result => {
+    if (!result.destination) return
+    const items = Array.from(sliderItems)
+    const [moved] = items.splice(result.source.index, 1)
+    items.splice(result.destination.index, 0, moved)
+    setSliderItems(items)
+    saveOrder(items)
+  }
+
+  const saveOrder = async items => {
+    try {
+      const ids = items.map(i => i.id)
+      await axios.post(
+        `${API_URL}/slider/admin/books/reorder`,
+        ids,
+        { withCredentials: true }
+      )
+      toast.success('Порядок обновлён')
+    } catch {
+      toast.error('Ошибка сохранения порядка')
+    }
+  }
+
+  const addSliderBook = async (bookId) => {
+    return axios.post(`${API_URL}/slider/admin/books`, { bookId }, { withCredentials: true })
+  }
+
+  const deleteSliderBook = async (id) => {
+    return axios.delete(`${API_URL}/slider/admin/books/${id}`, { withCredentials: true })
+  }
+
+  const updateSliderDesc = async (id, description) => {
+    return axios.put(`${API_URL}/slider/admin/books/${id}/description`, 
+      { description }, 
+      { withCredentials: true }
+    )
+  }
+
+  const uploadSliderBgFile = async (id, file) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return axios.post(
+      `${API_URL}/slider/admin/books/${id}/background-file`,
+      formData,
+      {
+        withCredentials: true,
+        headers: { 'Content-Type': 'multipart/form-data' }
       }
-    };
+    )
+  }
 
-    fetchData();
-  }, []);
+  const setSliderBgUrl = async (id, url) => {
+    return axios.put(
+      `${API_URL}/slider/admin/books/${id}/background-url`,
+      { url },
+      { withCredentials: true }
+    )
+  }
 
-  // Обработчик перетаскивания
-  const handleDragEnd = (result) => {
-    if (!result.destination) return;
-
-    const items = Array.from(sliderBooks);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    setSliderBooks(items);
-
-    // Сохраняем новый порядок на сервере
-    saveSliderOrder(items);
-  };
-
-  // Сохранение порядка на сервере
-  const saveSliderOrder = async (books) => {
+  const addBook = async id => {
+    if (!id) return
     try {
-      // Формируем массив ID в новом порядке
-      const bookIds = books.map(book => book.id);
-
-      await axios.post(`${API_URL}/rest/slider/reorder`, bookIds);
-      toast.success('Порядок слайдера обновлен');
+      const { data } = await addSliderBook(+id)
+      setSliderItems([data,...sliderItems])
+      toast.success('Книга добавлена')
     } catch (error) {
-      console.error('Ошибка сохранения порядка:', error);
-      toast.error('Не удалось сохранить порядок слайдера');
+      console.error('Ошибка добавления книги в слайдер:', error)
+      toast.error(`Не удалось добавить книгу: ${error.message}`)
     }
-  };
+  }
 
-  // Добавление книги в слайдер
-  const addBookToSlider = async (bookId) => {
+  const removeItem = async id => {
+    if (!confirm('Удалить из слайдера?')) return
     try {
-      // Проверяем, что книга еще не в слайдере
-      if (sliderBooks.some(book => book.id === bookId)) {
-        toast.info('Эта книга уже добавлена в слайдер');
-        return;
-      }
-
-      const response = await axios.post(`${API_URL}/rest/slider/add/${bookId}`);
-
-      // Добавляем книгу в начало списка
-      const newBook = response.data;
-      setSliderBooks([newBook, ...sliderBooks]);
-
-      // Инициализируем кастомное описание
-      setCustomDescriptions({
-        ...customDescriptions,
-        [newBook.id]: newBook.description || ''
-      });
-
-      toast.success('Книга добавлена в слайдер');
+      await deleteSliderBook(id)
+      setSliderItems(sliderItems.filter(i=>i.id!==id))
+      toast.success('Удалено')
     } catch (error) {
-      console.error('Ошибка добавления книги:', error);
-      toast.error('Не удалось добавить книгу в слайдер');
+      console.error('Ошибка удаления из слайдера:', error)
+      toast.error(`Не удалось удалить: ${error.message}`)
     }
-  };
+  }
 
-  // Удаление книги из слайдера
-  const removeBookFromSlider = async (bookId) => {
+  const saveDescription = async id => {
     try {
-      await axios.delete(`${API_URL}/rest/slider/remove/${bookId}`);
-
-      // Удаляем книгу из списка
-      setSliderBooks(sliderBooks.filter(book => book.id !== bookId));
-
-      toast.success('Книга удалена из слайдера');
+      await updateSliderDesc(id, descriptions[id])
+      toast.success('Описание обновлено')
     } catch (error) {
-      console.error('Ошибка удаления книги:', error);
-      toast.error('Не удалось удалить книгу из слайдера');
+      console.error('Ошибка сохранения описания слайдера:', error)
+      toast.error(`Не удалось сохранить описание: ${error.message}`)
     }
-  };
+  }
 
-  // Обновление кастомного описания
-  const updateDescription = (bookId, description) => {
-    setCustomDescriptions({
-      ...customDescriptions,
-      [bookId]: description
-    });
-  };
-
-  // Сохранение кастомного описания
-  const saveDescription = async (bookId) => {
+  const uploadBackground = async id => {
+    const file = bgFiles[id]
+    if (!file) return
     try {
-      await axios.post(`${API_URL}/rest/slider/${bookId}/description`, {
-        description: customDescriptions[bookId]
-      });
-
-      toast.success('Описание обновлено');
+      await uploadSliderBgFile(id, file)
+      toast.success('Фон загружен')
     } catch (error) {
-      console.error('Ошибка обновления описания:', error);
-      toast.error('Не удалось обновить описание');
+      console.error('Ошибка загрузки фона слайдера:', error)
+      toast.error(`Не удалось загрузить фон: ${error.message}`)
     }
-  };
+  }
 
-  // Обработчик для загрузки фонового изображения
-  const uploadBackground = async (bookId, file) => {
+  const setBackgroundUrl = async id => {
+    const url = bgUrls[id]
+    if (!url) return
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await axios.post(
-        `${API_URL}/rest/slider/books/${bookId}/background`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      );
-
-      if (response.status === 200) {
-        toast.success('Фоновое изображение успешно загружено');
-
-        // Обновляем данные в состоянии
-        setSliderBooks(prevBooks =>
-          prevBooks.map(book =>
-            book.id === bookId
-              ? { ...book, backgroundUrl: response.data.backgroundUrl }
-              : book
-          )
-        );
-      }
+      await setSliderBgUrl(id, url)
+      toast.success('URL сохранён')
     } catch (error) {
-      toast.error('Ошибка при загрузке фонового изображения');
-      console.error('Ошибка загрузки фона:', error);
+      console.error('Ошибка сохранения URL фона:', error)
+      toast.error(`Не удалось сохранить URL: ${error.message}`)
     }
-  };
+  }
 
-  // Добавить поле для ввода URL изображения
-  const handleBackgroundUrlChange = async (bookId, url) => {
-    try {
-      const response = await axios.post(
-        `${API_URL}/rest/slider/books/${bookId}/background-url`,
-        { url },
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-
-      if (response.status === 200) {
-        toast.success('URL фонового изображения успешно обновлен');
-
-        // Обновляем данные в состоянии
-        setSliderBooks(prevBooks =>
-          prevBooks.map(book =>
-            book.id === bookId
-              ? { ...book, backgroundUrl: url }
-              : book
-          )
-        );
-      }
-    } catch (error) {
-      toast.error('Ошибка при обновлении URL фонового изображения');
-      console.error('Ошибка обновления URL:', error);
-    }
-  };
+  const filtered = sliderItems.filter(item => !filter || item.id.toString().includes(filter))
 
   if (loading) {
-    return <div className="text-center py-10">Загрузка...</div>;
+    return (
+      <div className="p-4 flex justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
+      </div>
+    )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 text-black">
-      <h1 className="text-3xl font-bold mb-6">Управление слайдером</h1>
+    <div className="p-4">
+      <h2 className="text-2xl font-bold mb-4">Управление слайдером</h2>
+      
+      <div className="mb-6 flex items-center">
+        <input
+          type="text"
+          placeholder="Фильтр по ID"
+          value={filter}
+          onChange={e => setFilter(e.target.value)}
+          className="p-2 border rounded mr-4"
+        />
+        
+        <div className="flex-1">
+          <select
+            className="p-2 border rounded w-64"
+            onChange={e => addBook(e.target.value)}
+            value=""
+          >
+            <option value="">Добавить книгу в слайдер</option>
+            {allBooks.filter(b => !sliderItems.some(s => s.book.id === b.id)).map(book => (
+              <option key={book.id} value={book.id}>
+                {book.id} - {book.title} ({book.author})
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Секция с книгами в слайдере */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">Книги в слайдере</h2>
-
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="slider-books">
-              {(provided) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  className="space-y-4"
-                >
-                  {sliderBooks.length === 0 ? (
-                    <p className="text-gray-500 italic">Нет книг в слайдере</p>
-                  ) : (
-                    sliderBooks.map((book, index) => (
-                      <Draggable
-                        key={book.id.toString()}
-                        draggableId={book.id.toString()}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className="bg-gray-50 p-4 rounded border border-gray-200 hover:shadow-md transition-shadow"
-                          >
-                            <div className="flex items-start justify-between">
-                              <div className="flex items-center">
-                                <div className="w-16 h-24 overflow-hidden mr-4 rounded">
-                                  <img
-                                    src={`${API_URL}/rest/books/${book.id}/cover`}
-                                    alt={book.title}
-                                    className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                      e.target.src = '/assets/img/book_placeholder.webp';
-                                    }}
-                                  />
-                                </div>
-                                <div>
-                                  <h3 className="font-semibold">{book.title}</h3>
-                                  <p className="text-sm text-gray-600">{book.author}</p>
-                                </div>
-                              </div>
-                              <button
-                                onClick={() => removeBookFromSlider(book.id)}
-                                className="text-red-500 hover:text-red-700"
-                              >
-                                Удалить
-                              </button>
-                            </div>
-
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="slider-items">
+          {(provided) => (
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              className="space-y-4"
+            >
+              {filtered.map((item, index) => (
+                <Draggable key={item.id} draggableId={item.id.toString()} index={index}>
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      className="bg-gray-800 p-4 rounded-lg shadow"
+                    >
+                      <div className="flex flex-col md:flex-row">
+                        <div
+                          {...provided.dragHandleProps}
+                          className="flex-shrink-0 mr-4 cursor-move p-2 bg-gray-700 rounded mb-4 md:mb-0"
+                        >
+                          <div className="w-8 h-8 flex items-center justify-center">
+                            <span className="text-xl">≡</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <h3 className="text-xl font-bold">
+                              {item.book.title} (ID: {item.id})
+                            </h3>
+                            <p className="text-gray-400">{item.book.author}</p>
+                            
                             <div className="mt-4">
-                              <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Кастомное описание:
+                              <label className="block text-sm font-medium text-gray-400 mb-1">
+                                Описание для слайдера
                               </label>
                               <textarea
-                                value={customDescriptions[book.id] || ''}
-                                onChange={(e) => updateDescription(book.id, e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value={descriptions[item.id] || ''}
+                                onChange={e => setDescriptions({
+                                  ...descriptions,
+                                  [item.id]: e.target.value
+                                })}
+                                className="w-full p-2 bg-gray-700 border border-gray-600 rounded"
                                 rows="3"
-                              />
+                              ></textarea>
                               <button
-                                onClick={() => saveDescription(book.id)}
-                                className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+                                onClick={() => saveDescription(item.id)}
+                                className="mt-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
                               >
                                 Сохранить описание
                               </button>
                             </div>
-
-                            <div className="mt-4">
-                              <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Загрузить фон:
+                          </div>
+                          
+                          <div>
+                            <div className="mb-4">
+                              <label className="block text-sm font-medium text-gray-400 mb-1">
+                                Загрузить фоновое изображение
+                              </label>
+                              <div
+                                onClick={() => setActiveUploadId(item.id)}
+                                {...getRootProps()}
+                                className={`border-2 border-dashed p-4 rounded text-center cursor-pointer ${
+                                  isDragActive && activeUploadId === item.id
+                                    ? 'border-yellow-500 bg-gray-700'
+                                    : 'border-gray-600'
+                                }`}
+                              >
+                                <input {...getInputProps()} />
+                                {bgFiles[item.id] ? (
+                                  <p>{bgFiles[item.id].name}</p>
+                                ) : (
+                                  <p>Перетащите файл или кликните для выбора</p>
+                                )}
+                              </div>
+                              {bgFiles[item.id] && (
+                                <button
+                                  onClick={() => uploadBackground(item.id)}
+                                  className="mt-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                >
+                                  Загрузить фон
+                                </button>
+                              )}
+                            </div>
+                            
+                            <div className="mb-4">
+                              <label className="block text-sm font-medium text-gray-400 mb-1">
+                                Или укажите URL фона
                               </label>
                               <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => {
-                                  if (e.target.files && e.target.files[0]) {
-                                    uploadBackground(book.id, e.target.files[0]);
-                                  }
-                                }}
-                                className="w-full"
+                                type="text"
+                                value={bgUrls[item.id] || ''}
+                                onChange={e => setBgUrls({
+                                  ...bgUrls,
+                                  [item.id]: e.target.value
+                                })}
+                                className="w-full p-2 bg-gray-700 border border-gray-600 rounded"
+                                placeholder="https://..."
                               />
+                              <button
+                                onClick={() => setBackgroundUrl(item.id)}
+                                className="mt-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                              >
+                                Сохранить URL
+                              </button>
                             </div>
+                            
+                            <button
+                              onClick={() => removeItem(item.id)}
+                              className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                            >
+                              Удалить из слайдера
+                            </button>
                           </div>
-                        )}
-                      </Draggable>
-                    ))
+                        </div>
+                      </div>
+                    </div>
                   )}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-        </div>
-
-        {/* Секция с доступными книгами */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">Доступные книги</h2>
-
-          <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Поиск книг..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            // Здесь можно добавить функцию поиска
-            />
-          </div>
-
-          <div className="space-y-4 max-h-[600px] overflow-y-auto">
-            {allBooks
-              .filter(book => !sliderBooks.some(sliderBook => sliderBook.id === book.id))
-              .map(book => (
-                <div
-                  key={book.id}
-                  className="flex items-center justify-between p-3 border border-gray-200 rounded hover:bg-gray-50"
-                >
-                  <div className="flex items-center">
-                    <div className="w-12 h-16 overflow-hidden mr-3 rounded">
-                      <img
-                        src={`${API_URL}/rest/books/${book.id}/cover`}
-                        alt={book.title}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.src = '/assets/img/book_placeholder.webp';
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <h3 className="font-medium">{book.title}</h3>
-                      <p className="text-xs text-gray-600">{book.author}</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => addBookToSlider(book.id)}
-                    className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 transition-colors"
-                  >
-                    Добавить
-                  </button>
-                </div>
+                </Draggable>
               ))}
-          </div>
-        </div>
-      </div>
-
-      <ToastContainer position="bottom-right" />
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
-  );
-};
+  )
+}
 
-export default SliderManager;
+export default SliderManager

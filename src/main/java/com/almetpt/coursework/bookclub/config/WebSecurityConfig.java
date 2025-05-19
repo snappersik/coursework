@@ -34,62 +34,74 @@ import org.springframework.http.HttpMethod;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private final JWTCookieFilter jwtCookieFilter;
+        private final JWTCookieFilter jwtCookieFilter;
 
-    @Value("${jwt.expiration}")
-    private Long expiration;
+        @Value("${jwt.expiration}")
+        private Long expiration;
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(RESOURCES_WHITE_LIST.toArray(String[]::new)).permitAll()
-                        .requestMatchers(AUTH_WHITE_LIST.toArray(String[]::new)).permitAll()
-                        .requestMatchers(PUBLIC_GET_LIST.toArray(String[]::new)).permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/rest/orders/create").authenticated()
-                        .requestMatchers("/api/rest/users/profile").authenticated()
-                        .requestMatchers("/api/rest/audit").hasRole(ADMIN) // Добавлено разрешение для /api/rest/audit
-                        // Разрешаем доступ к обложкам книг всем пользователям
-                        .requestMatchers("/api/rest/books/*/cover").permitAll()
-                        .requestMatchers(ADMIN_PERMISSIONS_LIST.toArray(String[]::new)).hasRole(ADMIN)
-                        .requestMatchers(ORGANIZER_PERMISSIONS_LIST.toArray(String[]::new)).hasRole(ORGANIZER)
-                        .requestMatchers(AUTHENTICATED_PERMISSIONS.toArray(String[]::new)).authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/rest/admin/**").hasRole(ADMIN)
-                        .anyRequest().denyAll())
-                .addFilterBefore(jwtCookieFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
+        @Bean
+        SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http
+                                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                                .csrf(AbstractHttpConfigurer::disable)
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers(RESOURCES_WHITE_LIST.toArray(String[]::new))
+                                                .permitAll()
+                                                .requestMatchers(AUTH_WHITE_LIST.toArray(String[]::new)).permitAll()
+                                                .requestMatchers(HttpMethod.GET, PUBLIC_GET_LIST.toArray(String[]::new))
+                                                .permitAll()
+                                                .requestMatchers(RESOURCES_WHITE_LIST.toArray(String[]::new))
+                                                .permitAll()
+                                                .requestMatchers(AUTH_WHITE_LIST.toArray(String[]::new)).permitAll()
+                                                .requestMatchers(PUBLIC_GET_LIST.toArray(String[]::new)).permitAll()
+                                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                                                .requestMatchers(HttpMethod.POST, "/api/rest/orders/create")
+                                                .authenticated()
+                                                .requestMatchers("/api/rest/users/profile").authenticated()
+                                                .requestMatchers("/api/rest/audit").hasRole(ADMIN)
+                                                // Разрешаем доступ к обложкам книг всем пользователям
+                                                .requestMatchers("/api/rest/books/*/cover").permitAll()
+                                                .requestMatchers(ADMIN_PERMISSIONS_LIST.toArray(String[]::new))
+                                                .hasRole(ADMIN)
+                                                .requestMatchers(ORGANIZER_PERMISSIONS_LIST.toArray(String[]::new))
+                                                .hasRole(ORGANIZER)
+                                                .requestMatchers(AUTHENTICATED_PERMISSIONS.toArray(String[]::new))
+                                                .authenticated()
+                                                .requestMatchers(HttpMethod.GET, "/api/rest/admin/**").hasRole(ADMIN)
+                                                .anyRequest().denyAll())
+                                .addFilterBefore(jwtCookieFilter, UsernamePasswordAuthenticationFilter.class);
+                return http.build();
+        }
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            UserDetailsService userDetailsService,
-            PasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailsService);
-        authenticationProvider.setPasswordEncoder(passwordEncoder);
-        return new ProviderManager(authenticationProvider);
-    }
+        @Bean
+        public AuthenticationManager authenticationManager(
+                        UserDetailsService userDetailsService,
+                        PasswordEncoder passwordEncoder) {
+                DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+                authenticationProvider.setUserDetailsService(userDetailsService);
+                authenticationProvider.setPasswordEncoder(passwordEncoder);
+                return new ProviderManager(authenticationProvider);
+        }
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(
-                Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Cookie"));
-        config.setExposedHeaders(Arrays.asList(
-                "X-Auth-Token",
-                "Access-Control-Allow-Origin",
-                "Access-Control-Allow-Credentials"));
-        config.setAllowCredentials(true);
-        config.setMaxAge(expiration);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
-    }
+        @Bean
+        CorsConfigurationSource corsConfigurationSource() {
+                CorsConfiguration config = new CorsConfiguration();
+                config.addAllowedOrigin("http://localhost:3000");
+                config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+                config.setAllowedHeaders(
+                                Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Cookie"));
+                config.setExposedHeaders(Arrays.asList(
+                                "X-Auth-Token",
+                                "Access-Control-Allow-Origin",
+                                "Access-Control-Allow-Credentials"));
+                config.setAllowCredentials(true);
+                config.addAllowedHeader("*");
+                config.addAllowedMethod("*");
+                config.setMaxAge(expiration);
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                source.registerCorsConfiguration("/**", config);
+                return source;
+        }
 }

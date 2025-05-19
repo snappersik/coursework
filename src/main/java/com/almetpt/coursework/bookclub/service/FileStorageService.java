@@ -37,14 +37,14 @@ public class FileStorageService {
         }
 
         String filename = UUID.randomUUID().toString() + extension;
-        
+
         // Создаем директорию, если она не существует
         Path uploadPath = Paths.get(uploadDirectory);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
             log.info("Создана директория для загрузки: {}", uploadPath);
         }
-        
+
         // Сохраняем файл
         Path destinationFile = uploadPath.resolve(filename);
         try (InputStream inputStream = file.getInputStream()) {
@@ -71,13 +71,20 @@ public class FileStorageService {
 
     // Добавляем метод getFileData для получения байтовых данных файла
     public byte[] getFileData(String filename) throws IOException {
-        Path file = Paths.get(uploadDirectory).resolve(filename);
-        if (!Files.exists(file)) {
-            log.error("Файл не найден: {}", filename);
-            throw new IOException("Файл не найден: " + filename);
+        try {
+            Path filePath = Path.of(uploadDirectory).resolve(filename).normalize();
+            log.info("Загрузка файла из: {}", filePath);
+
+            if (!Files.exists(filePath)) {
+                log.error("Файл не найден: {}", filePath);
+                throw new IOException("Файл не найден: " + filename);
+            }
+
+            return Files.readAllBytes(filePath);
+        } catch (IOException e) {
+            log.error("Ошибка при чтении файла {}: {}", filename, e.getMessage());
+            throw e;
         }
-        log.debug("Чтение файла: {}", file.toAbsolutePath());
-        return Files.readAllBytes(file);
     }
 
     public void deleteFile(String filename) {

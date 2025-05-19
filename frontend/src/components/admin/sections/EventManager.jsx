@@ -2,91 +2,305 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { API_URL } from '../../../config';
+import { FaSort, FaSortAlphaDown, FaSortAlphaUp, FaTrashRestore, FaTrash, FaPen, FaCalendarPlus, FaTimes, FaCalendarAlt } from 'react-icons/fa';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+
+const eventTypes = ['MEETING', 'PRESENTATION', 'WORKSHOP', 'OTHER'];
 
 const EventManager = () => {
   const [events, setEvents] = useState([]);
+  const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [currentEvent, setCurrentEvent] = useState(null);
-  const [formData, setFormData] = useState({
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [current, setCurrent] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [softDeletedEvents, setSoftDeletedEvents] = useState({});
+  const [cancelReason, setCancelReason] = useState('');
+  const [rescheduleData, setRescheduleData] = useState({
+    newDate: '',
+    reason: ''
+  });
+  const [form, setForm] = useState({
     title: '',
+    eventType: 'MEETING',
+    bookId: '',
+    date: '',
     description: '',
-    eventDate: '',
-    location: '',
-    maxParticipants: 20
+    maxParticipants: 20,
+    isCancelled: false,
+    cancellationReason: ''
   });
 
   useEffect(() => {
     fetchEvents();
+    fetchBooks();
   }, []);
 
   const fetchEvents = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await axios.get(`${API_URL}/rest/events`, {
-        withCredentials: true
-      });
-      setEvents(response.data);
-      setLoading(false);
+      const { data } = await axios.get(
+        `${API_URL}/events/paginated?page=0&size=100&sortBy=id&direction=ASC`,
+        { withCredentials: true }
+      );
+
+      const processedEvents = data.content.map(event => ({
+        ...event,
+        isCancelled: event.isCancelled === true || event.isCancelled === "true"
+      }));
+
+      console.log('Fetched events:', processedEvents);
+      setEvents(processedEvents);
     } catch (error) {
-      console.error('Ошибка загрузки мероприятий:', error);
       toast.error('Не удалось загрузить мероприятия');
+    } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchBooks = async () => {
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/books`,
+        { withCredentials: true }
+      );
+      setBooks(data);
+    } catch (error) {
+      console.error('Ошибка загрузки книг:', error);
     }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setForm({
+      ...form,
       [name]: value
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setForm({
+      ...form,
+      [name]: checked
+    });
+  };
+
+  const openModal = event => {
+    if (event) {
+      setCurrent(event);
+      // Преобразуем дату из формата "dd.MM.yyyy HH:mm" в формат "yyyy-MM-ddTHH:mm"
+      let formattedDate = '';
+      if (event.date) {
+        const dateParts = event.date.split(' ')[0].split('.');
+        const timeParts = event.date.split(' ')[1];
+        formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}T${timeParts}`;
+      }
+
+      setForm({
+        title: event.title || '',
+        eventType: event.eventType || 'MEETING',
+        bookId: event.bookId?.toString() || '',
+        date: formattedDate,
+        description: event.description || '',
+        maxParticipants: event.maxParticipants || 20,
+        isCancelled: event.isCancelled || false,
+        cancellationReason: event.cancellationReason || ''
+      });
+    } else {
+      setCurrent(null);
+      setForm({
+        title: '',
+        eventType: 'MEETING',
+        bookId: '',
+        date: '',
+        description: '',
+        maxParticipants: 20,
+        isCancelled: false,
+        cancellationReason: ''
+      });
+    }
+    setShowModal(true);
+  };
+
+  const save = async e => {
     e.preventDefault();
+    let formattedDate = null;
+    if (form.date) {
+      const date = new Date(form.date);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;
+    }
+
+    const dto = {
+      title: form.title,
+      eventType: form.eventType,
+      bookId: form.bookId ? parseInt(form.bookId, 10) : null,
+      date: formattedDate,
+      description: form.description,
+      maxParticipants: parseInt(form.maxParticipants, 10),
+      isCancelled: form.isCancelled,
+      cancellationReason: form.isCancelled ? form.cancellationReason : ''
+    };
+
     try {
-      if (currentEvent) {
-        // Обновление мероприятия
-        await axios.put(`${API_URL}/rest/events/${currentEvent.id}`, formData, {
-          withCredentials: true
-        });
-        toast.success('Мероприятие успешно обновлено');
+      if (current) {
+        await axios.put(
+          `${API_URL}/events/${current.id}`,
+          dto,
+          { withCredentials: true }
+        );
+        toast.success('Мероприятие обновлено');
       } else {
-        // Создание нового мероприятия
-        await axios.post(`${API_URL}/rest/events`, formData, {
-          withCredentials: true
-        });
-        toast.success('Мероприятие успешно создано');
+        await axios.post(
+          `${API_URL}/events`,
+          dto,
+          { withCredentials: true }
+        );
+        toast.success('Мероприятие создано');
       }
       setShowModal(false);
       fetchEvents();
     } catch (error) {
-      console.error('Ошибка сохранения мероприятия:', error);
-      toast.error('Не удалось сохранить мероприятие');
+      console.error('Ошибка сохранения:', error);
+      toast.error('Ошибка сохранения');
     }
   };
 
-  const handleEdit = (event) => {
-    setCurrentEvent(event);
-    setFormData({
-      title: event.title,
-      description: event.description || '',
-      eventDate: event.eventDate ? new Date(event.eventDate).toISOString().slice(0, 16) : '',
-      location: event.location || '',
-      maxParticipants: event.maxParticipants || 20
+  const handleCancelEvent = async (eventId) => {
+    setCurrent(events.find(e => e.id === eventId));
+    setShowCancelModal(true);
+  };
+
+  const confirmCancelEvent = async () => {
+    if (!cancelReason.trim()) {
+      toast.error('Укажите причину отмены');
+      return;
+    }
+
+    try {
+      await axios.post(
+        `${API_URL}/events/${current.id}/cancel`,
+        null,
+        {
+          params: { reason: cancelReason },
+          withCredentials: true
+        }
+      );
+      toast.success('Мероприятие отменено');
+      setShowCancelModal(false);
+      setCancelReason('');
+
+      // Обновляем состояние и затем вызываем fetchEvents
+      setEvents(prevEvents => {
+        const updatedEvents = prevEvents.map(event =>
+          event.id === current.id
+            ? { ...event, isCancelled: true, cancellationReason: cancelReason }
+            : event
+        );
+        // Вызываем fetchEvents после обновления состояния
+        fetchEvents();
+        return updatedEvents;
+      });
+    } catch (error) {
+      console.error('Ошибка отмены мероприятия:', error);
+      toast.error('Не удалось отменить мероприятие');
+    }
+  };
+
+  const handleRescheduleEvent = (eventId) => {
+    const event = events.find(e => e.id === eventId);
+    setCurrent(event);
+
+    // Преобразуем дату из формата "dd.MM.yyyy HH:mm" в формат "yyyy-MM-ddTHH:mm"
+    let formattedDate = '';
+    if (event.date) {
+      const dateParts = event.date.split(' ')[0].split('.');
+      const timeParts = event.date.split(' ')[1];
+      formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}T${timeParts}`;
+    }
+
+    setRescheduleData({
+      newDate: formattedDate,
+      reason: ''
     });
-    setShowModal(true);
+    setShowRescheduleModal(true);
+  };
+
+  const confirmRescheduleEvent = async () => {
+    if (!rescheduleData.newDate) {
+      toast.error('Выберите новую дату');
+      return;
+    }
+
+    if (!rescheduleData.reason.trim()) {
+      toast.error('Укажите причину переноса');
+      return;
+    }
+
+    try {
+      const date = new Date(rescheduleData.newDate);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const formattedDate = `${day}.${month}.${year} ${hours}:${minutes}`;
+
+      await axios.post(
+        `${API_URL}/events/${current.id}/reschedule`,
+        {
+          newDate: formattedDate,
+          reason: rescheduleData.reason
+        },
+        { withCredentials: true }
+      );
+      toast.success('Мероприятие перенесено');
+      setShowRescheduleModal(false);
+      setRescheduleData({ newDate: '', reason: '' });
+      fetchEvents();
+    } catch (error) {
+      console.error('Ошибка переноса мероприятия:', error);
+      toast.error('Не удалось перенести мероприятие');
+    }
+  };
+
+  const handleSoftDelete = (id) => {
+    setSoftDeletedEvents(prev => ({
+      ...prev,
+      [id]: true
+    }));
+    toast.warning('Мероприятие помечено на удаление');
+  };
+
+  const handleRestore = (id) => {
+    setSoftDeletedEvents(prev => {
+      const newState = { ...prev };
+      delete newState[id];
+      return newState;
+    });
+    toast.success('Мероприятие восстановлено');
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Вы уверены, что хотите удалить это мероприятие?')) {
+    if (window.confirm('Вы уверены, что хотите удалить это мероприятие? Это действие нельзя отменить.')) {
       try {
-        await axios.delete(`${API_URL}/rest/events/${id}`, {
-          withCredentials: true
-        });
+        await axios.delete(`${API_URL}/events/${id}`, { withCredentials: true });
         toast.success('Мероприятие успешно удалено');
         fetchEvents();
+        setSoftDeletedEvents(prev => {
+          const newState = { ...prev };
+          delete newState[id];
+          return newState;
+        });
       } catch (error) {
         console.error('Ошибка удаления мероприятия:', error);
         toast.error('Не удалось удалить мероприятие');
@@ -94,238 +308,435 @@ const EventManager = () => {
     }
   };
 
-  const handleCancel = async (id) => {
-    const reason = prompt('Укажите причину отмены мероприятия:');
-    if (reason) {
-      try {
-        await axios.post(`${API_URL}/rest/events/${id}/cancel?reason=${encodeURIComponent(reason)}`, {}, {
-          withCredentials: true
-        });
-        toast.success('Мероприятие отменено');
-        fetchEvents();
-      } catch (error) {
-        console.error('Ошибка отмены мероприятия:', error);
-        toast.error('Не удалось отменить мероприятие');
-      }
+  // Функция сортировки
+  const requestSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
     }
+    setSortConfig({ key, direction });
   };
 
-  const handleReschedule = async (id) => {
-    const newDate = prompt('Введите новую дату и время (YYYY-MM-DD HH:MM):');
-    const reason = prompt('Укажите причину переноса мероприятия:');
-    
-    if (newDate && reason) {
-      try {
-        await axios.post(`${API_URL}/rest/events/${id}/reschedule`, {
-          newDate: new Date(newDate).toISOString(),
-          reason
-        }, {
-          withCredentials: true
-        });
-        toast.success('Мероприятие перенесено');
-        fetchEvents();
-      } catch (error) {
-        console.error('Ошибка переноса мероприятия:', error);
-        toast.error('Не удалось перенести мероприятие');
-      }
+  // Получение иконки сортировки
+  const getSortIcon = (key) => {
+    if (sortConfig.key !== key) {
+      return <FaSort className="ml-1 inline" />;
     }
+    return sortConfig.direction === 'asc'
+      ? <FaSortAlphaDown className="ml-1 inline text-yellow-400" />
+      : <FaSortAlphaUp className="ml-1 inline text-yellow-400" />;
   };
 
-  const handleAddNew = () => {
-    setCurrentEvent(null);
-    setFormData({
-      title: '',
-      description: '',
-      eventDate: '',
-      location: '',
-      maxParticipants: 20
-    });
-    setShowModal(true);
+  // Фильтрация и сортировка мероприятий
+  const filteredAndSortedEvents = React.useMemo(() => {
+    // Сначала фильтруем по поисковому запросу
+    let filteredEvents = events.filter(event =>
+      event.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.eventType?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    // Затем сортируем
+    if (sortConfig.key) {
+      filteredEvents.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'asc' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+          return sortConfig.direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+
+    return filteredEvents;
+  }, [events, searchQuery, sortConfig]);
+
+  // Получение названия книги по ID
+  const getBookTitle = (bookId) => {
+    if (!bookId && bookId !== 0) return '-';
+    const book = books.find(b => b.id === Number(bookId));
+    return book ? book.title : `Книга #${bookId}`;
   };
+
 
   if (loading) {
-    return <div className="text-center py-10">Загрузка...</div>;
+    return (
+      <div className="p-4 flex justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
+      </div>
+    );
   }
 
   return (
-    <div>
+    <div className="p-4">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Управление мероприятиями</h2>
+        <h2 className="text-2xl font-bold text-white">Управление мероприятиями</h2>
         <button
-          onClick={handleAddNew}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          onClick={() => openModal(null)}
+          className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 flex items-center"
         >
-          Добавить мероприятие
+          <FaCalendarPlus className="mr-2" /> Добавить мероприятие
         </button>
       </div>
 
-      <div className="bg-white shadow-md rounded-lg overflow-hidden text-black">
+      {/* Поиск */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Поиск по названию или типу мероприятия..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-gray-200 placeholder-gray-400"
+        />
+      </div>
+
+      {filteredAndSortedEvents.length > 0 ? (
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full text-white [&_th]:text-center [&_td:not(:first-child)]:text-center">
+            <thead className="bg-[#626262]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Название</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Дата</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Место</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Участники</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Статус</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Действия</th>
+                <th
+                  className="px-4 py-2 cursor-pointer"
+                  onClick={() => requestSort('title')}
+                >
+                  Название {getSortIcon('title')}
+                </th>
+                <th
+                  className="px-4 py-2 cursor-pointer"
+                  onClick={() => requestSort('eventType')}
+                >
+                  Тип {getSortIcon('eventType')}
+                </th>
+                <th
+                  className="px-4 py-2 cursor-pointer"
+                  onClick={() => requestSort('date')}
+                >
+                  Дата {getSortIcon('date')}
+                </th>
+                <th className="px-4 py-2">Книга</th>
+                <th className="px-4 py-2">Статус</th>
+                <th className="px-4 py-2">Действия</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {events.map(event => (
-                <tr key={event.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">{event.title}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {event.eventDate ? new Date(event.eventDate).toLocaleString() : 'Не указана'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">{event.location || 'Не указано'}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {event.participants?.length || 0} / {event.maxParticipants || 'Не ограничено'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                      ${event.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 
-                        event.status === 'CANCELLED' ? 'bg-red-100 text-red-800' : 
-                        'bg-yellow-100 text-yellow-800'}`}>
-                      {event.status}
+            <tbody>
+              {filteredAndSortedEvents.map(event => (
+                <tr
+                  key={event.id}
+                  className={`bg-[#585858] border-t border-gray-700 ${softDeletedEvents[event.id] ? 'opacity-60' : ''}`}
+                >
+                  <td className="px-4 py-2">{event.title}</td>
+                  <td className="px-4 py-2">
+                    <span className={`px-2 py-1 rounded ${event.eventType === 'MEETING' ? 'bg-blue-600' :
+                      event.eventType === 'PRESENTATION' ? 'bg-green-600' :
+                        event.eventType === 'WORKSHOP' ? 'bg-purple-600' :
+                          'bg-gray-600'
+                      }`}>
+                      {event.eventType}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <button
-                      onClick={() => handleEdit(event)}
-                      className="text-indigo-600 hover:text-indigo-900 mr-2"
-                    >
-                      Редактировать
-                    </button>
-                    <button
-                      onClick={() => handleCancel(event.id)}
-                      className="text-yellow-600 hover:text-yellow-900 mr-2"
-                    >
-                      Отменить
-                    </button>
-                    <button
-                      onClick={() => handleReschedule(event.id)}
-                      className="text-blue-600 hover:text-blue-900 mr-2"
-                    >
-                      Перенести
-                    </button>
-                    <button
-                      onClick={() => handleDelete(event.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Удалить
-                    </button>
+                  <td className="px-4 py-2">{event.date}</td>
+                  <td className="px-4 py-2">{getBookTitle(event.bookId)}</td>
+                  <td className="px-4 py-2">
+                    <span className={`px-2 py-1 rounded ${event.isCancelled ? 'bg-red-600' : 'bg-green-600'}`}>
+                      {event.isCancelled ? 'Отменено' : 'Активно'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2 flex justify-center space-x-2">
+                    {!softDeletedEvents[event.id] ? (
+                      <>
+                        <button
+                          onClick={() => openModal(event)}
+                          className="p-2 bg-gray-600 text-white rounded hover:bg-gray-500"
+                          title="Редактировать"
+                        >
+                          <FaPen />
+                        </button>
+                        {!event.isCancelled && (
+                          <>
+                            <button
+                              onClick={() => handleCancelEvent(event.id)}
+                              className="p-2 bg-red-600 text-white rounded hover:bg-red-700"
+                              title="Отменить мероприятие"
+                            >
+                              <FaTimes />
+                            </button>
+                            <button
+                              onClick={() => handleRescheduleEvent(event.id)}
+                              className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                              title="Перенести мероприятие"
+                            >
+                              <FaCalendarAlt />
+                            </button>
+                          </>
+                        )}
+                        <button
+                          onClick={() => handleSoftDelete(event.id)}
+                          className="p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                          title="Удалить"
+                        >
+                          <FaTrash />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => handleRestore(event.id)}
+                          className="p-2 bg-transparent border border-yellow-400 text-yellow-400 rounded hover:bg-yellow-400 hover:bg-opacity-10"
+                          title="Восстановить"
+                        >
+                          <FaTrashRestore />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(event.id)}
+                          className="p-2 bg-red-600 text-white rounded hover:bg-red-700"
+                          title="Удалить навсегда"
+                        >
+                          <FaTrash />
+                        </button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
+      ) : (
+        <div className="text-center py-10 bg-[#585858] rounded-lg">
+          <p className="text-xl text-gray-300">Мероприятия не найдены</p>
+          <p className="text-gray-400 mt-2">Добавьте новое мероприятие или измените параметры поиска</p>
+        </div>
+      )}
 
       {/* Модальное окно для добавления/редактирования мероприятия */}
       {showModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#424242] rounded-lg shadow-xl p-6 w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">
-                {currentEvent ? 'Редактировать мероприятие' : 'Добавить мероприятие'}
-              </h3>
-              <button
-                onClick={() => setShowModal(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
-                  Название
-                </label>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-[#585858] p-6 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <h3 className="text-xl font-bold mb-4 text-white">
+              {current ? 'Редактировать мероприятие' : 'Добавить мероприятие'}
+            </h3>
+            <form onSubmit={save} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Название</label>
                 <input
                   type="text"
-                  id="title"
                   name="title"
-                  value={formData.title}
+                  value={form.title}
                   onChange={handleInputChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white"
                   required
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
-                  Описание
-                </label>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Тип мероприятия</label>
+                  <select
+                    name="eventType"
+                    value={form.eventType}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white"
+                  >
+                    {eventTypes.map(type => (
+                      <option key={type} value={type}>{type}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Связанная книга</label>
+                  <select
+                    name="bookId"
+                    value={form.bookId}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white"
+                  >
+                    <option value="">Не выбрано</option>
+                    {books.map(book => (
+                      <option key={book.id} value={book.id}>
+                        {book.title} ({book.author})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Дата и время</label>
+                  <input
+                    type="datetime-local"
+                    name="date"
+                    value={form.date}
+                    onChange={handleInputChange}
+                    className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Макс. участников</label>
+                  <input
+                    type="number"
+                    name="maxParticipants"
+                    value={form.maxParticipants}
+                    onChange={handleInputChange}
+                    min="1"
+                    className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Описание</label>
                 <textarea
-                  id="description"
                   name="description"
-                  value={formData.description}
+                  value={form.description}
                   onChange={handleInputChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   rows="3"
+                  className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white"
                 ></textarea>
               </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="eventDate">
-                  Дата и время
-                </label>
-                <input
-                  type="datetime-local"
-                  id="eventDate"
-                  name="eventDate"
-                  value={formData.eventDate}
-                  onChange={handleInputChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="location">
-                  Место проведения
-                </label>
-                <input
-                  type="text"
-                  id="location"
-                  name="location"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-              </div>
-              <div className="mb-6">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="maxParticipants">
-                  Максимальное количество участников
-                </label>
-                <input
-                  type="number"
-                  id="maxParticipants"
-                  name="maxParticipants"
-                  value={formData.maxParticipants}
-                  onChange={handleInputChange}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  min="1"
-                />
-              </div>
-              <div className="flex items-center justify-end">
+
+              {/* Показываем галочку "Отменено" только при редактировании */}
+              {current && (
+                <>
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="isCancelled"
+                      name="isCancelled"
+                      checked={form.isCancelled}
+                      onChange={handleCheckboxChange}
+                      className="h-4 w-4 text-yellow-600 focus:ring-yellow-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor="isCancelled" className="ml-2 block text-sm text-gray-300">
+                      Мероприятие отменено
+                    </label>
+                  </div>
+
+                  {form.isCancelled && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-1">Причина отмены</label>
+                      <textarea
+                        name="cancellationReason"
+                        value={form.cancellationReason}
+                        onChange={handleInputChange}
+                        rows="2"
+                        className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white"
+                        required
+                      ></textarea>
+                    </div>
+                  )}
+                </>
+              )}
+
+              <div className="flex justify-end space-x-2 pt-4">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="mr-3 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                  className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500"
                 >
                   Отмена
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
                 >
-                  Сохранить
+                  {current ? 'Сохранить' : 'Добавить'}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Модальное окно для отмены мероприятия */}
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-[#585858] p-6 rounded-lg w-full max-w-md">
+            <h3 className="text-xl font-bold mb-4 text-white">Отмена мероприятия</h3>
+            <p className="text-gray-300 mb-4">
+              Вы собираетесь отменить мероприятие "{current?.title}".
+              Все участники получат уведомление об отмене.
+            </p>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-1">Причина отмены</label>
+              <textarea
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                rows="3"
+                className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white"
+                placeholder="Укажите причину отмены мероприятия"
+                required
+              ></textarea>
+            </div>
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => {
+                  setShowCancelModal(false);
+                  setCancelReason('');
+                }}
+                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500"
+              >
+                Отмена
+              </button>
+              <button
+                onClick={confirmCancelEvent}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Подтвердить отмену
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Модальное окно для переноса мероприятия */}
+      {showRescheduleModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-[#585858] p-6 rounded-lg w-full max-w-md">
+            <h3 className="text-xl font-bold mb-4 text-white">Перенос мероприятия</h3>
+            <p className="text-gray-300 mb-4">
+              Вы собираетесь перенести мероприятие "{current?.title}".
+              Все участники получат уведомление о переносе.
+            </p>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-1">Новая дата и время</label>
+              <input
+                type="datetime-local"
+                value={rescheduleData.newDate}
+                onChange={(e) => setRescheduleData({ ...rescheduleData, newDate: e.target.value })}
+                className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-300 mb-1">Причина переноса</label>
+              <textarea
+                value={rescheduleData.reason}
+                onChange={(e) => setRescheduleData({ ...rescheduleData, reason: e.target.value })}
+                rows="3"
+                className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white"
+                placeholder="Укажите причину переноса мероприятия"
+                required
+              ></textarea>
+            </div>
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => {
+                  setShowRescheduleModal(false);
+                  setRescheduleData({ newDate: '', reason: '' });
+                }}
+                className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500"
+              >
+                Отмена
+              </button>
+              <button
+                onClick={confirmRescheduleEvent}
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              >
+                Подтвердить перенос
+              </button>
+            </div>
           </div>
         </div>
       )}

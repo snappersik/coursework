@@ -176,8 +176,16 @@ public class BookImageService {
     public byte[] getBookCoverImageData(Long bookId) throws IOException {
         log.debug("Получение данных изображения для книги с ID: {}", bookId);
         Book book = getBookById(bookId);
+
         if (book.getCoverImageFilename() != null) {
-            return fileStorageService.getFileData(book.getCoverImageFilename());
+            try {
+                // Логируем полный путь к файлу для отладки
+                log.info("Пытаемся загрузить файл: {}", book.getCoverImageFilename());
+                return fileStorageService.getFileData(book.getCoverImageFilename());
+            } catch (IOException e) {
+                log.error("Ошибка при чтении файла {}: {}", book.getCoverImageFilename(), e.getMessage());
+                throw e;
+            }
         }
 
         return null;

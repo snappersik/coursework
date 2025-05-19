@@ -1,5 +1,3 @@
-// src/pages/Auth/index.jsx
-import React from 'react';
 import AuthCard from '../../components/auth/AuthCard';
 
 const AuthPage = () => {

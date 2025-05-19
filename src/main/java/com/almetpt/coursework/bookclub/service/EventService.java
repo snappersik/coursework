@@ -69,7 +69,16 @@ public class EventService extends GenericService<Event, EventDTO> {
     public void cancelEvent(Long eventId, String cancellationReason) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event not found"));
+
+        log.debug("Cancelling event: {} with reason: {}", eventId, cancellationReason);
+        log.debug("Before update - isCancelled: {}", event.isCancelled());
+
         event.setCancelled(true);
+        event.setCancellationReason(cancellationReason);
+
+        Event savedEvent = eventRepository.save(event);
+        log.debug("After update - isCancelled: {}", savedEvent.isCancelled());
+        
         event.setCancellationReason(cancellationReason);
         eventRepository.save(event);
 

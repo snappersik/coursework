@@ -27,7 +27,7 @@ public class MailUtils {
                                                        final String subject,
                                                        final String text) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom("spring.project.42@mail.ru"); // Укажи свой email
+        mailMessage.setFrom("spring.project.42@mail.ru");
         mailMessage.setTo(emails);
         mailMessage.setSubject(subject);
         mailMessage.setText(text);

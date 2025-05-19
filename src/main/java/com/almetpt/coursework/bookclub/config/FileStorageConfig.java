@@ -4,17 +4,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 import java.io.File;
 
 @Configuration
-public class FileStorageConfig {
-    
+public class FileStorageConfig implements WebMvcConfigurer {
+
     @Value("${file.upload.directory:${user.home}/bookclub/uploads}")
     private String uploadDirectory;
-    
+
     @Bean
     public FileSystemResource fileStorage() {
         File file = new File(uploadDirectory);
@@ -23,17 +23,11 @@ public class FileStorageConfig {
         }
         return new FileSystemResource(file);
     }
-    
-    // Добавьте этот метод для настройки доступа к статическим ресурсам
-    @Bean
-    public WebMvcConfigurer webMvcConfigurer() {
-        return new WebMvcConfigurer() {
-            @SuppressWarnings("null")
-            @Override
-            public void addResourceHandlers(ResourceHandlerRegistry registry) {
-                registry.addResourceHandler("/uploads/**")
-                        .addResourceLocations("file:" + uploadDirectory + "/");
-            }
-        };
+
+    @Override
+    public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:" + uploadDirectory + "/")
+                .setCachePeriod(3600);
     }
 }

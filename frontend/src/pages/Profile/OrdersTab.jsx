@@ -1,4 +1,3 @@
-// src/pages/Profile/OrdersTab.jsx
 import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import OrderDetailsModal from '../../components/modals/OrderDetailsModal';
