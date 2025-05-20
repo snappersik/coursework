@@ -4,8 +4,8 @@ const useActiveLink = () => {
   const location = useLocation();
   
   const isActive = (path) => {
-    // Для главной страницы и якорей
-    if (path === '#about' && location.pathname === '/') {
+    // Для главной страницы
+    if (path === '/' && location.pathname === '/') {
       return true;
     }
     
@@ -14,12 +14,7 @@ const useActiveLink = () => {
       return location.hash === path;
     }
     
-    // Для страниц из навигации
-    if (path.startsWith('./assets/pages/')) {
-      const cleanPath = path.replace('./assets/pages/', '/').replace('.html', '');
-      return location.pathname === cleanPath;
-    }
-    
+    // Для обычных страниц
     return location.pathname === path;
   };
   

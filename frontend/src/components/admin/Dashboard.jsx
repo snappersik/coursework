@@ -1,126 +1,239 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../config';
+import { toast } from 'react-toastify';
+import { Bar, Line, Pie } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
+
+// Регистрация компонентов Chart.js
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const Dashboard = () => {
-  const [stats, setStats] = useState({
-    users: 0,
-    books: 0,
-    orders: 0,
-    events: 0
-  });
+  const [stats, setStats] = useState({ users: 0, books: 0, orders: 0, events: 0 });
+  const [userChartData, setUserChartData] = useState(null);
+  const [orderChartData, setOrderChartData] = useState(null);
+  const [eventStatsData, setEventStatsData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchDashboardData = async () => {
       try {
-        // Здесь можно сделать запросы к API для получения статистики\
+        setLoading(true);
+
+        // Fetch general stats
+        const statsRes = await axios.get(`${API_URL}/admin/stats`, { withCredentials: true });
         setStats({
-          users: 120,
-          books: 450,
-          orders: 89,
-          events: 15
+          users: statsRes.data.users || 0,
+          books: statsRes.data.books || 0,
+          orders: statsRes.data.orders || 0,
+          events: statsRes.data.events || 0
         });
+
+        // Fetch user registration chart data
+        const usersChartRes = await axios.get(`${API_URL}/admin/stats/users-chart`, { withCredentials: true });
+        setUserChartData({
+          labels: usersChartRes.data.labels,
+          datasets: [{
+            label: 'Регистрации пользователей',
+            data: usersChartRes.data.data,
+            backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+        });
+
+        // Fetch orders chart data
+        const ordersChartRes = await axios.get(`${API_URL}/admin/stats/orders-chart`, { withCredentials: true });
+        setOrderChartData({
+          labels: ordersChartRes.data.labels,
+          datasets: [{
+            label: 'Заказы',
+            data: ordersChartRes.data.data,
+            backgroundColor: 'rgba(153, 102, 255, 0.6)',
+            borderColor: 'rgba(153, 102, 255, 1)',
+            borderWidth: 1
+          }]
+        });
+
+        // Fetch event statistics
+        const eventsStatsRes = await axios.get(`${API_URL}/admin/stats/events`, { withCredentials: true });
+        setEventStatsData(eventsStatsRes.data);
+
         setLoading(false);
       } catch (error) {
-        console.error('Ошибка загрузки статистики:', error);
+        console.error('Ошибка загрузки данных для дашборда:', error);
+        toast.error('Не удалось загрузить данные для дашборда');
         setLoading(false);
       }
     };
 
-    fetchStats();
+    fetchDashboardData();
   }, []);
 
+  // Создаем данные для круговой диаграммы
+  const pieChartData = {
+    labels: ['Пользователи', 'Книги', 'Заказы', 'Мероприятия'],
+    datasets: [
+      {
+        data: [stats.users, stats.books, stats.orders, stats.events],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.6)',
+          'rgba(54, 162, 235, 0.6)',
+          'rgba(255, 206, 86, 0.6)',
+          'rgba(75, 192, 192, 0.6)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
   if (loading) {
-    return <div className="text-center py-10">Загрузка...</div>;
+    return (
+      <div className="p-4 flex justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-[#424242] rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-indigo-100 text-indigo-600 mr-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-gray-500 text-sm">Пользователи</p>
-              <p className="text-2xl font-semibold">{stats.users}</p>
-            </div>
-          </div>
+    <div className="p-6 bg-[#505050] text-white">
+      <h1 className="text-2xl font-bold mb-6">Панель управления</h1>
+
+      {/* Статистика */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="bg-[#585858] p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold text-gray-300">Пользователи</h2>
+          <p className="text-3xl font-bold text-yellow-400">{stats.users}</p>
         </div>
-        <div className="bg-[#424242] rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-green-100 text-green-600 mr-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-gray-500 text-sm">Книги</p>
-              <p className="text-2xl font-semibold">{stats.books}</p>
-            </div>
-          </div>
+        <div className="bg-[#585858] p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold text-gray-300">Книги</h2>
+          <p className="text-3xl font-bold text-yellow-400">{stats.books}</p>
         </div>
-        <div className="bg-[#424242] rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-gray-500 text-sm">Заказы</p>
-              <p className="text-2xl font-semibold">{stats.orders}</p>
-            </div>
-          </div>
+        <div className="bg-[#585858] p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold text-gray-300">Заказы</h2>
+          <p className="text-3xl font-bold text-yellow-400">{stats.orders}</p>
         </div>
-        <div className="bg-[#424242] rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-red-100 text-red-600 mr-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-gray-500 text-sm">Мероприятия</p>
-              <p className="text-2xl font-semibold">{stats.events}</p>
-            </div>
-          </div>
+        <div className="bg-[#585858] p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold text-gray-300">Мероприятия</h2>
+          <p className="text-3xl font-bold text-yellow-400">{stats.events}</p>
         </div>
       </div>
 
-      <div className="bg-[#424242] rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold mb-4">Последние действия</h2>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-[#505050] text">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider">Действие</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider">Пользователь</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-yellow-400 uppercase tracking-wider">Дата</th>
-              </tr>
-            </thead>
-            <tbody className="bg-[#424242] divide-y divide-gray-200">
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap">Добавлена новая книга "Война и мир"</td>
-                <td className="px-6 py-4 whitespace-nowrap">admin@example.com</td>
-                <td className="px-6 py-4 whitespace-nowrap">25.04.2025 14:30</td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap">Обновлен статус заказа #1234</td>
-                <td className="px-6 py-4 whitespace-nowrap">admin@example.com</td>
-                <td className="px-6 py-4 whitespace-nowrap">25.04.2025 13:15</td>
-              </tr>
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap">Создано новое мероприятие "Встреча с автором"</td>
-                <td className="px-6 py-4 whitespace-nowrap">organizer@example.com</td>
-                <td className="px-6 py-4 whitespace-nowrap">25.04.2025 11:45</td>
-              </tr>
-            </tbody>
-          </table>
+      {/* Графики */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="bg-[#585858] p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold mb-4 text-gray-300">Регистрации пользователей</h2>
+          {userChartData ? (
+            <div className="h-64">
+              <Line data={userChartData} options={{
+                maintainAspectRatio: false,
+                scales: {
+                  y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                  x: { grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+                },
+                plugins: { legend: { labels: { color: 'white' } } }
+              }} />
+            </div>
+          ) : (
+            <p className="text-gray-400">Нет данных для отображения</p>
+          )}
+        </div>
+
+        <div className="bg-[#585858] p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold mb-4 text-gray-300">Статистика заказов</h2>
+          {orderChartData ? (
+            <div className="h-64">
+              <Bar data={orderChartData} options={{
+                maintainAspectRatio: false,
+                scales: {
+                  y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                  x: { grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+                },
+                plugins: { legend: { labels: { color: 'white' } } }
+              }} />
+            </div>
+          ) : (
+            <p className="text-gray-400">Нет данных для отображения</p>
+          )}
+        </div>
+      </div>
+
+      {/* Круговая диаграмма */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="bg-[#585858] p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold mb-4 text-gray-300">Общая статистика</h2>
+          <div className="h-64">
+            <Pie data={pieChartData} options={{
+              maintainAspectRatio: false,
+              plugins: { legend: { position: 'right', labels: { color: 'white' } } }
+            }} />
+          </div>
+        </div>
+
+        {/* Статистика мероприятий */}
+        <div className="bg-[#585858] p-4 rounded-lg shadow-md">
+          <h2 className="text-lg font-semibold mb-4 text-gray-300">Заполненность мероприятий</h2>
+          {eventStatsData && Array.isArray(eventStatsData) && eventStatsData.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-700">
+                    <th className="py-2 px-3 text-left">Название</th>
+                    <th className="py-2 px-3 text-left">Тип</th>
+                    <th className="py-2 px-3 text-left">Участники</th>
+                    <th className="py-2 px-3 text-left">Заполнено</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {eventStatsData.map((event, index) => (
+                    <tr key={index} className="border-b border-gray-700">
+                      <td className="py-2 px-3">{event.title}</td>
+                      <td className="py-2 px-3">{event.eventType}</td>
+                      <td className="py-2 px-3">{event.approvedApplications}/{event.maxParticipants}</td>
+                      <td className="py-2 px-3">
+                        <div className="w-full bg-gray-700 rounded-full h-2.5">
+                          <div
+                            className="bg-yellow-400 h-2.5 rounded-full"
+                            style={{ width: `${event.fillPercentage}%` }}>
+                          </div>
+                        </div>
+                        <span className="text-xs">{event.fillPercentage.toFixed(1)}%</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-gray-400">Нет данных о мероприятиях</p>
+          )}
         </div>
       </div>
     </div>

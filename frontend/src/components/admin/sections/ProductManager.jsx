@@ -98,38 +98,49 @@ const ProductManager = () => {
     e.preventDefault();
 
     try {
-      const productToSend = {
+      // Явно формируем DTO продукта для JSON-части
+      const productDto = {
         name: formData.name,
         description: formData.description,
         price: formData.price,
-        category: formData.category
+        category: formData.category,
+        // Включаем coverUrl из состояния формы. Название поля должно соответствовать DTO на бэкенде.
+        // Предполагаем, что бэкенд ожидает поле 'coverImageUrl' для URL.
+        coverImageUrl: formData.coverUrl
       };
 
-      const formDataToSend = new FormData();
-      formDataToSend.append('product', new Blob([JSON.stringify(productToSend)], { type: 'application/json' }));
+      const formDataPayload = new FormData();
+      formDataPayload.append('product', new Blob([JSON.stringify(productDto)], { type: 'application/json' }));
 
-      if (formData.coverFile) {
-        formDataToSend.append('file', formData.coverFile);
+      if (formData.coverFile) { // Если выбран новый файл для загрузки
+        formDataPayload.append('file', formData.coverFile);
       }
 
       if (currentProduct) {
         // Обновление продукта
-        await axios.put(`${API_URL}/products/${currentProduct.id}`, formDataToSend, {
+        await axios.put(`${API_URL}/products/${currentProduct.id}`, formDataPayload, {
           withCredentials: true
         });
         toast.success('Продукт успешно обновлен');
       } else {
         // Создание нового продукта
-        await axios.post(`${API_URL}/products`, formDataToSend, {
+        await axios.post(`${API_URL}/products`, formDataPayload, {
           withCredentials: true
         });
         toast.success('Продукт успешно создан');
       }
       setShowModal(false);
-      fetchProducts();
+      fetchProducts(); // Обновляем список продуктов
     } catch (error) {
       console.error('Ошибка сохранения продукта:', error);
-      toast.error('Не удалось сохранить продукт');
+      let errorMessage = 'Не удалось сохранить продукт';
+      // Пытаемся извлечь сообщение об ошибке с бэкенда
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      toast.error(errorMessage);
     }
   };
 

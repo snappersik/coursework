@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "react-scroll-to-top": "^3.1.0",
+    "scroll-to-top-react": "^0.0.7"
+  }
+}

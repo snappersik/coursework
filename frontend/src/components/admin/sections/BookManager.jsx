@@ -66,15 +66,17 @@ const BookManager = () => {
     fetchGenres();
   }, []);
 
+  // Исправленный код в методе fetchGenres
   const fetchGenres = async () => {
     try {
-      const { data } = await axios.get(
-        `${API_URL}/books/genres`,
-        { withCredentials: true }
-      );
-      setGenres(data);
+      const response = await axios.get(`${API_URL}/books/genres`, {
+        withCredentials: true
+      });
+      // Добавляем проверку на массив и резервный вариант
+      setGenres(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
-      console.error('Ошибка загрузки жанров:', error);
+      console.error('Error fetching genres:', error);
+      setGenres([]); // Гарантированно устанавливаем массив
       toast.error('Не удалось загрузить жанры');
     }
   };
@@ -141,34 +143,51 @@ const BookManager = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Создаем копию формы для отправки
-      const formToSend = { ...form };
-      
-      // Преобразуем массив жанров для отправки на сервер
-      formToSend.genres = form.genres;
-      
-      const formDataToSend = new FormData();
-      formDataToSend.append('book', new Blob([JSON.stringify(formToSend)], { type: 'application/json' }));
-      if (form.coverFile) {
-        formDataToSend.append('file', form.coverFile);
+      // Явно формируем DTO для отправки в JSON-части
+      const bookDto = {
+        title: form.title,
+        author: form.author,
+        description: form.description,
+        isbn: form.isbn,
+        price: form.price,
+        publishYear: form.publishYear,
+        genres: form.genres, // Убедись, что это массив строк (имен жанров)
+        isBestseller: form.isBestseller,
+        coverUrl: form.coverUrl // URL из формы (существующий, новый внешний, blob-preview или пустой)
+        // Не включаем form.coverFile сюда
+      };
+
+      const formDataPayload = new FormData();
+      formDataPayload.append('book', new Blob([JSON.stringify(bookDto)], { type: 'application/json' }));
+
+      if (form.coverFile) { // Если выбран новый файл для загрузки
+        formDataPayload.append('file', form.coverFile);
       }
-      
+
       if (current) {
         // Обновление книги
-        await axios.put(`${API_URL}/books/${current.id}`, formDataToSend, { withCredentials: true });
+        await axios.put(`${API_URL}/books/${current.id}`, formDataPayload, { withCredentials: true });
         toast.success('Книга успешно обновлена');
       } else {
         // Создание новой книги
-        await axios.post(`${API_URL}/books`, formDataToSend, { withCredentials: true });
+        await axios.post(`${API_URL}/books`, formDataPayload, { withCredentials: true });
         toast.success('Книга успешно создана');
       }
       setShowModal(false);
-      fetchBooks();
+      fetchBooks(); // Обновляем список книг
     } catch (error) {
       console.error('Ошибка сохранения книги:', error);
-      toast.error('Не удалось сохранить книгу');
+      let errorMessage = 'Не удалось сохранить книгу';
+      // Пытаемся извлечь сообщение об ошибке с бэкенда
+      if (error.response && error.response.data && error.response.data.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      toast.error(errorMessage);
     }
   };
+
 
   const handleEdit = (book) => {
     setCurrent(book);
@@ -268,19 +287,19 @@ const BookManager = () => {
     if (sortConfig.key !== key) {
       return <FaSort className="ml-1 inline" />;
     }
-    return sortConfig.direction === 'asc' 
-      ? <FaSortAlphaDown className="ml-1 inline text-yellow-400" /> 
+    return sortConfig.direction === 'asc'
+      ? <FaSortAlphaDown className="ml-1 inline text-yellow-400" />
       : <FaSortAlphaUp className="ml-1 inline text-yellow-400" />;
   };
 
   // Фильтрация и сортировка книг
   const filteredAndSortedBooks = React.useMemo(() => {
     // Сначала фильтруем по поисковому запросу
-    let filteredBooks = books.filter(book => 
-      book.title?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    let filteredBooks = books.filter(book =>
+      book.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       book.author?.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    
+
     // Затем сортируем
     if (sortConfig.key) {
       filteredBooks.sort((a, b) => {
@@ -293,7 +312,7 @@ const BookManager = () => {
         return 0;
       });
     }
-    
+
     return filteredBooks;
   }, [books, searchQuery, sortConfig]);
 
@@ -330,16 +349,16 @@ const BookManager = () => {
 
       {filteredAndSortedBooks.length > 0 ? (
         <div className="overflow-x-auto">
-          <table className="min-w-full text-white">
+          <table className="min-w-full text-white [&_th]:text-center [&_td:not(:first-child)]:text-center">
             <thead className="bg-[#626262]">
               <tr>
-                <th 
-                  className="px-4 py-2 cursor-pointer" 
+                <th
+                  className="px-4 py-2 cursor-pointer"
                   onClick={() => requestSort('title')}
                 >
                   Название {getSortIcon('title')}
                 </th>
-                <th 
+                <th
                   className="px-4 py-2 cursor-pointer"
                   onClick={() => requestSort('author')}
                 >
@@ -351,8 +370,8 @@ const BookManager = () => {
             </thead>
             <tbody>
               {filteredAndSortedBooks.map(book => (
-                <tr 
-                  key={book.id} 
+                <tr
+                  key={book.id}
                   className={`bg-[#585858] border-t border-gray-700 ${softDeletedBooks[book.id] ? 'opacity-60' : ''}`}
                 >
                   <td className="px-4 py-2">{book.title}</td>
@@ -446,7 +465,7 @@ const BookManager = () => {
                   required
                 />
               </div>
-              
+
               {/* Секция жанров */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Жанры</label>
@@ -454,8 +473,8 @@ const BookManager = () => {
                   {form.genres.map(genreName => {
                     const genreInfo = genres.find(g => g.name === genreName);
                     return (
-                      <div 
-                        key={genreName} 
+                      <div
+                        key={genreName}
                         className="flex items-center bg-[#707070] hover:bg-[#808080] px-3 py-1 rounded-full cursor-pointer"
                         onClick={() => handleRemoveGenre(genreName)}
                       >
@@ -465,7 +484,7 @@ const BookManager = () => {
                       </div>
                     );
                   })}
-                  <div 
+                  <div
                     className="flex items-center text-gray-400 hover:text-white px-3 py-1 rounded-full cursor-pointer"
                     onClick={() => setShowGenreModal(true)}
                   >
@@ -474,7 +493,7 @@ const BookManager = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-300">Описание</label>
                 <textarea
@@ -485,7 +504,7 @@ const BookManager = () => {
                   className="mt-1 block w-full p-2 bg-[#707070] border border-gray-600 rounded text-white"
                 ></textarea>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-300">URL обложки</label>
                 <div className="flex">
@@ -512,14 +531,13 @@ const BookManager = () => {
                   </button>
                 </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-300">Загрузить обложку</label>
                 <div
                   {...getRootProps()}
-                  className={`mt-1 border-2 border-dashed p-4 rounded text-center cursor-pointer ${
-                    isDragActive ? 'border-yellow-500 bg-[#707070]' : 'border-gray-600'
-                  }`}
+                  className={`mt-1 border-2 border-dashed p-4 rounded text-center cursor-pointer ${isDragActive ? 'border-yellow-500 bg-[#707070]' : 'border-gray-600'
+                    }`}
                 >
                   <input {...getInputProps()} />
                   {form.coverUrl && form.coverFile ? (
@@ -566,11 +584,10 @@ const BookManager = () => {
               {genres.map(genre => (
                 <div
                   key={genre.name}
-                  className={`flex items-center p-3 rounded-lg cursor-pointer transition-colors ${
-                    form.genres.includes(genre.name) 
-                      ? 'bg-[#707070] opacity-50' 
-                      : 'bg-[#707070] hover:bg-[#808080]'
-                  }`}
+                  className={`flex items-center p-3 rounded-lg cursor-pointer transition-colors ${form.genres.includes(genre.name)
+                    ? 'bg-[#707070] opacity-50'
+                    : 'bg-[#707070] hover:bg-[#808080]'
+                    }`}
                   onClick={() => !form.genres.includes(genre.name) && handleAddGenre(genre.name)}
                 >
                   <div className="mr-3">

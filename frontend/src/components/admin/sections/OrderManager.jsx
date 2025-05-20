@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { API_URL } from '../../../config';
+import { API_URL } from '../../../config'; // Убедись, что путь к config правильный
+import { FaSort, FaSortAlphaDown, FaSortAlphaUp, FaEye, FaShippingFast, FaCheckCircle, FaTimesCircle, FaBoxOpen } from 'react-icons/fa';
+import OrderDetailsModal from '../../modals/OrderDetailsModal'; // Предполагаемый путь к модалке
 
 const OrderManager = () => {
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState([]); // Инициализируем как пустой массив
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
 
@@ -16,14 +20,16 @@ const OrderManager = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/orders`, {
-        withCredentials: true
+      const response = await axios.get(`${API_URL}/orders`, { // Убедись, что это правильный эндпоинт
+        withCredentials: true,
       });
-      setOrders(response.data);
-      setLoading(false);
+      // Устанавливаем заказы, только если response.data является массивом
+      setOrders(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error('Ошибка загрузки заказов:', error);
       toast.error('Не удалось загрузить заказы');
+      setOrders([]); // При ошибке также устанавливаем пустой массив
+    } finally {
       setLoading(false);
     }
   };
@@ -31,11 +37,11 @@ const OrderManager = () => {
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       const response = await axios.put(`${API_URL}/orders/${orderId}/status?status=${newStatus}`, {}, {
-        withCredentials: true
+        withCredentials: true,
       });
       if (response.status === 200) {
         toast.success('Статус заказа обновлён');
-        fetchOrders(); // Обновляем список заказов после успешного изменения
+        fetchOrders(); // Обновляем список заказов
       }
     } catch (error) {
       console.error('Ошибка обновления статуса:', error);
@@ -48,132 +54,141 @@ const OrderManager = () => {
     setShowDetails(true);
   };
 
+  const filteredAndSortedOrders = useMemo(() => {
+    let filtered = Array.isArray(orders) ? [...orders] : [];
+
+    if (searchQuery) {
+      filtered = filtered.filter(order =>
+        (order.id && String(order.id).includes(searchQuery)) ||
+        (order.user?.email && order.user.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (order.status && order.status.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+    }
+
+    if (sortConfig.key) {
+      filtered.sort((a, b) => {
+        let valA = a[sortConfig.key];
+        let valB = b[sortConfig.key];
+
+        // Пример для сортировки по вложенному полю user.email
+        if (sortConfig.key === 'user.email') {
+            valA = a.user?.email || '';
+            valB = b.user?.email || '';
+        }
+
+        if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+    return filtered;
+  }, [orders, searchQuery, sortConfig]);
+  
+  const getStatusClass = (status) => {
+    switch (status) {
+      case 'PENDING': return 'bg-yellow-500 text-yellow-100';
+      case 'PROCESSING': return 'bg-blue-500 text-blue-100';
+      case 'SHIPPED': return 'bg-purple-500 text-purple-100';
+      case 'DELIVERED': return 'bg-green-500 text-green-100';
+      case 'CANCELLED': return 'bg-red-500 text-red-100';
+      default: return 'bg-gray-500 text-gray-100';
+    }
+  };
+  
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'PENDING': return <FaBoxOpen className="mr-1"/>;
+      case 'PROCESSING': return <FaShippingFast className="mr-1"/>; // Using FaShippingFast for processing as an example
+      case 'SHIPPED': return <FaShippingFast className="mr-1"/>;
+      case 'DELIVERED': return <FaCheckCircle className="mr-1"/>;
+      case 'CANCELLED': return <FaTimesCircle className="mr-1"/>;
+      default: return <FaBoxOpen className="mr-1"/>;
+    }
+  };
+
+  const statusOptions = [
+    { value: "PENDING", label: "В ожидании" },
+    { value: "PROCESSING", label: "В обработке" },
+    { value: "SHIPPED", label: "Отправлен" },
+    { value: "DELIVERED", label: "Доставлен" },
+    { value: "CANCELLED", label: "Отменен" },
+  ];
+
+
   if (loading) {
-    return <div className="text-center py-10">Загрузка...</div>;
+    return <div className="text-center py-10 text-white">Загрузка заказов...</div>;
   }
 
   return (
-      <div>
-        <h2 className="text-xl font-semibold mb-6">Управление заказами</h2>
-
-        <div className="bg-white shadow-md rounded-lg overflow-hidden text-black">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Пользователь</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Дата</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Сумма</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Статус</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Действия</th>
-              </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-              {orders.map(order => (
-                  <tr key={order.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">{order.id}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{order.user?.email || 'Неизвестно'}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{new Date(order.createdAt).toLocaleString()}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">{order.totalAmount} ₽</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                      ${order.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :
-                        order.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                            order.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :
-                                order.status === 'PROCESSING' ? 'bg-blue-100 text-blue-800' :
-                                    order.status === 'SHIPPED' ? 'bg-purple-100 text-purple-800' :
-                                        'bg-gray-100 text-gray-800'}`}>
-                      {order.status}
-                    </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <button
-                          onClick={() => handleViewDetails(order)}
-                          className="text-indigo-600 hover:text-indigo-900 mr-3"
-                      >
-                        Детали
-                      </button>
-                      <select
-                          className="text-sm border rounded py-1 px-2"
-                          value={order.status}
-                          onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                      >
-                        <option value="PENDING">В обработке</option>
-                        {/*<option value="PROCESSING">Обрабатывается</option>*/}
-                        {/*<option value="SHIPPED">Отправлен</option>*/}
-                        <option value="COMPLETED">Завершен</option>
-                        <option value="CANCELLED">Отменен</option>
-                      </select>
-                    </td>
-                  </tr>
-              ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Модальное окно с деталями заказа */}
-        {showDetails && selectedOrder && (
-            <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-semibold">
-                    Детали заказа #{selectedOrder.id}
-                  </h3>
-                  <button
-                      onClick={() => setShowDetails(false)}
-                      className="text-gray-500 hover:text-gray-700"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-
-                <div className="mb-4">
-                  <p><strong>Пользователь:</strong> {selectedOrder.user?.email || 'Неизвестно'}</p>
-                  <p><strong>Дата создания:</strong> {new Date(selectedOrder.createdAt).toLocaleString()}</p>
-                  <p><strong>Статус:</strong> {selectedOrder.status}</p>
-                  <p><strong>Общая сумма:</strong> {selectedOrder.totalAmount} ₽</p>
-                </div>
-
-                <h4 className="font-semibold mb-2">Товары в заказе:</h4>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Название</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Количество</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Цена</th>
-                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Итого</th>
-                    </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                    {selectedOrder.items?.map((item, index) => (
-                        <tr key={index}>
-                          <td className="px-4 py-2 whitespace-nowrap">{item.product?.title || 'Неизвестно'}</td>
-                          <td className="px-4 py-2 whitespace-nowrap">{item.quantity}</td>
-                          <td className="px-4 py-2 whitespace-nowrap">{item.price} ₽</td>
-                          <td className="px-4 py-2 whitespace-nowrap">{item.price * item.quantity} ₽</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                <div className="mt-6 flex justify-end">
-                  <button
-                      onClick={() => setShowDetails(false)}
-                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-                  >
-                    Закрыть
-                  </button>
-                </div>
-              </div>
-            </div>
-        )}
+    <div className="p-4 bg-gray-800 text-white min-h-screen">
+      <h1 className="text-3xl font-semibold mb-6 text-yellow-500">Управление Заказами</h1>
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Поиск по ID, email, статусу..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="px-4 py-2 rounded-md bg-gray-700 text-white border border-gray-600 focus:ring-yellow-500 focus:border-yellow-500 w-full"
+        />
       </div>
+
+      <div className="overflow-x-auto shadow-xl rounded-lg">
+        <table className="min-w-full divide-y divide-gray-700">
+          <thead className="bg-gray-750">
+            <tr>
+              {/* Добавь обработчики сортировки, если нужно */}
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">ID Заказа</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Пользователь</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Дата</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Сумма</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Статус</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Действия</th>
+            </tr>
+          </thead>
+          <tbody className="bg-gray-800 divide-y divide-gray-700">
+            {filteredAndSortedOrders.map(order => (
+              <tr key={order.id} className="hover:bg-gray-700 transition duration-150">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100">{order.id}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{order.user?.email || 'N/A'}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{new Date(order.orderDate).toLocaleDateString()}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{order.totalAmount?.toFixed(2) || '0.00'} руб.</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  <span className={`px-3 py-1 inline-flex items-center text-xs leading-5 font-semibold rounded-full ${getStatusClass(order.status)}`}>
+                    {getStatusIcon(order.status)} {order.status || 'N/A'}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                  <button onClick={() => handleViewDetails(order)} className="text-blue-400 hover:text-blue-300 transition duration-150"><FaEye /></button>
+                  {/* Выпадающий список для смены статуса */}
+                  <select 
+                    value={order.status} 
+                    onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                    className={`ml-2 p-1 text-xs rounded-md border-gray-600 focus:ring-yellow-500 focus:border-yellow-500 ${getStatusClass(order.status).replace('text-', 'bg-opacity-20 border text-')}`} // Немного стилизации
+                  >
+                    {statusOptions.map(opt => (
+                      <option key={opt.value} value={opt.value} className="bg-gray-700 text-white">{opt.label}</option>
+                    ))}
+                  </select>
+                </td>
+              </tr>
+            ))}
+            {filteredAndSortedOrders.length === 0 && (
+              <tr>
+                <td colSpan="6" className="px-6 py-4 text-center text-sm text-gray-400">Заказы не найдены.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {selectedOrder && (
+        <OrderDetailsModal
+          isOpen={showDetails}
+          onClose={() => setShowDetails(false)}
+          order={selectedOrder}
+        />
+      )}
+    </div>
   );
 };
 
