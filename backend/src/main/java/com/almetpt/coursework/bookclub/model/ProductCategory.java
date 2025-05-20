@@ -4,11 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum ProductCategory {
-    BOOK("Книга"),
     AUDIO_BOOK("Аудиокнига"),
-    E_BOOK("Электронная книга"),
-    MERCHANDISE("Сувенирная продукция"),
-    GIFT_CARD("Подарочная карта");
+    E_BOOK("Электронная книга");
+    // добавить категорий
 
     private final String description;
 

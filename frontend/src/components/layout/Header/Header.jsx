@@ -112,7 +112,7 @@ const Header = observer(() => {
               <li>
                 <Link
                   to="/#gallery"
-                  className={`${isActive('#gallery') ? 'text-[#ffb100]' : 'hover:text-[#ffb100]'} uppercase text-lg nav-link-transition`}
+                  className={`${isActive('/#gallery')? 'text-[#ffb100]' : 'hover:text-[#ffb100]'} uppercase text-lg nav-link-transition`}
                 >
                   Прочитанное
                 </Link>

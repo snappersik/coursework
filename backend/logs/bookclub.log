@@ -1,0 +1,340 @@
+2025-05-21T00:00:05.698+03:00  INFO 182147 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : Starting ApplicationTests using Java 17.0.15 with PID 182147 (started by cookie in /home/cookie/IdeaProjects/coursework/backend)
+2025-05-21T00:00:05.714+03:00  INFO 182147 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : No active profile set, falling back to 1 default profile: "default"
+2025-05-21T00:00:12.326+03:00  INFO 182147 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T00:00:12.591+03:00  INFO 182147 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 230 ms. Found 10 JPA repository interfaces.
+2025-05-21T00:00:15.181+03:00  INFO 182147 --- [Coursework] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T00:00:15.343+03:00  INFO 182147 --- [Coursework] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-05-21T00:00:15.442+03:00  INFO 182147 --- [Coursework] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T00:00:16.812+03:00  INFO 182147 --- [Coursework] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T00:00:16.939+03:00  INFO 182147 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-05-21T00:00:17.710+03:00  INFO 182147 --- [Coursework] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6cd7dc74
+2025-05-21T00:00:17.718+03:00  INFO 182147 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-05-21T00:00:18.000+03:00  INFO 182147 --- [Coursework] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.5
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-21T00:00:18.815+03:00  WARN 182147 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:18.851+03:00  WARN 182147 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:18.881+03:00  WARN 182147 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:18.903+03:00  WARN 182147 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:18.930+03:00  WARN 182147 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:18.986+03:00  WARN 182147 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:19.005+03:00  WARN 182147 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:23.900+03:00  INFO 182147 --- [Coursework] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T00:00:27.731+03:00  INFO 182147 --- [Coursework] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T00:00:28.794+03:00  INFO 182147 --- [Coursework] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-05-21T00:00:31.108+03:00  INFO 182935 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : Starting ApplicationTests using Java 17.0.15 with PID 182935 (started by cookie in /home/cookie/IdeaProjects/coursework/backend)
+2025-05-21T00:00:31.121+03:00  INFO 182935 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : No active profile set, falling back to 1 default profile: "default"
+2025-05-21T00:00:36.868+03:00  INFO 182935 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T00:00:37.189+03:00  INFO 182935 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 289 ms. Found 10 JPA repository interfaces.
+2025-05-21T00:00:40.153+03:00  INFO 182935 --- [Coursework] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T00:00:40.344+03:00  INFO 182935 --- [Coursework] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-05-21T00:00:40.477+03:00  INFO 182935 --- [Coursework] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T00:00:40.760+03:00  WARN 182147 --- [Coursework] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T00:00:40.842+03:00  INFO 182147 --- [Coursework] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-05-21T00:00:41.605+03:00  INFO 182935 --- [Coursework] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T00:00:41.798+03:00  INFO 182935 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-05-21T00:00:42.425+03:00  INFO 182935 --- [Coursework] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@215c6ec0
+2025-05-21T00:00:42.435+03:00  INFO 182935 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-05-21T00:00:42.770+03:00  INFO 182935 --- [Coursework] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.5
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-21T00:00:43.364+03:00  WARN 182935 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:43.394+03:00  WARN 182935 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:43.420+03:00  WARN 182935 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:43.447+03:00  WARN 182935 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:43.473+03:00  WARN 182935 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:43.524+03:00  WARN 182935 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:43.548+03:00  WARN 182935 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:44.776+03:00  WARN 182147 --- [Coursework] [main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-05-21T00:00:46.104+03:00  INFO 182147 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : Started ApplicationTests in 42.176 seconds (process running for 46.804)
+2025-05-21T00:00:46.822+03:00  INFO 182147 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Администратор уже существует
+2025-05-21T00:00:46.826+03:00  INFO 182147 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Swagger UI: http://localhost:8080/swagger-ui/index.html
+2025-05-21T00:00:46.828+03:00  INFO 182147 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Application: http://localhost:8080/
+2025-05-21T00:00:48.152+03:00  INFO 182935 --- [Coursework] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T00:00:48.510+03:00  INFO 182147 --- [Coursework] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.almetpt.coursework.bookclub.controllers.ProductSearchIntegrationTest]: ProductSearchIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-05-21T00:00:48.611+03:00  INFO 182147 --- [Coursework] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.almetpt.coursework.CourseworkApplication for test class com.almetpt.coursework.bookclub.controllers.ProductSearchIntegrationTest
+2025-05-21T00:00:48.628+03:00  INFO 182147 --- [Coursework] [main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+2025-05-21T00:00:48.721+03:00  INFO 182147 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Starting ProductSearchIntegrationTest using Java 17.0.15 with PID 182147 (started by cookie in /home/cookie/IdeaProjects/coursework/backend)
+2025-05-21T00:00:48.723+03:00 DEBUG 182147 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-05-21T00:00:48.725+03:00  INFO 182147 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : The following 1 profile is active: "test"
+2025-05-21T00:00:49.564+03:00  INFO 182147 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T00:00:49.619+03:00  INFO 182147 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 52 ms. Found 10 JPA repository interfaces.
+2025-05-21T00:00:50.074+03:00  INFO 182147 --- [Coursework] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T00:00:50.082+03:00  INFO 182147 --- [Coursework] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T00:00:50.111+03:00  INFO 182147 --- [Coursework] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T00:00:50.114+03:00  INFO 182147 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2025-05-21T00:00:50.645+03:00  INFO 182147 --- [Coursework] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2025-05-21T00:00:50.646+03:00  INFO 182147 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2025-05-21T00:00:50.661+03:00  WARN 182147 --- [Coursework] [main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-21T00:00:50.678+03:00  INFO 182147 --- [Coursework] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-21T00:00:50.726+03:00  WARN 182147 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:50.737+03:00  WARN 182147 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:50.753+03:00  WARN 182147 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:50.763+03:00  WARN 182147 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:50.774+03:00  WARN 182147 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:50.797+03:00  WARN 182147 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:50.808+03:00  WARN 182147 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:00:51.340+03:00  INFO 182935 --- [Coursework] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T00:00:51.646+03:00  INFO 182147 --- [Coursework] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T00:00:52.063+03:00  INFO 182147 --- [Coursework] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T00:00:52.470+03:00  INFO 182935 --- [Coursework] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-05-21T00:00:53.963+03:00  WARN 182147 --- [Coursework] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T00:00:54.019+03:00  INFO 182147 --- [Coursework] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-05-21T00:00:55.746+03:00  WARN 182147 --- [Coursework] [main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-05-21T00:00:56.445+03:00 DEBUG 182147 --- [Coursework] [main] c.a.c.b.config.jwt.JWTCookieFilter       : Filter 'JWTCookieFilter' configured for use
+2025-05-21T00:00:56.448+03:00  INFO 182147 --- [Coursework] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-05-21T00:00:56.452+03:00  INFO 182147 --- [Coursework] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-05-21T00:00:56.464+03:00  INFO 182147 --- [Coursework] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 11 ms
+2025-05-21T00:00:56.540+03:00  INFO 182147 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Started ProductSearchIntegrationTest in 7.914 seconds (process running for 57.241)
+2025-05-21T00:00:56.723+03:00  INFO 182147 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Роли успешно созданы
+2025-05-21T00:00:57.026+03:00  INFO 182147 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Администратор создан с email: admin и паролем: admin
+2025-05-21T00:00:57.028+03:00  INFO 182147 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Swagger UI: http://localhost:8080/swagger-ui/index.html
+2025-05-21T00:00:57.028+03:00  INFO 182147 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Application: http://localhost:8080/
+2025-05-21T00:00:57.409+03:00 DEBUG 182147 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@dd84bbb
+2025-05-21T00:00:57.535+03:00  WARN 182147 --- [Coursework] [main] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-05-21T00:00:57.909+03:00 DEBUG 182147 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@1f0fdc17
+2025-05-21T00:00:57.948+03:00  INFO 182147 --- [Coursework] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.almetpt.coursework.bookclub.controllers.ProductControllerIntegrationTest]: ProductControllerIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-05-21T00:00:57.963+03:00  INFO 182147 --- [Coursework] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.almetpt.coursework.CourseworkApplication for test class com.almetpt.coursework.bookclub.controllers.ProductControllerIntegrationTest
+2025-05-21T00:00:58.009+03:00 DEBUG 182147 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@4f4f079
+2025-05-21T00:00:58.058+03:00 DEBUG 182147 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@4108da25
+2025-05-21T00:00:58.093+03:00  INFO 182147 --- [Coursework] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.almetpt.coursework.bookclub.controllers.UserControllerIntegrationTest]: UserControllerIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-05-21T00:00:58.104+03:00  INFO 182147 --- [Coursework] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.almetpt.coursework.CourseworkApplication for test class com.almetpt.coursework.bookclub.controllers.UserControllerIntegrationTest
+2025-05-21T00:00:58.149+03:00  WARN 182147 --- [Coursework] [main] o.s.test.context.TestContextManager      : Caught exception while invoking 'beforeTestMethod' callback on TestExecutionListener [org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener] for test method [void com.almetpt.coursework.bookclub.controllers.UserControllerIntegrationTest.getCurrentUserProfile_ShouldReturnUserProfile() throws java.lang.Exception] and test instance [com.almetpt.coursework.bookclub.controllers.UserControllerIntegrationTest@6a093719]
+
+java.lang.IllegalStateException: Unable to create SecurityContext using @org.springframework.security.test.context.support.WithUserDetails(setupBefore=TEST_METHOD, userDetailsServiceBeanName="", value="test@example.com")
+	at org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener.lambda$createTestSecurityContext$1(WithSecurityContextTestExecutionListener.java:143) ~[spring-security-test-6.4.4.jar:6.4.4]
+	at org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener.beforeTestMethod(WithSecurityContextTestExecutionListener.java:90) ~[spring-security-test-6.4.4.jar:6.4.4]
+	at org.springframework.test.context.TestContextManager.beforeTestMethod(TestContextManager.java:320) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.test.context.junit.jupiter.SpringExtension.beforeEach(SpringExtension.java:237) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeBeforeEachCallbacks$3(TestMethodTestDescriptor.java:166) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeBeforeMethodsOrCallbacksUntilExceptionOccurs$7(TestMethodTestDescriptor.java:202) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeBeforeMethodsOrCallbacksUntilExceptionOccurs(TestMethodTestDescriptor.java:202) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeBeforeEachCallbacks(TestMethodTestDescriptor.java:165) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:132) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:68) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56) ~[surefire-junit-platform-3.5.2.jar:3.5.2]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184) ~[surefire-junit-platform-3.5.2.jar:3.5.2]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148) ~[surefire-junit-platform-3.5.2.jar:3.5.2]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122) ~[surefire-junit-platform-3.5.2.jar:3.5.2]
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385) ~[surefire-booter-3.5.2.jar:3.5.2]
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162) ~[surefire-booter-3.5.2.jar:3.5.2]
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507) ~[surefire-booter-3.5.2.jar:3.5.2]
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495) ~[surefire-booter-3.5.2.jar:3.5.2]
+Caused by: org.springframework.security.core.userdetails.UsernameNotFoundException: Пользователь с email: test@example.com не найден
+	at com.almetpt.coursework.bookclub.service.userdetails.CustomUserDetailsService.loadUserByEmail(CustomUserDetailsService.java:45) ~[classes/:na]
+	at com.almetpt.coursework.bookclub.service.userdetails.CustomUserDetailsService.loadUserByUsername(CustomUserDetailsService.java:36) ~[classes/:na]
+	at org.springframework.security.test.context.support.WithUserDetailsSecurityContextFactory.createSecurityContext(WithUserDetailsSecurityContextFactory.java:68) ~[spring-security-test-6.4.4.jar:6.4.4]
+	at org.springframework.security.test.context.support.WithUserDetailsSecurityContextFactory.createSecurityContext(WithUserDetailsSecurityContextFactory.java:43) ~[spring-security-test-6.4.4.jar:6.4.4]
+	at org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener.lambda$createTestSecurityContext$1(WithSecurityContextTestExecutionListener.java:140) ~[spring-security-test-6.4.4.jar:6.4.4]
+	... 58 common frames omitted
+
+2025-05-21T00:01:00.788+03:00  WARN 182147 --- [Coursework] [main] c.a.c.bookclub.service.UserService       : Токен expired-token для пользователя user@example.com истек (проверка валидности).
+2025-05-21T00:01:00.807+03:00  WARN 182147 --- [Coursework] [main] c.a.c.bookclub.service.UserService       : Попытка валидации несуществующего токена: non-existent-token
+2025-05-21T00:01:00.936+03:00  INFO 182147 --- [Coursework] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T00:01:00.954+03:00  INFO 182147 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-05-21T00:01:00.973+03:00  INFO 182147 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-05-21T00:01:01.009+03:00  INFO 182147 --- [Coursework] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T00:01:01.134+03:00  INFO 182147 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2025-05-21T00:01:01.140+03:00  INFO 182147 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+2025-05-21T00:01:02.921+03:00  WARN 182935 --- [Coursework] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T00:01:03.007+03:00  INFO 182935 --- [Coursework] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-05-21T00:01:06.308+03:00  WARN 182935 --- [Coursework] [main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-05-21T00:01:07.262+03:00  INFO 182935 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : Started ApplicationTests in 37.577 seconds (process running for 41.097)
+2025-05-21T00:01:07.850+03:00  INFO 182935 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Администратор уже существует
+2025-05-21T00:01:07.856+03:00  INFO 182935 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Swagger UI: http://localhost:8080/swagger-ui/index.html
+2025-05-21T00:01:07.857+03:00  INFO 182935 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Application: http://localhost:8080/
+2025-05-21T00:01:09.014+03:00  INFO 182935 --- [Coursework] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.almetpt.coursework.bookclub.controllers.ProductSearchIntegrationTest]: ProductSearchIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-05-21T00:01:09.140+03:00  INFO 182935 --- [Coursework] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.almetpt.coursework.CourseworkApplication for test class com.almetpt.coursework.bookclub.controllers.ProductSearchIntegrationTest
+2025-05-21T00:01:09.157+03:00  INFO 182935 --- [Coursework] [main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+2025-05-21T00:01:09.292+03:00  INFO 182935 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Starting ProductSearchIntegrationTest using Java 17.0.15 with PID 182935 (started by cookie in /home/cookie/IdeaProjects/coursework/backend)
+2025-05-21T00:01:09.298+03:00 DEBUG 182935 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-05-21T00:01:09.302+03:00  INFO 182935 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : The following 1 profile is active: "test"
+2025-05-21T00:01:10.197+03:00  INFO 182935 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T00:01:10.259+03:00  INFO 182935 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 57 ms. Found 10 JPA repository interfaces.
+2025-05-21T00:01:10.689+03:00  INFO 182935 --- [Coursework] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T00:01:10.695+03:00  INFO 182935 --- [Coursework] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T00:01:10.718+03:00  INFO 182935 --- [Coursework] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T00:01:10.721+03:00  INFO 182935 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2025-05-21T00:01:11.318+03:00  INFO 182935 --- [Coursework] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2025-05-21T00:01:11.321+03:00  INFO 182935 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2025-05-21T00:01:11.346+03:00  WARN 182935 --- [Coursework] [main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-21T00:01:11.374+03:00  INFO 182935 --- [Coursework] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-21T00:01:11.439+03:00  WARN 182935 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:01:11.449+03:00  WARN 182935 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:01:11.464+03:00  WARN 182935 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:01:11.476+03:00  WARN 182935 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:01:11.492+03:00  WARN 182935 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:01:11.518+03:00  WARN 182935 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:01:11.529+03:00  WARN 182935 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:01:12.413+03:00  INFO 182935 --- [Coursework] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T00:01:12.659+03:00  INFO 182935 --- [Coursework] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T00:01:14.424+03:00  WARN 182935 --- [Coursework] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T00:01:14.468+03:00  INFO 182935 --- [Coursework] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-05-21T00:01:15.769+03:00  WARN 182935 --- [Coursework] [main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-05-21T00:01:16.408+03:00 DEBUG 182935 --- [Coursework] [main] c.a.c.b.config.jwt.JWTCookieFilter       : Filter 'JWTCookieFilter' configured for use
+2025-05-21T00:01:16.412+03:00  INFO 182935 --- [Coursework] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-05-21T00:01:16.414+03:00  INFO 182935 --- [Coursework] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-05-21T00:01:16.420+03:00  INFO 182935 --- [Coursework] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 6 ms
+2025-05-21T00:01:16.467+03:00  INFO 182935 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Started ProductSearchIntegrationTest in 7.313 seconds (process running for 50.302)
+2025-05-21T00:01:16.625+03:00  INFO 182935 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Роли успешно созданы
+2025-05-21T00:01:16.866+03:00  INFO 182935 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Администратор создан с email: admin и паролем: admin
+2025-05-21T00:01:16.867+03:00  INFO 182935 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Swagger UI: http://localhost:8080/swagger-ui/index.html
+2025-05-21T00:01:16.868+03:00  INFO 182935 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Application: http://localhost:8080/
+2025-05-21T00:01:17.185+03:00 DEBUG 182935 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@2ce04fcf
+2025-05-21T00:01:17.294+03:00  WARN 182935 --- [Coursework] [main] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-05-21T00:01:17.646+03:00 DEBUG 182935 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@ebd6b18
+2025-05-21T00:01:17.692+03:00  INFO 182935 --- [Coursework] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.almetpt.coursework.bookclub.controllers.ProductControllerIntegrationTest]: ProductControllerIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-05-21T00:01:17.700+03:00  INFO 182935 --- [Coursework] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.almetpt.coursework.CourseworkApplication for test class com.almetpt.coursework.bookclub.controllers.ProductControllerIntegrationTest
+2025-05-21T00:01:17.748+03:00 DEBUG 182935 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@165a1ac4
+2025-05-21T00:01:17.837+03:00 DEBUG 182935 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@2a6304f2
+2025-05-21T00:01:17.897+03:00  INFO 182935 --- [Coursework] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.almetpt.coursework.bookclub.controllers.UserControllerIntegrationTest]: UserControllerIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-05-21T00:01:17.915+03:00  INFO 182935 --- [Coursework] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.almetpt.coursework.CourseworkApplication for test class com.almetpt.coursework.bookclub.controllers.UserControllerIntegrationTest
+2025-05-21T00:01:17.973+03:00  WARN 182935 --- [Coursework] [main] o.s.test.context.TestContextManager      : Caught exception while invoking 'beforeTestMethod' callback on TestExecutionListener [org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener] for test method [void com.almetpt.coursework.bookclub.controllers.UserControllerIntegrationTest.getCurrentUserProfile_ShouldReturnUserProfile() throws java.lang.Exception] and test instance [com.almetpt.coursework.bookclub.controllers.UserControllerIntegrationTest@4705bd7a]
+
+java.lang.IllegalStateException: Unable to create SecurityContext using @org.springframework.security.test.context.support.WithUserDetails(setupBefore=TEST_METHOD, userDetailsServiceBeanName="", value="test@example.com")
+	at org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener.lambda$createTestSecurityContext$1(WithSecurityContextTestExecutionListener.java:143) ~[spring-security-test-6.4.4.jar:6.4.4]
+	at org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener.beforeTestMethod(WithSecurityContextTestExecutionListener.java:90) ~[spring-security-test-6.4.4.jar:6.4.4]
+	at org.springframework.test.context.TestContextManager.beforeTestMethod(TestContextManager.java:320) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.springframework.test.context.junit.jupiter.SpringExtension.beforeEach(SpringExtension.java:237) ~[spring-test-6.2.5.jar:6.2.5]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeBeforeEachCallbacks$3(TestMethodTestDescriptor.java:166) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeBeforeMethodsOrCallbacksUntilExceptionOccurs$7(TestMethodTestDescriptor.java:202) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeBeforeMethodsOrCallbacksUntilExceptionOccurs(TestMethodTestDescriptor.java:202) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeBeforeEachCallbacks(TestMethodTestDescriptor.java:165) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:132) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:68) ~[junit-jupiter-engine-5.11.4.jar:5.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511) ~[na:na]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54) ~[junit-platform-engine-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47) ~[junit-platform-launcher-1.11.4.jar:1.11.4]
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56) ~[surefire-junit-platform-3.5.2.jar:3.5.2]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184) ~[surefire-junit-platform-3.5.2.jar:3.5.2]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148) ~[surefire-junit-platform-3.5.2.jar:3.5.2]
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122) ~[surefire-junit-platform-3.5.2.jar:3.5.2]
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385) ~[surefire-booter-3.5.2.jar:3.5.2]
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162) ~[surefire-booter-3.5.2.jar:3.5.2]
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507) ~[surefire-booter-3.5.2.jar:3.5.2]
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495) ~[surefire-booter-3.5.2.jar:3.5.2]
+Caused by: org.springframework.security.core.userdetails.UsernameNotFoundException: Пользователь с email: test@example.com не найден
+	at com.almetpt.coursework.bookclub.service.userdetails.CustomUserDetailsService.loadUserByEmail(CustomUserDetailsService.java:45) ~[classes/:na]
+	at com.almetpt.coursework.bookclub.service.userdetails.CustomUserDetailsService.loadUserByUsername(CustomUserDetailsService.java:36) ~[classes/:na]
+	at org.springframework.security.test.context.support.WithUserDetailsSecurityContextFactory.createSecurityContext(WithUserDetailsSecurityContextFactory.java:68) ~[spring-security-test-6.4.4.jar:6.4.4]
+	at org.springframework.security.test.context.support.WithUserDetailsSecurityContextFactory.createSecurityContext(WithUserDetailsSecurityContextFactory.java:43) ~[spring-security-test-6.4.4.jar:6.4.4]
+	at org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener.lambda$createTestSecurityContext$1(WithSecurityContextTestExecutionListener.java:140) ~[spring-security-test-6.4.4.jar:6.4.4]
+	... 58 common frames omitted
+
+2025-05-21T00:01:20.361+03:00  WARN 182935 --- [Coursework] [main] c.a.c.bookclub.service.UserService       : Токен expired-token для пользователя user@example.com истек (проверка валидности).
+2025-05-21T00:01:20.380+03:00  WARN 182935 --- [Coursework] [main] c.a.c.bookclub.service.UserService       : Попытка валидации несуществующего токена: non-existent-token
+2025-05-21T00:01:20.480+03:00  INFO 182935 --- [Coursework] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T00:01:20.489+03:00  INFO 182935 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-05-21T00:01:20.502+03:00  INFO 182935 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-05-21T00:01:20.547+03:00  INFO 182935 --- [Coursework] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T00:01:20.616+03:00  INFO 182935 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2025-05-21T00:01:20.619+03:00  INFO 182935 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.

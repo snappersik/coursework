@@ -538,7 +538,7 @@ const EventManager = () => {
                         <option value="">Не выбрано</option>
                         {books.map(book => (
                             <option key={book.id} value={book.id}>
-                              {book.title} ({book.author})
+                              {book.title} (ID: {book.id})
                             </option>
                         ))}
                       </select>

@@ -32,10 +32,10 @@ public class EventService extends GenericService<Event, EventDTO> {
     private final BookRepository bookRepository;
 
     public EventService(EventRepository eventRepository,
-            EventApplicationRepository eventApplicationRepository,
-            BookRepository bookRepository,
-            JavaMailSender javaMailSender,
-            EventMapper eventMapper) {
+                        EventApplicationRepository eventApplicationRepository,
+                        BookRepository bookRepository,
+                        JavaMailSender javaMailSender,
+                        EventMapper eventMapper) {
         super(eventRepository, eventMapper);
         this.eventRepository = eventRepository;
         this.eventApplicationRepository = eventApplicationRepository;
@@ -46,23 +46,16 @@ public class EventService extends GenericService<Event, EventDTO> {
     @Override
     @Transactional
     public EventDTO create(EventDTO dto) {
-        Event event = (Event) mapper.toEntity(dto);
+        Event event = mapper.toEntity(dto); // Маппер теперь сам обрабатывает bookId
 
         // Установка времени создания
         event.setCreatedWhen(LocalDateTime.now());
-
-        // Если указан ID книги, устанавливаем связь с книгой
-        if (dto.getBookId() != null) {
-            Book book = bookRepository.findById(dto.getBookId())
-                    .orElseThrow(() -> new NotFoundException("Book not found with id: " + dto.getBookId()));
-            event.setBook(book);
-        }
 
         // Сохраняем мероприятие
         event = eventRepository.save(event);
 
         // Преобразуем обратно в DTO и возвращаем
-        return (EventDTO) mapper.toDTO(event);
+        return mapper.toDTO(event);
     }
 
     @Transactional
@@ -78,7 +71,7 @@ public class EventService extends GenericService<Event, EventDTO> {
 
         Event savedEvent = eventRepository.save(event);
         log.debug("After update - isCancelled: {}", savedEvent.isCancelled());
-        
+
         event.setCancellationReason(cancellationReason);
         eventRepository.save(event);
 
@@ -99,7 +92,6 @@ public class EventService extends GenericService<Event, EventDTO> {
     public void rescheduleEvent(Long eventId, LocalDateTime newDate, String rescheduleMessage) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event not found"));
-        // LocalDateTime oldDate = event.getDate();
         event.setDate(newDate);
         eventRepository.save(event);
 
@@ -137,5 +129,4 @@ public class EventService extends GenericService<Event, EventDTO> {
         event.setDeletedWhen(LocalDateTime.now());
         event.setDeleted(true);
     }
-
 }
