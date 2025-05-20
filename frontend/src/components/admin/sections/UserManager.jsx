@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'; 
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { API_URL } from '../../../config'; // Убедитесь, что путь правильный
@@ -28,12 +28,12 @@ const UserManager = () => {
     confirmPassword: ''
   });
 
-  const getRoleIdByName = (roleName) => {
-    switch (roleName) {
-      case 'USER': return 1;
-      case 'ORGANIZER': return 2;
-      case 'ADMIN': return 3;
-      default: return 1; // По умолчанию USER
+  const getRoleNameById = (roleId) => {
+    switch (roleId) {
+      case 1: return 'USER';
+      case 2: return 'ORGANIZER';
+      case 3: return 'ADMIN';
+      default: return 'USER';
     }
   };
 
@@ -67,14 +67,6 @@ const UserManager = () => {
     });
   };
 
-  // Если вы используете input type="date", эта функция не нужна
-  // const handleDateChange = (date) => {
-  //   setFormData({
-  //     ...formData,
-  //     birthDate: date ? formatDate(date) : null // Используйте formatDate если дата - объект Date
-  //   });
-  // };
-
   // Преобразование даты из объекта Date в строку "dd.MM.yyyy"
   const formatDate = (date) => {
     if (!date) return null;
@@ -100,7 +92,7 @@ const UserManager = () => {
     if (!dateString_yyyyMMdd || typeof dateString_yyyyMMdd !== 'string') return null;
     const parts = dateString_yyyyMMdd.split('-');
     if (parts.length === 3) {
-        return `${parts[2]}.${parts[1]}.${parts[0]}`; // dd.MM.yyyy
+      return `${parts[2]}.${parts[1]}.${parts[0]}`; // dd.MM.yyyy
     }
     return null;
   };
@@ -116,9 +108,9 @@ const UserManager = () => {
       } else if (formData.role && typeof formData.role === 'object' && formData.role.id !== undefined) {
         roleObjectToSend = formData.role; // Уже правильный объект
       } else {
-          // Если роль не установлена корректно, можно установить по умолчанию или выдать ошибку
-          console.warn("Роль не определена корректно, устанавливается USER по умолчанию");
-          roleObjectToSend = { id: getRoleIdByName('USER'), name: 'USER' };
+        // Если роль не установлена корректно, можно установить по умолчанию или выдать ошибку
+        console.warn("Роль не определена корректно, устанавливается USER по умолчанию");
+        roleObjectToSend = { id: getRoleIdByName('USER'), name: 'USER' };
       }
 
 
@@ -139,11 +131,11 @@ const UserManager = () => {
         };
         // Добавляем пароль, только если он введен
         if (formData.password) {
-            if (formData.password !== formData.confirmPassword) {
-                toast.error('Пароли не совпадают!');
-                return;
-            }
-            updateData.newPassword = formData.password; // Или просто password, в зависимости от вашего API
+          if (formData.password !== formData.confirmPassword) {
+            toast.error('Пароли не совпадают!');
+            return;
+          }
+          updateData.newPassword = formData.password; // Или просто password, в зависимости от вашего API
         }
 
         await axios.put(`${API_URL}/users/${currentUser.id}`, updateData, {
@@ -212,7 +204,7 @@ const UserManager = () => {
       phone: user.phone || '',
       address: user.address || '',
       // Преобразуем dd.MM.yyyy в yyyy-MM-dd для input type="date"
-      birthDate: user.birthDate ? formatDateForInput(user.birthDate) : '', 
+      birthDate: user.birthDate ? formatDateForInput(user.birthDate) : '',
       role: user.role?.name || 'USER', // Используем имя роли, как было у вас
       password: '',
       confirmPassword: ''
@@ -305,10 +297,10 @@ const UserManager = () => {
     }
 
     let filtered = users.filter(user =>
-      (user.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-       user.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-       user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-       (user.role?.name || user.userRole || '')?.toLowerCase().includes(searchQuery.toLowerCase())) // Проверка на существование user.role
+    (user.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (user.role?.name || user.userRole || '')?.toLowerCase().includes(searchQuery.toLowerCase())) // Проверка на существование user.role
     );
 
     if (sortConfig.key) {
@@ -317,13 +309,13 @@ const UserManager = () => {
         let valB = b[sortConfig.key];
 
         if (sortConfig.key === 'role') { // Сортировка по имени роли
-            valA = a.role?.name || a.userRole || ''; // Учитываем оба варианта
-            valB = b.role?.name || b.userRole || '';
+          valA = a.role?.name || a.userRole || ''; // Учитываем оба варианта
+          valB = b.role?.name || b.userRole || '';
         }
 
         if (typeof valA === 'string') valA = valA.toLowerCase();
         if (typeof valB === 'string') valB = valB.toLowerCase();
-        
+
         if (valA < valB) return sortConfig.direction === 'asc' ? -1 : 1;
         if (valA > valB) return sortConfig.direction === 'asc' ? 1 : -1;
         return 0;
@@ -382,12 +374,11 @@ const UserManager = () => {
                   <td className="px-4 py-2">{user.firstName || '-'}</td>
                   <td className="px-4 py-2">{user.lastName || '-'}</td>
                   <td className="px-4 py-2">
-                  <span className={`px-2 py-1 rounded ${
-                      (user.role?.name || user.userRole) === 'ADMIN' ? 'bg-red-600' :
-                      (user.role?.name || user.userRole) === 'ORGANIZER' ? 'bg-blue-600' :
-                      (user.role?.name || user.userRole) === 'USER' ? 'bg-green-600' : 'bg-gray-600'
-                    }`}>
-                      {user.role?.name || user.userRole || 'USER'} {/* Отображаем роль */}
+                    <span className={`px-2 py-1 rounded ${(user.role?.id || user.userRole) === 3 ? 'bg-red-600' :
+                        (user.role?.id || user.userRole) === 2 ? 'bg-blue-600' :
+                          (user.role?.id || user.userRole) === 1 ? 'bg-green-600' : 'bg-gray-600'
+                      }`}>
+                      {getRoleNameById(user.role?.id || user.roleId || 1)}
                     </span>
                   </td>
                   <td className="px-4 py-2 flex justify-center space-x-2">
@@ -459,23 +450,23 @@ const UserManager = () => {
                 </div>
               </div>
               <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Отчество</label>
-                  <input type="text" name="patronymic" value={formData.patronymic} onChange={handleInputChange} className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white" />
+                <label className="block text-sm font-medium text-gray-300 mb-1">Отчество</label>
+                <input type="text" name="patronymic" value={formData.patronymic} onChange={handleInputChange} className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white" />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Телефон</label>
-                    <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white" />
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Телефон</label>
+                  <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white" />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Дата рождения</label>
-                    {/* Используем input type="date", который ожидает формат yyyy-MM-dd */}
-                    <input type="date" name="birthDate" value={formData.birthDate} onChange={handleInputChange} className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white" />
+                  <label className="block text-sm font-medium text-gray-300 mb-1">Дата рождения</label>
+                  {/* Используем input type="date", который ожидает формат yyyy-MM-dd */}
+                  <input type="date" name="birthDate" value={formData.birthDate} onChange={handleInputChange} className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white" />
                 </div>
               </div>
               <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Адрес</label>
-                  <input type="text" name="address" value={formData.address} onChange={handleInputChange} className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white" />
+                <label className="block text-sm font-medium text-gray-300 mb-1">Адрес</label>
+                <input type="text" name="address" value={formData.address} onChange={handleInputChange} className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-white" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">Роль</label>
