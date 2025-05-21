@@ -1,52 +1,59 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { API_URL } from '../../config';
+import { API_URL, DEFAULT_PRODUCT_IMAGE } from '../../config';
 
-const ProductCard = ({ product }) => {
-  const { id, name, description, price, category, hasLocalImage, coverImageUrl } = product;
+const ProductCard = ({
+  product,
+  inCart,
+  onAddToCart
+}) => {
+  const {
+    id, name, description, price, category,
+    hasLocalImage, coverImageUrl, originalCoverImageFilename
+  } = product;
 
-  // Определяем источник изображения
-  const imageSource = hasLocalImage
-    ? `${API_URL}/products/${id}/cover`
-    : (coverImageUrl || '/images/placeholder.png');
+  let imageSource = DEFAULT_PRODUCT_IMAGE;
+  if (hasLocalImage && originalCoverImageFilename) {
+    imageSource = `${API_URL}/products/${id}/cover?t=${new Date().getTime()}`;
+  } else if (coverImageUrl) {
+    imageSource = coverImageUrl;
+  }
 
-  // Определяем текст категории для отображения
-  const getCategoryText = (category) => {
-    switch (category) {
-      case 'E_BOOK': return 'Электронная книга';
-      case 'AUDIO_BOOK': return 'Аудиокнига';
-      case 'LECTURE': return 'Лекция';
-      case 'MEETING_RECORDING': return 'Запись встречи';
-      default: return category;
-    }
+  const handleImageError = (e) => {
+    e.target.onerror = null;
+    e.target.src = DEFAULT_PRODUCT_IMAGE;
   };
 
   return (
-    <div className="bg-[#606060] rounded-lg shadow-md overflow-hidden flex flex-col h-full">
-      <div className="relative h-48 overflow-hidden">
-        <img
-          src={imageSource}
-          alt={name}
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-          onError={(e) => { e.target.src = '/images/placeholder.png' }}
-        />
-        <div className="absolute top-2 right-2 bg-yellow-400 text-white text-xs font-bold px-2 py-1 rounded">
-          {getCategoryText(category)}
+    <div className="bg-[#232b39] rounded-xl shadow-lg flex flex-col justify-between h-full p-4">
+      <img
+        src={imageSource}
+        alt={name}
+        onError={handleImageError}
+        className="w-full h-44 object-cover rounded-lg mb-3 border border-gray-700"
+        width={300}
+        height={176}
+        loading="lazy"
+      />
+      <div className="flex-1 flex flex-col">
+        <h3 className="text-lg font-semibold text-white mb-2 truncate">{name}</h3>
+        <p className="text-gray-300 text-sm mb-3 flex-1">
+          {description ? (description.length > 70 ? description.substring(0, 70) + '...' : description) : 'Нет описания'}
+        </p>
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-yellow-400 font-bold text-lg">{price?.toFixed(2) || '0.00'} руб.</span>
+          <span className="text-xs bg-[#374151] text-gray-200 px-3 py-1 rounded-full uppercase">{category}</span>
         </div>
-      </div>
-
-      <div className="p-4 flex-grow flex flex-col">
-        <h3 className="text-lg font-bold mb-2 line-clamp-2 h-14">{name}</h3>
-        <p className="text-gray-100 mb-4 line-clamp-3 h-18">{description}</p>
-        <div className="mt-auto flex justify-between items-center">
-          <span className="text-xl font-bold text-yellow-500">{price} ₽</span>
-          <Link
-            to={`/product/${id}`}
-            className="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded transition duration-300"
-          >
-            Подробнее
-          </Link>
-        </div>
+        <button
+          onClick={() => !inCart && onAddToCart(product)}
+          disabled={inCart}
+          className={`w-full py-2 rounded-lg font-bold transition-all duration-200 
+            ${inCart
+              ? 'bg-green-600 text-white cursor-default'
+              : 'bg-yellow-500 hover:bg-yellow-600 text-white hover:scale-105'}
+          `}
+        >
+          {inCart ? 'В корзине' : 'Добавить в корзину'}
+        </button>
       </div>
     </div>
   );

@@ -100,8 +100,8 @@ public class WebSecurityConfig {
                                 "Access-Control-Allow-Origin",
                                 "Access-Control-Allow-Credentials"));
                 config.setAllowCredentials(true);
-                config.addAllowedHeader("*");
-                config.addAllowedMethod("*");
+                // config.addAllowedHeader("*");
+                // config.addAllowedMethod("*");
                 config.setMaxAge(expiration);
                 UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
                 source.registerCorsConfiguration("/**", config);

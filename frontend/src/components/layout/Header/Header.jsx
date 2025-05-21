@@ -146,12 +146,12 @@ const Header = observer(() => {
                 </li>
               )}
               <li>
-                <Link
+                {/* <Link
                   to="/contacts"
                   className={`${isActive('/contacts') ? 'text-[#ffb100]' : 'hover:text-[#ffb100]'} uppercase text-lg nav-link-transition`}
                 >
                   Контакты
-                </Link>
+                </Link> */}
               </li>
               {!isAuthenticated ? (
                 <li>

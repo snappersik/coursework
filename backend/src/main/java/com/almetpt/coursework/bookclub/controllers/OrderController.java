@@ -2,6 +2,7 @@ package com.almetpt.coursework.bookclub.controllers;
 
 import com.almetpt.coursework.bookclub.annotations.AdminAction;
 import com.almetpt.coursework.bookclub.dto.OrderDTO;
+import com.almetpt.coursework.bookclub.mapper.OrderMapper;
 import com.almetpt.coursework.bookclub.model.Order;
 import com.almetpt.coursework.bookclub.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,11 +24,13 @@ import java.util.List;
 @Tag(name = "Заказы", description = "Контроллер для работы с заказами")
 public class OrderController extends GenericController<Order, OrderDTO> {
 
-    private final OrderService orderService;
+    private final OrderMapper orderMapper;
+    private OrderService orderService;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, OrderMapper orderMapper) {
         super(orderService);
         this.orderService = orderService;
+        this.orderMapper = orderMapper;
     }
 
     @Operation(summary = "Получить страницу заказов", description = "Возвращает страницу заказов с пагинацией")
@@ -46,11 +49,13 @@ public class OrderController extends GenericController<Order, OrderDTO> {
         return ResponseEntity.ok(orderService.getMyOrders());
     }
 
-    @Operation(summary = "Создать заказ из корзины", description = "Создает новый заказ на основе текущей корзины пользователя")
     @PostMapping("/create")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<OrderDTO> createOrderFromCart() {
-        return ResponseEntity.ok(orderService.createOrderFromCart());
+        OrderDTO orderDto = orderService.createOrderFromCart();
+        Order order = orderMapper.toEntity(orderDto);
+        orderService.sendOrderConfirmationWithAttachments(order);
+        return ResponseEntity.ok(orderDto);
     }
 
     @Operation(summary = "Изменить статус заказа", description = "Позволяет администратору изменить статус заказа")

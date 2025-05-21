@@ -39,13 +39,26 @@ public class Product extends GenericModel {
     @Lob
     @Column(name = "cover_image_data")
     private byte[] coverImageData;
-    
+        
     @Column(name = "original_cover_image_filename")
     private String originalCoverImageFilename;
 
+    // New fields for electronic product
+    @Column(name = "electronic_product_filename")
+    private String electronicProductFilename;
+
+    @Column(name = "original_electronic_product_filename")
+    private String originalElectronicProductFilename;
+
     @Transient
     public boolean hasLocalImage() {
-        return coverImageData != null && coverImageData.length > 0;
+        return (coverImageFilename != null && !coverImageFilename.isBlank()) 
+               || (coverImageData != null && coverImageData.length > 0);
+    }
+
+    @Transient
+    public boolean hasElectronicFile() {
+        return electronicProductFilename != null && !electronicProductFilename.isBlank();
     }
 
     @ManyToMany(mappedBy = "products")

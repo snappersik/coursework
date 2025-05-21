@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import ProductCard from '../../components/catalog/ProductCard';
 import FilterButtons from '../../components/catalog/FilterButtons';
 import apiClient from '../../api/apiClient';
 import { FaSearch } from 'react-icons/fa';
+import { cartStore } from '../../store/cartStore';
 
 const CatalogPage = observer(() => {
   const [products, setProducts] = useState([]);
@@ -14,15 +15,11 @@ const CatalogPage = observer(() => {
   const [categories, setCategories] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+
   const pageSize = 12;
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [filter, searchTerm, currentPage]);
+  useEffect(() => { fetchCategories(); }, []);
+  useEffect(() => { fetchProducts(); }, [filter, searchTerm, currentPage]);
 
   const fetchCategories = async () => {
     try {
@@ -37,17 +34,10 @@ const CatalogPage = observer(() => {
     setLoading(true);
     try {
       let url = `/products/search?page=${currentPage}&size=${pageSize}`;
-
-      if (searchTerm) {
-        url += `&name=${encodeURIComponent(searchTerm)}`;
-      }
-
-      if (filter !== 'all') {
-        url += `&category=${encodeURIComponent(filter)}`;
-      }
-
+      if (searchTerm) url += `&name=${encodeURIComponent(searchTerm)}`;
+      if (filter !== 'all') url += `&category=${encodeURIComponent(filter)}`;
       const response = await apiClient.get(url);
-      setProducts(response.data.content);
+      setProducts(Array.isArray(response.data.content) ? response.data.content : []);
       setTotalPages(response.data.totalPages);
       setError('');
     } catch (err) {
@@ -60,118 +50,100 @@ const CatalogPage = observer(() => {
 
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
-    setCurrentPage(0); // Сброс на первую страницу при изменении фильтра
+    setCurrentPage(0);
   };
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
+  const handleSearchChange = (e) => setSearchTerm(e.target.value);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    setCurrentPage(0); // Сброс на первую страницу при поиске
+    setCurrentPage(0);
     fetchProducts();
   };
 
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
+  const handlePageChange = (newPage) => setCurrentPage(newPage);
+
+  const handleAddToCart = async (product) => {
+    try {
+      await cartStore.addItem(product);
+    } catch (error) {
+      alert(error.message);
+    }
   };
+
+  const isInCart = (productId) => cartStore.items.some(item => item.id === productId);
 
   if (loading && products.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-yellow-400"></div>
-        </div>
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-center">Каталог продуктов</h1>
-
-      {/* Поисковая строка */}
-      <div className="mb-6">
-        <form onSubmit={handleSearchSubmit} className="flex w-full max-w-md mx-auto">
+    <div className="min-h-screen bg-[#424242] py-10 px-2 md:px-8">
+      <h1 className="text-3xl font-bold mb-6 text-yellow-500">Каталог товаров</h1>
+      <form onSubmit={handleSearchSubmit} className="mb-6 flex flex-col md:flex-row gap-4 items-center">
+        <div className="relative flex-1">
           <input
             type="text"
-            placeholder="Поиск продуктов..."
+            placeholder="Поиск по названию..."
             value={searchTerm}
             onChange={handleSearchChange}
-            className="flex-grow px-4 py-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            className="w-full p-3 pl-10 bg-[#525252] border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all duration-300"
           />
-          <button
-            type="submit"
-            className="bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded-r"
-          >
-            <FaSearch />
-          </button>
-        </form>
-      </div>
-
-      {/* Фильтры категорий */}
-      <div className="mb-8">
-        <FilterButtons
-          categories={categories}
-          activeFilter={filter}
-          onFilterChange={handleFilterChange}
-        />
-      </div>
-
+          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        </div>
+        <button
+          type="submit"
+          className="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-white font-bold transition-colors"
+        >
+          Поиск
+        </button>
+      </form>
+      <FilterButtons
+        activeFilter={filter}
+        onFilterChange={handleFilterChange}
+        categories={categories}
+      />
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
+        <div className="bg-red-600 text-white p-3 rounded mb-6">{error}</div>
       )}
-
-      {products.length === 0 && !loading ? (
-        <div className="text-center py-8">
-          <p className="text-lg text-gray-600">Продукты не найдены</p>
-          <p className="text-sm text-gray-500 mt-2">Попробуйте изменить параметры поиска</p>
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products.map(product => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+        {products.length === 0 ? (
+          <div className="col-span-full text-center text-gray-300 text-xl p-10 bg-[#525252] rounded-lg">
+            Продукты не найдены
+            <div className="text-gray-400 text-base mt-2">Попробуйте изменить параметры поиска</div>
           </div>
-
-          {/* Пагинация */}
-          {totalPages > 1 && (
-            <div className="flex justify-center mt-8">
-              <nav className="inline-flex rounded-md shadow">
-                <button
-                  onClick={() => handlePageChange(Math.max(0, currentPage - 1))}
-                  disabled={currentPage === 0}
-                  className="px-3 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
-                >
-                  Назад
-                </button>
-                {[...Array(totalPages).keys()].map(page => (
-                  <button
-                    key={page}
-                    onClick={() => handlePageChange(page)}
-                    className={`px-3 py-2 border border-gray-300 text-sm font-medium ${currentPage === page
-                        ? 'bg-yellow-400 text-white'
-                        : 'bg-white text-gray-500 hover:bg-gray-50'
-                      }`}
-                  >
-                    {page + 1}
-                  </button>
-                ))}
-                <button
-                  onClick={() => handlePageChange(Math.min(totalPages - 1, currentPage + 1))}
-                  disabled={currentPage === totalPages - 1}
-                  className="px-3 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
-                >
-                  Вперед
-                </button>
-              </nav>
-            </div>
-          )}
-        </>
+        ) : (
+          products.map(product => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              inCart={isInCart(product.id)}
+              onAddToCart={handleAddToCart}
+            />
+          ))
+        )}
+      </div>
+      {/* Пагинация */}
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-8 gap-2">
+          {[...Array(totalPages).keys()].map(pageNum => (
+            <button
+              key={pageNum}
+              onClick={() => handlePageChange(pageNum)}
+              className={`px-4 py-2 rounded-lg font-bold transition-colors ${
+                currentPage === pageNum
+                  ? 'bg-yellow-500 text-white'
+                  : 'bg-[#525252] text-gray-300 hover:bg-yellow-600 hover:text-white'
+              }`}
+            >
+              {pageNum + 1}
+            </button>
+          ))}
+        </div>
       )}
     </div>
   );

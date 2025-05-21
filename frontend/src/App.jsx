@@ -16,6 +16,7 @@ import HomePage from './pages/Home/HomePage.jsx';
 import CatalogPage from './pages/Catalog/CatalogPage';
 import EventsPage from './pages/Events/EventsPage';
 import EventDetailPage from './pages/Events/EventDetailPage';
+import ContactPage from './pages/Contact/ContactPage';
 // import AboutPage from './pages/AboutPage'; 
 // import ContactsPage from './pages/ContactsPage'; 
 import AuthPage from './pages/Auth/AuthPage';
@@ -126,6 +127,7 @@ const App = observer(() => {
             {/* Публичные маршруты */}
             <Route path="/" element={<HomePage />} />
             <Route path="/catalog" element={<CatalogPage />} />
+            {/* <Route path="/contacts" element={<ContactPage />} /> */}
             {/* <Route path="/books/:id" element={<BookDetailPage />} /> */}
             <Route path="/events" element={<EventsPage />} />
             <Route path="/events/:id" element={<EventDetailPage />} />

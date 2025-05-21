@@ -1,7 +1,8 @@
 package com.almetpt.coursework.bookclub.repository;
 
 import com.almetpt.coursework.bookclub.model.EventApplication;
-import org.springframework.data.jpa.repository.JpaRepository;
+// Убедитесь, что GenericRepository импортирован, если он в другом пакете, или удалите этот импорт, если он не нужен явно
+// import com.almetpt.coursework.bookclub.repository.GenericRepository; // Этот импорт может быть излишен, если он в том же пакете или уже доступен
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -9,7 +10,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface EventApplicationRepository extends JpaRepository<EventApplication, Long> {
+// ИЗМЕНЕНИЕ: Заменяем JpaRepository на GenericRepository
+public interface EventApplicationRepository extends GenericRepository<EventApplication> {
 
     @Query("SELECT COUNT(ea) FROM EventApplication ea WHERE ea.event.id = :eventId AND ea.status = 'APPROVED'")
     int countApprovedApplicationsForEvent(@Param("eventId") Long eventId);

@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
+import { useDropzone } from 'react-dropzone';
 import { toast } from 'react-toastify';
 import { API_URL } from '../../../config';
-import { FaSort, FaSortAlphaDown, FaSortAlphaUp, FaTrashRestore, FaTrash, FaPen, FaPlus, FaLink } from 'react-icons/fa';
-import { useDropzone } from 'react-dropzone';
+import { FaPlus, FaTrashRestore, FaTrash, FaPen, FaLink, FaFilePdf, FaFileAudio, FaFileArchive, FaFileAlt } from 'react-icons/fa'; // Added more icons
+import { FaSort, FaSortAlphaDown, FaSortAlphaUp } from 'react-icons/fa';
+
 
 const ProductManager = () => {
   const [products, setProducts] = useState([]);
@@ -14,13 +16,50 @@ const ProductManager = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [softDeletedProducts, setSoftDeletedProducts] = useState({});
+
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: 0,
-    category: 'BOOK',
-    coverUrl: '',
-    coverFile: null
+    category: 'E_BOOK', // Default category
+    coverUrl: '', // For displaying existing or new URL for cover
+    coverFile: null, // For new cover file upload
+    electronicProductFilename: '', // For displaying existing e-product filename
+    electronicFile: null, // For new e-product file upload
+  });
+
+  const { getRootProps: getCoverRootProps, getInputProps: getCoverInputProps, isDragActive: isCoverDragActive } = useDropzone({
+    onDrop: useCallback(acceptedFiles => {
+      const file = acceptedFiles[0];
+      setFormData(prevForm => ({
+        ...prevForm,
+        coverFile: file,
+        coverUrl: URL.createObjectURL(file), // Show preview for new file
+      }));
+    }, []),
+    accept: { 'image/*': ['.jpg', '.jpeg', '.png', '.gif', '.webp'] },
+    multiple: false,
+  });
+
+  const { getRootProps: getElectronicFileRootProps, getInputProps: getElectronicFileInputProps, isDragActive: isElectronicFileDragActive } = useDropzone({
+    onDrop: useCallback(acceptedFiles => {
+      const file = acceptedFiles[0];
+      setFormData(prevForm => ({
+        ...prevForm,
+        electronicFile: file,
+        // Display the name of the new file, not a URL preview for non-images
+        electronicProductFilename: file ? file.name : (currentProduct?.electronicProductFilename || ''),
+      }));
+    }, [currentProduct]),
+    // Adjust accept based on typical e-product types
+    accept: { 
+      'application/pdf': ['.pdf'],
+      'audio/*': ['.mp3', '.wav', '.aac'],
+      'application/zip': ['.zip'],
+      'application/epub+zip': ['.epub'],
+      'application/vnd.mobipocket-ebook': ['.mobi']
+    }, 
+    multiple: false,
   });
 
   useEffect(() => {
@@ -29,13 +68,12 @@ const ProductManager = () => {
   }, []);
 
   const fetchProducts = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await axios.get(`${API_URL}/products/paginated`, { withCredentials: true });
-      setProducts(response.data.content || []);
+      const { data } = await axios.get(`${API_URL}/products/search?page=0&size=100`, { withCredentials: true });
+      setProducts(data.content || []);
     } catch (error) {
-      console.error('Ошибка загрузки продуктов:', error);
-      toast.error('Не удалось загрузить продукты');
+      toast.error('Не удалось загрузить товары');
     } finally {
       setLoading(false);
     }
@@ -43,117 +81,79 @@ const ProductManager = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(`${API_URL}/products/categories/with-descriptions`, { withCredentials: true });
-      setCategories(response.data || []);
+      const { data } = await axios.get(`${API_URL}/products/categories/with-descriptions`, { withCredentials: true });
+      setCategories(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error('Ошибка загрузки категорий:', error);
       toast.error('Не удалось загрузить категории');
+      setCategories([]);
     }
   };
 
-  const onDrop = useCallback((acceptedFiles) => {
-    const file = acceptedFiles[0];
-    setFormData(prevForm => ({
-      ...prevForm,
-      coverFile: file,
-      coverUrl: URL.createObjectURL(file),
-    }));
-  }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    accept: {
-      'image/*': ['.jpg', '.jpeg', '.png', '.gif', '.webp']
-    }
-  });
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
-    if (name === 'price') {
-      // Убедимся, что цена - положительное число
-      const price = parseFloat(value);
-      setFormData({
-        ...formData,
-        [name]: isNaN(price) ? 0 : Math.max(0, price)
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value
-      });
-    }
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleCoverUrlChange = (e) => {
     const url = e.target.value;
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       coverUrl: url,
-      coverFile: null
-    });
+      coverFile: null // Clear file if URL is manually set
+    }));
   };
+      
+  const getElectronicFileIcon = (filename) => {
+    if (!filename) return <FaFileAlt className="text-gray-400" />;
+    const ext = filename.split('.').pop().toLowerCase();
+    if (ext === 'pdf') return <FaFilePdf className="text-red-500" />;
+    if (['mp3', 'wav', 'aac'].includes(ext)) return <FaFileAudio className="text-blue-500" />;
+    if (['zip', 'rar'].includes(ext)) return <FaFileArchive className="text-yellow-500" />;
+    return <FaFileAlt className="text-gray-400" />;
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      // Явно формируем DTO продукта для JSON-части
-      const productDto = {
-        name: formData.name,
-        description: formData.description,
-        price: formData.price,
-        category: formData.category,
-        coverImageUrl: formData.coverUrl
-      };
+    const payload = new FormData();
+    const productDto = {
+      name: formData.name,
+      description: formData.description,
+      price: parseFloat(formData.price) || 0,
+      category: formData.category,
+      coverImageUrl: formData.coverFile ? null : formData.coverUrl, // Send URL only if no new file
+      // electronicProductFilename will be set by backend based on uploaded file
+    };
 
-      // Если редактируем существующий продукт, добавляем id
-      if (currentProduct) {
+    if (currentProduct) { // Include ID for updates
         productDto.id = currentProduct.id;
-      }
+    }
+        
+    payload.append('product', new Blob([JSON.stringify(productDto)], { type: 'application/json' }));
 
-      const formDataPayload = new FormData();
-      formDataPayload.append('product', new Blob([JSON.stringify(productDto)], { type: 'application/json' }));
+    if (formData.coverFile) {
+      payload.append('coverFile', formData.coverFile);
+    }
+    if (formData.electronicFile) {
+      payload.append('electronicFile', formData.electronicFile);
+    }
 
-      if (formData.coverFile) {
-        formDataPayload.append('file', formData.coverFile);
-      }
-
+    try {
       if (currentProduct) {
-        // Обновление продукта с поддержкой загрузки файла
-        await axios.put(`${API_URL}/products/${currentProduct.id}/with-file`, formDataPayload, {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-        toast.success('Продукт успешно обновлен');
+        await axios.put(`${API_URL}/products/${currentProduct.id}`, payload, { withCredentials: true });
+        toast.success('Товар успешно обновлен');
       } else {
-        // Создание нового продукта
-        await axios.post(`${API_URL}/products`, formDataPayload, {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-        toast.success('Продукт успешно создан');
+        await axios.post(`${API_URL}/products`, payload, { withCredentials: true });
+        toast.success('Товар успешно создан');
       }
-
       setShowModal(false);
-      fetchProducts(); // Обновляем список продуктов
+      fetchProducts();
     } catch (error) {
-      console.error('Ошибка сохранения продукта:', error);
-      let errorMessage = 'Не удалось сохранить продукт';
-
-      if (error.response && error.response.data && error.response.data.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-
+      console.error('Ошибка сохранения товара:', error);
+      const errorMessage = error.response?.data?.message || error.message || 'Не удалось сохранить товар';
       toast.error(errorMessage);
     }
   };
-
 
   const handleEdit = (product) => {
     setCurrentProduct(product);
@@ -161,19 +161,23 @@ const ProductManager = () => {
       name: product.name || '',
       description: product.description || '',
       price: product.price || 0,
-      category: product.category || 'BOOK',
-      coverUrl: product.coverImageUrl || '',
-      coverFile: null
+      category: product.category || 'E_BOOK',
+      coverUrl: product.coverImageUrl || (product.coverImageFilename ? `${API_URL}/products/${product.id}/cover` : ''),
+      coverFile: null,
+      electronicProductFilename: product.originalElectronicProductFilename || '', // Display original name
+      electronicFile: null,
     });
     setShowModal(true);
   };
 
   const handleSoftDelete = (id) => {
-    setSoftDeletedProducts(prev => ({
-      ...prev,
-      [id]: true
-    }));
-    toast.warning('Продукт помечен на удаление');
+    // Logic for soft delete (e.g., API call and UI update)
+    setSoftDeletedProducts(prev => ({ ...prev, [id]: true }));
+    toast.warning('Товар помечен на удаление');
+    // Example API call (adjust as needed):
+    // axios.patch(`${API_URL}/products/${id}/soft-delete`, {}, { withCredentials: true })
+    //   .then(() => fetchProducts())
+    //   .catch(() => toast.error('Ошибка мягкого удаления'));
   };
 
   const handleRestore = (id) => {
@@ -182,14 +186,18 @@ const ProductManager = () => {
       delete newState[id];
       return newState;
     });
-    toast.success('Продукт восстановлен');
+    toast.success('Товар восстановлен (в UI)');
+    // Example API call (adjust as needed):
+    // axios.patch(`${API_URL}/products/${id}/restore`, {}, { withCredentials: true })
+    //   .then(() => fetchProducts())
+    //   .catch(() => toast.error('Ошибка восстановления'));
   };
-
+      
   const handleDelete = async (id) => {
-    if (window.confirm('Вы уверены, что хотите удалить этот продукт? Это действие нельзя отменить.')) {
+    if (window.confirm('Вы уверены, что хотите удалить этот товар? Это действие нельзя отменить.')) {
       try {
         await axios.delete(`${API_URL}/products/${id}`, { withCredentials: true });
-        toast.success('Продукт успешно удален');
+        toast.success('Товар успешно удален');
         fetchProducts();
         setSoftDeletedProducts(prev => {
           const newState = { ...prev };
@@ -197,8 +205,8 @@ const ProductManager = () => {
           return newState;
         });
       } catch (error) {
-        console.error('Ошибка удаления продукта:', error);
-        toast.error('Не удалось удалить продукт');
+        console.error('Ошибка удаления товара:', error);
+        toast.error(error.response?.data?.message || 'Не удалось удалить товар');
       }
     }
   };
@@ -209,14 +217,15 @@ const ProductManager = () => {
       name: '',
       description: '',
       price: 0,
-      category: 'BOOK',
+      category: categories.length > 0 ? categories[0].name : 'E_BOOK',
       coverUrl: '',
-      coverFile: null
+      coverFile: null,
+      electronicProductFilename: '',
+      electronicFile: null,
     });
     setShowModal(true);
   };
-
-  // Функция сортировки
+      
   const requestSort = (key) => {
     let direction = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -225,67 +234,36 @@ const ProductManager = () => {
     setSortConfig({ key, direction });
   };
 
-  // Получение иконки сортировки
   const getSortIcon = (key) => {
-    if (sortConfig.key !== key) {
-      return <FaSort className="ml-1 inline" />;
-    }
-    return sortConfig.direction === 'asc'
-      ? <FaSortAlphaDown className="ml-1 inline text-yellow-400" />
-      : <FaSortAlphaUp className="ml-1 inline text-yellow-400" />;
+    if (sortConfig.key !== key) return <FaSort className="ml-1 inline" />;
+    return sortConfig.direction === 'asc' ? <FaSortAlphaDown className="ml-1 inline text-yellow-400" /> : <FaSortAlphaUp className="ml-1 inline text-yellow-400" />;
   };
 
-  // Получение отображаемого имени категории
-  const getCategoryDisplayName = (categoryName) => {
-    const category = categories.find(c => c.name === categoryName);
-    return category ? category.description : categoryName;
-  };
-
-  // Фильтрация и сортировка продуктов
   const filteredAndSortedProducts = React.useMemo(() => {
-    // Сначала фильтруем по поисковому запросу
-    let filteredProducts = products.filter(product =>
+    let filtered = products.filter(product =>
       product.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      getCategoryDisplayName(product.category)?.toLowerCase().includes(searchQuery.toLowerCase())
+      product.category?.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
-    // Затем сортируем
     if (sortConfig.key) {
-      filteredProducts.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
-          return sortConfig.direction === 'asc' ? -1 : 1;
-        }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
-          return sortConfig.direction === 'asc' ? 1 : -1;
-        }
+      filtered.sort((a, b) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === 'asc' ? 1 : -1;
         return 0;
       });
     }
-
-    return filteredProducts;
-  }, [products, searchQuery, sortConfig, categories]);
+    return filtered;
+  }, [products, searchQuery, sortConfig]);
 
   if (loading) {
-    return (
-      <div className="p-4 flex justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
-      </div>
-    );
+    return <div className="p-4 flex justify-center"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div></div>;
   }
 
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-white">Управление продуктами</h2>
-        <button
-          onClick={handleAddNew}
-          className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 flex items-center"
-        >
-          <FaPlus className="mr-2" /> Добавить продукт
-        </button>
+        <h2 className="text-2xl font-bold text-white">Управление товарами</h2>
+        <button onClick={handleAddNew} className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">Добавить товар</button>
       </div>
-
-      {/* Поиск */}
       <div className="mb-4">
         <input
           type="text"
@@ -295,86 +273,43 @@ const ProductManager = () => {
           className="w-full p-2 bg-[#707070] border border-gray-600 rounded text-gray-200 placeholder-gray-400"
         />
       </div>
-
       {filteredAndSortedProducts.length > 0 ? (
         <div className="overflow-x-auto">
           <table className="min-w-full text-white [&_th]:text-center [&_td:not(:first-child)]:text-center">
             <thead className="bg-[#626262]">
               <tr>
-                <th
-                  className="px-4 py-2 cursor-pointer"
-                  onClick={() => requestSort('name')}
-                >
-                  Название {getSortIcon('name')}
-                </th>
-                <th
-                  className="px-4 py-2 cursor-pointer"
-                  onClick={() => requestSort('category')}
-                >
-                  Категория {getSortIcon('category')}
-                </th>
-                <th
-                  className="px-4 py-2 cursor-pointer"
-                  onClick={() => requestSort('price')}
-                >
-                  Цена {getSortIcon('price')}
-                </th>
+                <th className="px-4 py-2 cursor-pointer" onClick={() => requestSort('name')}>Название {getSortIcon('name')}</th>
+                <th className="px-4 py-2 cursor-pointer" onClick={() => requestSort('category')}>Категория {getSortIcon('category')}</th>
+                <th className="px-4 py-2 cursor-pointer" onClick={() => requestSort('price')}>Цена {getSortIcon('price')}</th>
+                <th className="px-4 py-2">Эл. файл</th>
                 <th className="px-4 py-2">Действия</th>
               </tr>
             </thead>
             <tbody>
               {filteredAndSortedProducts.map(product => (
-                <tr
-                  key={product.id}
-                  className={`bg-[#585858] border-t border-gray-700 ${softDeletedProducts[product.id] ? 'opacity-60' : ''}`}
-                >
-                  <td className="px-4 py-2">{product.name}</td>
+                <tr key={product.id} className={`bg-[#585858] border-t border-gray-700 ${softDeletedProducts[product.id] ? 'opacity-60' : ''}`}>
+                  <td className="px-4 py-2 text-left">{product.name}</td>
+                  <td className="px-4 py-2">{product.category}</td>
+                  <td className="px-4 py-2">{product.price?.toFixed(2)} руб.</td>
                   <td className="px-4 py-2">
-                    <span className={`px-2 py-1 rounded ${product.category === 'BOOK' ? 'bg-blue-600' :
-                      product.category === 'E_BOOK' ? 'bg-green-600' :
-                        product.category === 'AUDIO_BOOK' ? 'bg-purple-600' :
-                          product.category === 'MERCHANDISE' ? 'bg-orange-600' :
-                            product.category === 'GIFT_CARD' ? 'bg-pink-600' :
-                              'bg-gray-600'
-                      }`}>
-                      {getCategoryDisplayName(product.category)}
-                    </span>
+                    {product.hasElectronicFile ? (
+                        <span title={product.originalElectronicProductFilename || 'Электронный файл'} className="text-green-400">
+                            {getElectronicFileIcon(product.originalElectronicProductFilename)} Да
+                        </span>
+                    ) : (
+                        <span className="text-gray-400">Нет</span>
+                    )}
                   </td>
-                  <td className="px-4 py-2">{product.price} ₽</td>
                   <td className="px-4 py-2 flex justify-center space-x-2">
                     {!softDeletedProducts[product.id] ? (
                       <>
-                        <button
-                          onClick={() => handleEdit(product)}
-                          className="p-2 bg-gray-600 text-white rounded hover:bg-gray-500"
-                          title="Редактировать"
-                        >
-                          <FaPen />
-                        </button>
-                        <button
-                          onClick={() => handleSoftDelete(product.id)}
-                          className="p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-                          title="Удалить"
-                        >
-                          <FaTrash />
-                        </button>
+                        <button onClick={() => handleEdit(product)} className="p-2 bg-gray-600 text-white rounded hover:bg-gray-500" title="Редактировать"><FaPen /></button>
+                        <button onClick={() => handleSoftDelete(product.id)} className="p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600" title="Удалить"><FaTrash /></button>
                       </>
                     ) : (
                       <>
-                        <button
-                          onClick={() => handleRestore(product.id)}
-                          className="p-2 bg-transparent border border-yellow-400 text-yellow-400 rounded hover:bg-yellow-400 hover:bg-opacity-10"
-                          title="Восстановить"
-                        >
-                          <FaTrashRestore />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(product.id)}
-                          className="p-2 bg-red-600 text-white rounded hover:bg-red-700"
-                          title="Удалить навсегда"
-                        >
-                          <FaTrash />
-                        </button>
+                        <button onClick={() => handleRestore(product.id)} className="p-2 bg-transparent border border-yellow-400 text-yellow-400 rounded hover:bg-yellow-400 hover:bg-opacity-10" title="Восстановить"><FaTrashRestore /></button>
+                        <button onClick={() => handleDelete(product.id)} className="p-2 bg-red-600 text-white rounded hover:bg-red-700" title="Удалить навсегда"><FaTrash /></button>
                       </>
                     )}
                   </td>
@@ -385,138 +320,81 @@ const ProductManager = () => {
         </div>
       ) : (
         <div className="text-center py-10 bg-[#585858] rounded-lg">
-          <p className="text-xl text-gray-300">Продукты не найдены</p>
-          <p className="text-gray-400 mt-2">Добавьте новый продукт или измените параметры поиска</p>
+          <p className="text-xl text-gray-300">Товары не найдены</p>
+          <p className="text-gray-400 mt-2">Добавьте новый товар или измените параметры поиска</p>
         </div>
       )}
 
-      {/* Модальное окно для добавления/редактирования продукта */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-[#585858] p-6 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-bold mb-4 text-white">{currentProduct ? 'Редактировать продукт' : 'Добавить продукт'}</h3>
+            <h3 className="text-xl font-bold mb-4 text-white">{currentProduct ? 'Редактировать товар' : 'Добавить товар'}</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-300">Название</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full p-2 bg-[#707070] border border-gray-600 rounded text-white"
-                  required
-                />
+                <input type="text" name="name" value={formData.name} onChange={handleInputChange} className="mt-1 block w-full p-2 bg-[#707070] border border-gray-600 rounded text-white" required />
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300">Категория</label>
-                  <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full p-2 bg-[#707070] border border-gray-600 rounded text-white"
-                    required
-                  >
-                    {categories.map(category => (
-                      <option key={category.name} value={category.name}>
-                        {category.description}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300">Цена (₽)</label>
-                  <input
-                    type="number"
-                    name="price"
-                    value={formData.price}
-                    onChange={handleInputChange}
-                    min="0"
-                    step="0.01"
-                    className="mt-1 block w-full p-2 bg-[#707070] border border-gray-600 rounded text-white"
-                    required
-                  />
-                </div>
-              </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-300">Описание</label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  rows="4"
-                  className="mt-1 block w-full p-2 bg-[#707070] border border-gray-600 rounded text-white"
-                ></textarea>
+                <textarea name="description" value={formData.description} onChange={handleInputChange} rows="3" className="mt-1 block w-full p-2 bg-[#707070] border border-gray-600 rounded text-white"></textarea>
               </div>
-
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-300">Цена (руб.)</label>
+                  <input type="number" name="price" value={formData.price} onChange={handleInputChange} min="0" step="0.01" className="mt-1 block w-full p-2 bg-[#707070] border border-gray-600 rounded text-white" required />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-300">Категория</label>
+                  <select name="category" value={formData.category} onChange={handleInputChange} className="mt-1 block w-full p-2 bg-[#707070] border border-gray-600 rounded text-white">
+                    {categories.map(cat => <option key={cat.name} value={cat.name}>{cat.description}</option>)}
+                  </select>
+                </div>
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-300">URL обложки</label>
                 <div className="flex">
-                  <input
-                    type="text"
-                    name="coverUrlInput"
-                    value={formData.coverUrl}
-                    onChange={handleCoverUrlChange}
-                    placeholder="https://example.com/image.jpg"
-                    className="mt-1 flex-1 p-2 bg-[#707070] border border-gray-600 rounded-l text-white"
-                  />
-                  <button
-                    type="button"
-                    className="mt-1 p-2 bg-blue-600 text-white rounded-r hover:bg-blue-700"
-                    onClick={() => {
-                      if (!formData.coverUrl) {
-                        toast.error('Введите URL изображения');
-                        return;
-                      }
-                      toast.info('URL обложки установлен');
-                    }}
-                  >
-                    <FaLink />
-                  </button>
+                    <input type="text" name="coverUrlInput" value={formData.coverUrl} onChange={handleCoverUrlChange} placeholder="https://example.com/image.jpg" className="mt-1 flex-1 p-2 bg-[#707070] border border-gray-600 rounded-l text-white" />
+                    <button type="button" className="mt-1 p-2 bg-blue-600 text-white rounded-r hover:bg-blue-700" onClick={() => { if (!formData.coverUrl) toast.error('Введите URL'); else toast.info('URL установлен');}}><FaLink /></button>
                 </div>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-300">Загрузить обложку</label>
-                <div
-                  {...getRootProps()}
-                  className={`mt-1 border-2 border-dashed p-4 rounded text-center cursor-pointer ${isDragActive ? 'border-yellow-500 bg-[#707070]' : 'border-gray-600'
-                    }`}
-                >
-                  <input {...getInputProps()} />
-                  {formData.coverUrl && formData.coverFile ? (
-                    <div className="flex flex-col items-center">
-                      <img src={formData.coverUrl} alt="Preview" className="h-32 object-contain mb-2" />
-                      <p className="text-white">Перетащите новый файл или кликните для замены</p>
+                <div {...getCoverRootProps()} className={`mt-1 border-2 border-dashed p-4 rounded text-center cursor-pointer ${isCoverDragActive ? 'border-yellow-500 bg-[#707070]' : 'border-gray-600'}`}>
+                  <input {...getCoverInputProps()} />
+                  {formData.coverFile ? (
+                    <img src={URL.createObjectURL(formData.coverFile)} alt="Preview" className="h-20 mx-auto mb-1 object-contain" />
+                  ) : formData.coverUrl && !formData.coverUrl.startsWith('blob:') ? (
+                     <img src={formData.coverUrl} alt="Current Cover" className="h-20 mx-auto mb-1 object-contain" onError={(e) => e.target.style.display='none'}/>
+                  ) : null}
+                  <p className="text-white text-sm">{formData.coverFile ? formData.coverFile.name : (isCoverDragActive ? 'Отпустите файл...' : 'Перетащите файл или кликните')}</p>
+                </div>
+              </div>
+                  
+              {/* Electronic File Upload */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300">Электронный файл (PDF, MP3, ZIP и т.д.)</label>
+                <div {...getElectronicFileRootProps()} className={`mt-1 border-2 border-dashed p-4 rounded text-center cursor-pointer ${isElectronicFileDragActive ? 'border-yellow-500 bg-[#707070]' : 'border-gray-600'}`}>
+                  <input {...getElectronicFileInputProps()} />
+                  {formData.electronicFile ? (
+                    <div className="flex items-center justify-center text-white">
+                      {getElectronicFileIcon(formData.electronicFile.name)}
+                      <span className="ml-2">{formData.electronicFile.name}</span>
                     </div>
-                  ) : formData.coverUrl ? (
-                    <div className="flex flex-col items-center">
-                      <img src={formData.coverUrl} alt="Preview" className="h-32 object-contain mb-2" />
-                      <p className="text-white">Используется URL изображения</p>
-                    </div>
+                  ) : formData.electronicProductFilename ? (
+                     <div className="flex items-center justify-center text-white">
+                       {getElectronicFileIcon(formData.electronicProductFilename)}
+                       <span className="ml-2">{formData.electronicProductFilename} (текущий)</span>
+                     </div>
                   ) : (
-                    <p className="text-white">Перетащите файл или кликните для выбора</p>
+                    <p className="text-white">{isElectronicFileDragActive ? 'Отпустите файл...' : 'Перетащите файл или кликните для выбора'}</p>
                   )}
                 </div>
+                {formData.electronicFile && <button type="button" onClick={() => setFormData(prev => ({...prev, electronicFile: null, electronicProductFilename: currentProduct?.originalElectronicProductFilename || ''}))} className="mt-1 text-xs text-red-400 hover:text-red-300">Удалить выбранный файл</button>}
               </div>
 
               <div className="flex justify-end space-x-2 pt-4">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500"
-                >
-                  Отмена
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-                >
-                  {currentProduct ? 'Сохранить' : 'Добавить'}
-                </button>
+                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500">Отмена</button>
+                <button type="submit" className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">{currentProduct ? 'Сохранить' : 'Добавить'}</button>
               </div>
             </form>
           </div>
