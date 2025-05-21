@@ -1,95 +1,109 @@
 package com.almetpt.coursework.bookclub.service;
 
+import com.almetpt.coursework.bookclub.dto.CartDTO;
+import com.almetpt.coursework.bookclub.mapper.CartMapper;
 import com.almetpt.coursework.bookclub.model.Cart;
 import com.almetpt.coursework.bookclub.model.Product;
 import com.almetpt.coursework.bookclub.model.User;
 import com.almetpt.coursework.bookclub.repository.CartRepository;
 import com.almetpt.coursework.bookclub.repository.ProductRepository;
-import com.almetpt.coursework.bookclub.utils.MailUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
+import com.almetpt.coursework.bookclub.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.List;
 
 @Service
+@Slf4j
 public class CartService {
 
-    @Autowired
-    private CartRepository cartRepository;
+    private final CartRepository cartRepository;
+    private final CartMapper cartMapper;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
+    public CartService(CartRepository cartRepository, CartMapper cartMapper, UserRepository userRepository,
+            ProductRepository productRepository) {
+        this.cartRepository = cartRepository;
+        this.cartMapper = cartMapper;
+        this.userRepository = userRepository;
+        this.productRepository = productRepository;
+    }
 
-    @Autowired
-    private JavaMailSender mailSender;
+    @Transactional
+    public Cart saveCart(Cart cart) {
+        return cartRepository.save(cart);
+    }
 
-    @Transactional(readOnly = true)
-    public Cart getCartByUserId(Long userId) {
-        Cart cart = cartRepository.findByUserId(userId);
-        // Принудительная инициализация коллекции продуктов
-        if (cart != null && cart.getProducts() != null) {
-            cart.getProducts().size();
-        }
-        return cart;
+    public CartDTO getCartById(Long id) {
+        Cart cart = cartRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Cart not found with id: " + id));
+        return cartMapper.toDTO(cart);
+    }
+
+    public CartDTO getCartByUser(User user) {
+        Cart cart = cartRepository.findByUser(user)
+                .orElseThrow(() -> new NotFoundException("Cart not found for user: " + user.getEmail()));
+        return cartMapper.toDTO(cart);
     }
 
     @Transactional
     public Cart createCartForUser(User user) {
         Cart cart = new Cart();
         cart.setUser(user);
-        cart.setCreatedBy("AUTO");
         cart.setCreatedWhen(LocalDateTime.now());
-        cart.setDeleted(false);
+        cart.setCreatedBy("SYSTEM");
         return cartRepository.save(cart);
     }
 
     @Transactional
-    public void addProductToCart(Long userId, Long productId) {
-        Cart cart = getCartByUserId(userId);
-        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
-        if (!cart.getProducts().contains(product)) {
-            cart.getProducts().add(product);
-            cartRepository.save(cart);
-        }
-    }
+    public CartDTO addProductToCart(Long cartId, Long productId) {
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new NotFoundException("Cart not found with id: " + cartId));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException("Product not found with id: " + productId));
 
-    @Transactional
-    public void removeProductFromCart(Long userId, Long productId) {
-        Cart cart = getCartByUserId(userId);
-        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
-        if (cart.getProducts().contains(product)) {
-            cart.getProducts().remove(product);
-            cartRepository.save(cart);
-        }
-    }
-
-    @Transactional
-    public void purchaseProduct(Long userId, Long productId, String userEmail) {
-        Cart cart = getCartByUserId(userId);
-        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
-        if (cart.getProducts().contains(product)) {
-            // Удаляем товар из корзины
-            cart.getProducts().remove(product);
-            cartRepository.save(cart);
-            // Отправляем подтверждение на email
-            sendOrderConfirmationEmail(userEmail, product);
+        List<Product> products = cart.getProducts();
+        if (products == null) {
+            cart.setProducts(List.of(product));
         } else {
-            throw new RuntimeException("Product is not in the cart");
+            products.add(product);
         }
+        return cartMapper.toDTO(cartRepository.save(cart));
     }
 
-    private void sendOrderConfirmationEmail(String userEmail, Product product) {
-        String subject = "Подтверждение заказа";
-        String text = "Спасибо за покупку!\n\n" +
-                "Детали заказа:\n" +
-                "Название: " + product.getName();
-        mailSender.send(MailUtils.createMailMessage(userEmail, subject, text));
+    @Transactional
+    public CartDTO removeProductFromCart(Long cartId, Long productId) {
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new NotFoundException("Cart not found with id: " + cartId));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException("Product not found with id: " + productId));
+
+        List<Product> products = cart.getProducts();
+        if (products != null) {
+            products.remove(product);
+            cart.setProducts(products);
+        }
+        return cartMapper.toDTO(cartRepository.save(cart));
     }
 
-    public Optional<Cart> findById(Long id) {
-        return cartRepository.findById(id);
+    public CartDTO getCurrentUserCart() {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findUserByEmailAndIsDeletedFalse(userEmail);
+        if (user == null) {
+            throw new NotFoundException("User not found with email: " + userEmail);
+        }
+        Cart cart = cartRepository.findByUser(user)
+                .orElseThrow(() -> new NotFoundException("Cart not found for user: " + userEmail));
+        return cartMapper.toDTO(cart);
+    }
+
+    public Cart getCartEntity(Long cartId) {
+        return cartRepository.findById(cartId)
+                .orElseThrow(() -> new NotFoundException("Cart not found with id: " + cartId));
     }
 }
