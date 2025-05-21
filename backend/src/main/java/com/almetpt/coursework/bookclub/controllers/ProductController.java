@@ -1,8 +1,8 @@
 package com.almetpt.coursework.bookclub.controllers;
 
 import com.almetpt.coursework.bookclub.dto.ProductDTO;
-import com.almetpt.coursework.bookclub.dto.ProductImageDTO;
-import com.almetpt.coursework.bookclub.dto.ProductImageUploadDTO;
+// import com.almetpt.coursework.bookclub.dto.ProductImageDTO;
+// import com.almetpt.coursework.bookclub.dto.ProductImageUploadDTO;
 import com.almetpt.coursework.bookclub.model.Product;
 import com.almetpt.coursework.bookclub.model.ProductCategory;
 import com.almetpt.coursework.bookclub.service.ProductImageService;
@@ -19,8 +19,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,12 +29,12 @@ import java.util.stream.Collectors;
 public class ProductController extends GenericController<Product, ProductDTO> {
 
     private final ProductService productService;
-    private final ProductImageService productImageService;
+    // private final ProductImageService productImageService;
 
     public ProductController(ProductService productService, ProductImageService productImageService) {
         super(productService);
         this.productService = productService;
-        this.productImageService = productImageService;
+        // this.productImageService = productImageService;
     }
 
     @Override
@@ -61,165 +59,34 @@ public class ProductController extends GenericController<Product, ProductDTO> {
         return productService.searchProducts(name, category, pageable);
     }
 
-    // @Override
-    // @Operation(description = "Создать запись", method = "create")
-    // @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    // @PreAuthorize("hasRole('ADMIN') or hasRole('ORGANIZER')")
-    // public ResponseEntity<ProductDTO> create(
-    //         @RequestPart("product") ProductDTO productDTO,
-    //         @RequestPart(value = "file", required = false) MultipartFile file) {
-
-    //     try {
-    //         // Создаем продукт
-    //         ProductDTO createdProduct = productService.create(productDTO);
-
-    //         // Если есть файл, загружаем его
-    //         if (file != null && !file.isEmpty()) {
-    //             productImageService.uploadImage(createdProduct.getId(), file);
-    //         }
-
-    //         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
-    //     } catch (Exception e) {
-    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-    //     }
-    // }
-
-    @Override
-    @Operation(description = "Обновить запись", method = "update")
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(description = "Создать продукт с изображением", method = "create")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN') or hasRole('ORGANIZER')")
-    public ResponseEntity<ProductDTO> update(
+    public ResponseEntity<ProductDTO> create(
             @RequestPart("product") ProductDTO productDTO,
-            @PathVariable Long id) {
-
+            @RequestPart(value = "file", required = false) MultipartFile file) {
         try {
-            productDTO.setId(id);
-            ProductDTO updatedProduct = productService.update(productDTO);
-
-            // Если есть файл, загружаем его
-            MultipartFile file = null;
-            try {
-                file = (MultipartFile) productDTO.getClass().getMethod("getFile").invoke(productDTO);
-            } catch (Exception ignored) {
-            }
-
-            if (file != null && !file.isEmpty()) {
-                productImageService.uploadImage(id, file);
-            }
-
-            return ResponseEntity.ok(updatedProduct);
+            ProductDTO createdProduct = productService.createProductWithImage(productDTO, file);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    // Специальный метод для обновления с файлом
-    @Operation(description = "Обновить запись с файлом", method = "updateWithFile")
+    @Operation(description = "Обновить продукт с изображением", method = "update")
     @PutMapping(value = "/{id}/with-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN') or hasRole('ORGANIZER')")
     public ResponseEntity<ProductDTO> updateWithFile(
             @PathVariable Long id,
             @RequestPart("product") ProductDTO productDTO,
             @RequestPart(value = "file", required = false) MultipartFile file) {
-
         try {
             productDTO.setId(id);
-            ProductDTO updatedProduct = productService.update(productDTO);
-
-            // Если есть файл, загружаем его
-            if (file != null && !file.isEmpty()) {
-                productImageService.uploadImage(id, file);
-            }
-
+            ProductDTO updatedProduct = productService.updateProductWithImage(productDTO, file);
             return ResponseEntity.ok(updatedProduct);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }
-
-    @Operation(summary = "Загрузить изображение обложки продукта", description = "Загружает изображение обложки для указанного продукта в виде файла")
-    @PostMapping(path = "/{id}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ProductImageDTO> uploadProductCover(
-            @Parameter(description = "ID продукта") @PathVariable Long id,
-            @Parameter(description = "Файл изображения", content = @io.swagger.v3.oas.annotations.media.Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE, schema = @io.swagger.v3.oas.annotations.media.Schema(type = "string", format = "binary"))) @RequestPart("file") MultipartFile file) {
-        try {
-            ProductImageDTO result = productImageService.uploadImage(id, file);
-            return ResponseEntity.ok(result);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-    @Operation(summary = "Загрузить изображение обложки продукта из URL", description = "Устанавливает URL внешнего изображения в качестве обложки продукта")
-    @PostMapping("/url")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ProductImageDTO> setProductCoverUrl(
-            @Parameter(description = "Информация об изображении") @RequestBody ProductImageUploadDTO dto) {
-        ProductImageDTO result = productImageService.uploadImageFromUrl(dto);
-        return ResponseEntity.ok(result);
-    }
-
-    @Operation(summary = "Загрузить бинарные данные изображения продукта", description = "Загружает и сохраняет бинарные данные изображения обложки продукта")
-    @PostMapping(path = "/{id}/upload-binary", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ProductImageDTO> uploadProductCoverBinary(
-            @Parameter(description = "ID продукта") @PathVariable Long id,
-            @Parameter(description = "Файл изображения", content = @io.swagger.v3.oas.annotations.media.Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE, schema = @io.swagger.v3.oas.annotations.media.Schema(type = "string", format = "binary"))) @RequestPart("file") MultipartFile file) {
-        try {
-            ProductImageDTO result = productImageService.uploadImageData(id, file);
-            return ResponseEntity.ok(result);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-    @Operation(summary = "Получить информацию об изображении продукта", description = "Возвращает информацию об изображении обложки продукта")
-    @GetMapping("/{id}/image-info")
-    public ResponseEntity<ProductImageDTO> getProductImageInfo(
-            @Parameter(description = "ID продукта") @PathVariable Long id) {
-        ProductImageDTO result = productImageService.getProductImageInfo(id);
-        return ResponseEntity.ok(result);
-    }
-
-    @GetMapping("/{id}/cover")
-    public ResponseEntity<?> getProductCover(@PathVariable Long id) {
-        try {
-            // Получаем информацию о продукте
-            ProductDTO product = productService.getOne(id);
-
-            // Если есть URL, делаем редирект
-            if (product.getCoverImageUrl() != null && !product.getCoverImageUrl().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.FOUND)
-                        .location(URI.create(product.getCoverImageUrl()))
-                        .build();
-            }
-
-            // Если есть локальный файл
-            if (product.getCoverImageFilename() != null) {
-                // Получаем данные файла
-                byte[] imageData = productImageService.getProductCoverImageData(id);
-                return ResponseEntity.ok()
-                        .contentType(MediaType.parseMediaType(determineContentType(product.getCoverImageFilename())))
-                        .body(imageData);
-            }
-
-            // Если нет ни URL, ни файла
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
-    // Определение типа контента по расширению файла
-    private String determineContentType(String filename) {
-        if (filename.endsWith(".webp"))
-            return "image/webp";
-        if (filename.endsWith(".jpg") || filename.endsWith(".jpeg"))
-            return "image/jpeg";
-        if (filename.endsWith(".png"))
-            return "image/png";
-        return "application/octet-stream";
     }
 
     @GetMapping("/categories")

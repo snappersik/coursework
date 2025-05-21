@@ -96,7 +96,6 @@ const ProductManager = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       // Явно формируем DTO продукта для JSON-части
       const productDto = {
@@ -104,45 +103,57 @@ const ProductManager = () => {
         description: formData.description,
         price: formData.price,
         category: formData.category,
-        // Включаем coverUrl из состояния формы. Название поля должно соответствовать DTO на бэкенде.
-        // Предполагаем, что бэкенд ожидает поле 'coverImageUrl' для URL.
         coverImageUrl: formData.coverUrl
       };
+
+      // Если редактируем существующий продукт, добавляем id
+      if (currentProduct) {
+        productDto.id = currentProduct.id;
+      }
 
       const formDataPayload = new FormData();
       formDataPayload.append('product', new Blob([JSON.stringify(productDto)], { type: 'application/json' }));
 
-      if (formData.coverFile) { // Если выбран новый файл для загрузки
+      if (formData.coverFile) {
         formDataPayload.append('file', formData.coverFile);
       }
 
       if (currentProduct) {
-        // Обновление продукта
-        await axios.put(`${API_URL}/products/${currentProduct.id}`, formDataPayload, {
-          withCredentials: true
+        // Обновление продукта с поддержкой загрузки файла
+        await axios.put(`${API_URL}/products/${currentProduct.id}/with-file`, formDataPayload, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         });
         toast.success('Продукт успешно обновлен');
       } else {
         // Создание нового продукта
         await axios.post(`${API_URL}/products`, formDataPayload, {
-          withCredentials: true
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         });
         toast.success('Продукт успешно создан');
       }
+
       setShowModal(false);
       fetchProducts(); // Обновляем список продуктов
     } catch (error) {
       console.error('Ошибка сохранения продукта:', error);
       let errorMessage = 'Не удалось сохранить продукт';
-      // Пытаемся извлечь сообщение об ошибке с бэкенда
+
       if (error.response && error.response.data && error.response.data.message) {
         errorMessage = error.response.data.message;
       } else if (error.message) {
         errorMessage = error.message;
       }
+
       toast.error(errorMessage);
     }
   };
+
 
   const handleEdit = (product) => {
     setCurrentProduct(product);
@@ -320,11 +331,11 @@ const ProductManager = () => {
                   <td className="px-4 py-2">{product.name}</td>
                   <td className="px-4 py-2">
                     <span className={`px-2 py-1 rounded ${product.category === 'BOOK' ? 'bg-blue-600' :
-                        product.category === 'E_BOOK' ? 'bg-green-600' :
-                          product.category === 'AUDIO_BOOK' ? 'bg-purple-600' :
-                            product.category === 'MERCHANDISE' ? 'bg-orange-600' :
-                              product.category === 'GIFT_CARD' ? 'bg-pink-600' :
-                                'bg-gray-600'
+                      product.category === 'E_BOOK' ? 'bg-green-600' :
+                        product.category === 'AUDIO_BOOK' ? 'bg-purple-600' :
+                          product.category === 'MERCHANDISE' ? 'bg-orange-600' :
+                            product.category === 'GIFT_CARD' ? 'bg-pink-600' :
+                              'bg-gray-600'
                       }`}>
                       {getCategoryDisplayName(product.category)}
                     </span>

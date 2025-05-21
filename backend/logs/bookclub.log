@@ -338,3 +338,493 @@ Caused by: org.springframework.security.core.userdetails.UsernameNotFoundExcepti
 2025-05-21T00:01:20.547+03:00  INFO 182935 --- [Coursework] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2025-05-21T00:01:20.616+03:00  INFO 182935 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
 2025-05-21T00:01:20.619+03:00  INFO 182935 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+2025-05-21T00:05:47.676+03:00  INFO 188682 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : Starting ApplicationTests using Java 17.0.15 with PID 188682 (started by cookie in /home/cookie/IdeaProjects/coursework/backend)
+2025-05-21T00:05:47.682+03:00  INFO 188682 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : No active profile set, falling back to 1 default profile: "default"
+2025-05-21T00:05:52.180+03:00  INFO 188682 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T00:05:52.440+03:00  INFO 188682 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 235 ms. Found 10 JPA repository interfaces.
+2025-05-21T00:05:55.212+03:00  INFO 188682 --- [Coursework] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T00:05:55.352+03:00  INFO 188682 --- [Coursework] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-05-21T00:05:55.453+03:00  INFO 188682 --- [Coursework] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T00:05:56.414+03:00  INFO 188682 --- [Coursework] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T00:05:56.561+03:00  INFO 188682 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-05-21T00:05:57.033+03:00  INFO 188682 --- [Coursework] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@64f33dee
+2025-05-21T00:05:57.038+03:00  INFO 188682 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-05-21T00:05:57.229+03:00  INFO 188682 --- [Coursework] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.5
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-21T00:05:57.846+03:00  WARN 188682 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:05:57.875+03:00  WARN 188682 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:05:57.901+03:00  WARN 188682 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:05:57.920+03:00  WARN 188682 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:05:57.939+03:00  WARN 188682 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:05:57.986+03:00  WARN 188682 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:05:58.007+03:00  WARN 188682 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:06:00.799+03:00  INFO 188682 --- [Coursework] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T00:06:02.592+03:00  INFO 188682 --- [Coursework] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T00:06:03.687+03:00  INFO 188682 --- [Coursework] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-05-21T00:06:11.955+03:00  WARN 188682 --- [Coursework] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T00:06:12.034+03:00  INFO 188682 --- [Coursework] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-05-21T00:06:15.043+03:00  WARN 188682 --- [Coursework] [main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-05-21T00:06:15.858+03:00  INFO 188682 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : Started ApplicationTests in 29.244 seconds (process running for 32.005)
+2025-05-21T00:06:15.870+03:00  INFO 188682 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Swagger UI: http://localhost:8080/swagger-ui/index.html
+2025-05-21T00:06:15.871+03:00  INFO 188682 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Application: http://localhost:8080/
+2025-05-21T00:06:16.491+03:00  INFO 188682 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Администратор уже существует
+2025-05-21T00:06:17.432+03:00  INFO 188682 --- [Coursework] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.almetpt.coursework.bookclub.controllers.ProductSearchIntegrationTest]: ProductSearchIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-05-21T00:06:17.523+03:00  INFO 188682 --- [Coursework] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.almetpt.coursework.CourseworkApplication for test class com.almetpt.coursework.bookclub.controllers.ProductSearchIntegrationTest
+2025-05-21T00:06:17.541+03:00  INFO 188682 --- [Coursework] [main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+2025-05-21T00:06:17.642+03:00  INFO 188682 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Starting ProductSearchIntegrationTest using Java 17.0.15 with PID 188682 (started by cookie in /home/cookie/IdeaProjects/coursework/backend)
+2025-05-21T00:06:17.644+03:00 DEBUG 188682 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-05-21T00:06:17.645+03:00  INFO 188682 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : The following 1 profile is active: "test"
+2025-05-21T00:06:18.480+03:00  INFO 188682 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T00:06:18.529+03:00  INFO 188682 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 46 ms. Found 10 JPA repository interfaces.
+2025-05-21T00:06:18.964+03:00  INFO 188682 --- [Coursework] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T00:06:18.971+03:00  INFO 188682 --- [Coursework] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T00:06:19.006+03:00  INFO 188682 --- [Coursework] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T00:06:19.009+03:00  INFO 188682 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2025-05-21T00:06:19.523+03:00  INFO 188682 --- [Coursework] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2025-05-21T00:06:19.525+03:00  INFO 188682 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2025-05-21T00:06:19.539+03:00  WARN 188682 --- [Coursework] [main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-21T00:06:19.559+03:00  INFO 188682 --- [Coursework] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-21T00:06:19.611+03:00  WARN 188682 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:06:19.622+03:00  WARN 188682 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:06:19.640+03:00  WARN 188682 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:06:19.652+03:00  WARN 188682 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:06:19.666+03:00  WARN 188682 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:06:19.695+03:00  WARN 188682 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:06:19.707+03:00  WARN 188682 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T00:06:20.500+03:00  INFO 188682 --- [Coursework] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T00:06:20.691+03:00  INFO 188682 --- [Coursework] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T00:06:22.524+03:00  WARN 188682 --- [Coursework] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T00:06:22.572+03:00  INFO 188682 --- [Coursework] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-05-21T00:06:23.940+03:00  WARN 188682 --- [Coursework] [main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-05-21T00:06:24.479+03:00 DEBUG 188682 --- [Coursework] [main] c.a.c.b.config.jwt.JWTCookieFilter       : Filter 'JWTCookieFilter' configured for use
+2025-05-21T00:06:24.488+03:00  INFO 188682 --- [Coursework] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-05-21T00:06:24.490+03:00  INFO 188682 --- [Coursework] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-05-21T00:06:24.496+03:00  INFO 188682 --- [Coursework] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 4 ms
+2025-05-21T00:06:24.548+03:00  INFO 188682 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Started ProductSearchIntegrationTest in 7.007 seconds (process running for 40.695)
+2025-05-21T00:06:24.724+03:00  INFO 188682 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Роли успешно созданы
+2025-05-21T00:06:25.068+03:00  INFO 188682 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Администратор создан с email: admin и паролем: admin
+2025-05-21T00:06:25.072+03:00  INFO 188682 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Swagger UI: http://localhost:8080/swagger-ui/index.html
+2025-05-21T00:06:25.073+03:00  INFO 188682 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Application: http://localhost:8080/
+2025-05-21T00:06:25.430+03:00 DEBUG 188682 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@5f4db912
+2025-05-21T00:06:25.556+03:00  WARN 188682 --- [Coursework] [main] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-05-21T00:06:25.913+03:00 DEBUG 188682 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@6cd99ca5
+2025-05-21T00:06:25.956+03:00  INFO 188682 --- [Coursework] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.almetpt.coursework.bookclub.controllers.ProductControllerIntegrationTest]: ProductControllerIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-05-21T00:06:25.964+03:00  INFO 188682 --- [Coursework] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.almetpt.coursework.CourseworkApplication for test class com.almetpt.coursework.bookclub.controllers.ProductControllerIntegrationTest
+2025-05-21T00:06:26.007+03:00 DEBUG 188682 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@219335e0
+2025-05-21T00:06:26.071+03:00 DEBUG 188682 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@5346b657
+2025-05-21T00:06:28.555+03:00  WARN 188682 --- [Coursework] [main] c.a.c.bookclub.service.UserService       : Токен expired-token для пользователя user@example.com истек (проверка валидности).
+2025-05-21T00:06:28.571+03:00  WARN 188682 --- [Coursework] [main] c.a.c.bookclub.service.UserService       : Попытка валидации несуществующего токена: non-existent-token
+2025-05-21T00:06:28.732+03:00  INFO 188682 --- [Coursework] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T00:06:28.744+03:00  INFO 188682 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-05-21T00:06:28.759+03:00  INFO 188682 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-05-21T00:06:28.822+03:00  INFO 188682 --- [Coursework] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T00:06:28.892+03:00  INFO 188682 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2025-05-21T00:06:28.895+03:00  INFO 188682 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+2025-05-21T04:25:41.425+03:00  INFO 10507 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : Starting ApplicationTests using Java 17.0.15 with PID 10507 (started by cookie in /home/cookie/IdeaProjects/coursework/backend)
+2025-05-21T04:25:41.429+03:00  INFO 10507 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : No active profile set, falling back to 1 default profile: "default"
+2025-05-21T04:25:43.553+03:00  INFO 10507 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T04:25:43.724+03:00  INFO 10507 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 155 ms. Found 10 JPA repository interfaces.
+2025-05-21T04:25:45.648+03:00  INFO 10507 --- [Coursework] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T04:25:45.825+03:00  INFO 10507 --- [Coursework] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-05-21T04:25:45.923+03:00  INFO 10507 --- [Coursework] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T04:25:46.518+03:00  INFO 10507 --- [Coursework] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T04:25:46.600+03:00  INFO 10507 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-05-21T04:25:46.977+03:00  INFO 10507 --- [Coursework] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@10e4ee33
+2025-05-21T04:25:46.984+03:00  INFO 10507 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-05-21T04:25:47.183+03:00  INFO 10507 --- [Coursework] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.5
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-21T04:25:47.872+03:00  WARN 10507 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:25:47.919+03:00  WARN 10507 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:25:47.955+03:00  WARN 10507 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:25:47.985+03:00  WARN 10507 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:25:48.010+03:00  WARN 10507 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:25:48.050+03:00  WARN 10507 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:25:48.062+03:00  WARN 10507 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:25:51.397+03:00  INFO 10507 --- [Coursework] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T04:25:55.697+03:00  INFO 10507 --- [Coursework] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T04:25:56.613+03:00  INFO 10507 --- [Coursework] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-05-21T04:26:03.952+03:00  WARN 10507 --- [Coursework] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T04:26:04.003+03:00  INFO 10507 --- [Coursework] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-05-21T04:26:06.374+03:00  WARN 10507 --- [Coursework] [main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-05-21T04:26:07.756+03:00  INFO 10507 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : Started ApplicationTests in 26.926 seconds (process running for 29.042)
+2025-05-21T04:26:08.499+03:00  INFO 10507 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Администратор уже существует
+2025-05-21T04:26:08.501+03:00  INFO 10507 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Swagger UI: http://localhost:8080/swagger-ui/index.html
+2025-05-21T04:26:08.502+03:00  INFO 10507 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Application: http://localhost:8080/
+2025-05-21T04:26:09.701+03:00  INFO 10507 --- [Coursework] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.almetpt.coursework.bookclub.controllers.ProductSearchIntegrationTest]: ProductSearchIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-05-21T04:26:09.781+03:00  INFO 10507 --- [Coursework] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.almetpt.coursework.CourseworkApplication for test class com.almetpt.coursework.bookclub.controllers.ProductSearchIntegrationTest
+2025-05-21T04:26:09.805+03:00  INFO 10507 --- [Coursework] [main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+2025-05-21T04:26:09.916+03:00  INFO 10507 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Starting ProductSearchIntegrationTest using Java 17.0.15 with PID 10507 (started by cookie in /home/cookie/IdeaProjects/coursework/backend)
+2025-05-21T04:26:09.919+03:00 DEBUG 10507 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-05-21T04:26:09.922+03:00  INFO 10507 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : The following 1 profile is active: "test"
+2025-05-21T04:26:10.754+03:00  INFO 10507 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T04:26:10.815+03:00  INFO 10507 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 56 ms. Found 10 JPA repository interfaces.
+2025-05-21T04:26:11.300+03:00  INFO 10507 --- [Coursework] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T04:26:11.306+03:00  INFO 10507 --- [Coursework] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T04:26:11.326+03:00  INFO 10507 --- [Coursework] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T04:26:11.328+03:00  INFO 10507 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2025-05-21T04:26:11.899+03:00  INFO 10507 --- [Coursework] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2025-05-21T04:26:11.901+03:00  INFO 10507 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2025-05-21T04:26:11.917+03:00  WARN 10507 --- [Coursework] [main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-21T04:26:11.952+03:00  INFO 10507 --- [Coursework] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-21T04:26:11.995+03:00  WARN 10507 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:26:12.002+03:00  WARN 10507 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:26:12.010+03:00  WARN 10507 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:26:12.017+03:00  WARN 10507 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:26:12.027+03:00  WARN 10507 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:26:12.050+03:00  WARN 10507 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:26:12.058+03:00  WARN 10507 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:26:12.611+03:00  INFO 10507 --- [Coursework] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T04:26:12.798+03:00  INFO 10507 --- [Coursework] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T04:26:15.104+03:00  WARN 10507 --- [Coursework] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T04:26:15.177+03:00  INFO 10507 --- [Coursework] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-05-21T04:26:17.111+03:00  WARN 10507 --- [Coursework] [main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-05-21T04:26:17.672+03:00 DEBUG 10507 --- [Coursework] [main] c.a.c.b.config.jwt.JWTCookieFilter       : Filter 'JWTCookieFilter' configured for use
+2025-05-21T04:26:17.675+03:00  INFO 10507 --- [Coursework] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-05-21T04:26:17.676+03:00  INFO 10507 --- [Coursework] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-05-21T04:26:17.680+03:00  INFO 10507 --- [Coursework] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 4 ms
+2025-05-21T04:26:17.725+03:00  INFO 10507 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Started ProductSearchIntegrationTest in 7.921 seconds (process running for 39.012)
+2025-05-21T04:26:17.727+03:00  INFO 10507 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Swagger UI: http://localhost:8080/swagger-ui/index.html
+2025-05-21T04:26:17.729+03:00  INFO 10507 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Application: http://localhost:8080/
+2025-05-21T04:26:17.880+03:00  INFO 10507 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Роли успешно созданы
+2025-05-21T04:26:18.101+03:00  INFO 10507 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Администратор создан с email: admin и паролем: admin
+2025-05-21T04:26:18.362+03:00 DEBUG 10507 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@51ccf311
+2025-05-21T04:26:18.426+03:00  WARN 10507 --- [Coursework] [main] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-05-21T04:26:18.665+03:00 DEBUG 10507 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@4226d302
+2025-05-21T04:26:18.690+03:00  INFO 10507 --- [Coursework] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.almetpt.coursework.bookclub.controllers.ProductControllerIntegrationTest]: ProductControllerIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-05-21T04:26:18.696+03:00  INFO 10507 --- [Coursework] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.almetpt.coursework.CourseworkApplication for test class com.almetpt.coursework.bookclub.controllers.ProductControllerIntegrationTest
+2025-05-21T04:26:18.743+03:00 DEBUG 10507 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@549e072a
+2025-05-21T04:26:18.815+03:00 DEBUG 10507 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@2a6304f2
+2025-05-21T04:26:20.436+03:00  WARN 10507 --- [Coursework] [main] c.a.c.bookclub.service.UserService       : Токен expired-token для пользователя user@example.com истек (проверка валидности).
+2025-05-21T04:26:20.446+03:00  WARN 10507 --- [Coursework] [main] c.a.c.bookclub.service.UserService       : Попытка валидации несуществующего токена: non-existent-token
+2025-05-21T04:26:20.504+03:00  INFO 10507 --- [Coursework] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T04:26:20.510+03:00  INFO 10507 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-05-21T04:26:20.519+03:00  INFO 10507 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-05-21T04:26:20.534+03:00  INFO 10507 --- [Coursework] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T04:26:20.573+03:00  INFO 10507 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2025-05-21T04:26:20.575+03:00  INFO 10507 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+2025-05-21T04:31:01.794+03:00  INFO 16272 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : Starting ApplicationTests using Java 17.0.15 with PID 16272 (started by cookie in /home/cookie/IdeaProjects/coursework/backend)
+2025-05-21T04:31:01.800+03:00  INFO 16272 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : No active profile set, falling back to 1 default profile: "default"
+2025-05-21T04:31:05.365+03:00  INFO 16272 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T04:31:05.589+03:00  INFO 16272 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 201 ms. Found 10 JPA repository interfaces.
+2025-05-21T04:31:07.507+03:00  INFO 16272 --- [Coursework] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T04:31:07.655+03:00  INFO 16272 --- [Coursework] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-05-21T04:31:07.754+03:00  INFO 16272 --- [Coursework] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T04:31:08.446+03:00  INFO 16272 --- [Coursework] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T04:31:08.511+03:00  INFO 16272 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-05-21T04:31:08.964+03:00  INFO 16272 --- [Coursework] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@6e90cec8
+2025-05-21T04:31:08.971+03:00  INFO 16272 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-05-21T04:31:09.133+03:00  INFO 16272 --- [Coursework] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.5
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-21T04:31:09.630+03:00  WARN 16272 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:31:09.671+03:00  WARN 16272 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:31:09.719+03:00  WARN 16272 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:31:09.749+03:00  WARN 16272 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:31:09.777+03:00  WARN 16272 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:31:09.825+03:00  WARN 16272 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:31:09.847+03:00  WARN 16272 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:31:13.334+03:00  INFO 16272 --- [Coursework] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T04:31:15.807+03:00  INFO 16272 --- [Coursework] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T04:31:16.600+03:00  INFO 16272 --- [Coursework] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-05-21T04:31:25.128+03:00  WARN 16272 --- [Coursework] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T04:31:25.197+03:00  INFO 16272 --- [Coursework] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-05-21T04:31:28.195+03:00  WARN 16272 --- [Coursework] [main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-05-21T04:31:28.964+03:00  INFO 16272 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : Started ApplicationTests in 28.005 seconds (process running for 31.313)
+2025-05-21T04:31:28.973+03:00  INFO 16272 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Swagger UI: http://localhost:8080/swagger-ui/index.html
+2025-05-21T04:31:28.974+03:00  INFO 16272 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Application: http://localhost:8080/
+2025-05-21T04:31:29.446+03:00  INFO 16272 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Администратор уже существует
+2025-05-21T04:31:30.545+03:00  INFO 16272 --- [Coursework] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.almetpt.coursework.bookclub.controllers.ProductSearchIntegrationTest]: ProductSearchIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-05-21T04:31:30.606+03:00  INFO 16272 --- [Coursework] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.almetpt.coursework.CourseworkApplication for test class com.almetpt.coursework.bookclub.controllers.ProductSearchIntegrationTest
+2025-05-21T04:31:30.617+03:00  INFO 16272 --- [Coursework] [main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+2025-05-21T04:31:30.702+03:00  INFO 16272 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Starting ProductSearchIntegrationTest using Java 17.0.15 with PID 16272 (started by cookie in /home/cookie/IdeaProjects/coursework/backend)
+2025-05-21T04:31:30.704+03:00 DEBUG 16272 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-05-21T04:31:30.705+03:00  INFO 16272 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : The following 1 profile is active: "test"
+2025-05-21T04:31:31.428+03:00  INFO 16272 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T04:31:31.495+03:00  INFO 16272 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 63 ms. Found 10 JPA repository interfaces.
+2025-05-21T04:31:31.878+03:00  INFO 16272 --- [Coursework] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T04:31:31.883+03:00  INFO 16272 --- [Coursework] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T04:31:31.907+03:00  INFO 16272 --- [Coursework] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T04:31:31.909+03:00  INFO 16272 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2025-05-21T04:31:32.375+03:00  INFO 16272 --- [Coursework] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2025-05-21T04:31:32.376+03:00  INFO 16272 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2025-05-21T04:31:32.389+03:00  WARN 16272 --- [Coursework] [main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-21T04:31:32.406+03:00  INFO 16272 --- [Coursework] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-21T04:31:32.446+03:00  WARN 16272 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:31:32.454+03:00  WARN 16272 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:31:32.465+03:00  WARN 16272 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:31:32.474+03:00  WARN 16272 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:31:32.482+03:00  WARN 16272 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:31:32.499+03:00  WARN 16272 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:31:32.507+03:00  WARN 16272 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:31:33.299+03:00  INFO 16272 --- [Coursework] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T04:31:33.497+03:00  INFO 16272 --- [Coursework] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T04:31:35.251+03:00  WARN 16272 --- [Coursework] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T04:31:35.294+03:00  INFO 16272 --- [Coursework] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-05-21T04:31:36.701+03:00  WARN 16272 --- [Coursework] [main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-05-21T04:31:37.270+03:00 DEBUG 16272 --- [Coursework] [main] c.a.c.b.config.jwt.JWTCookieFilter       : Filter 'JWTCookieFilter' configured for use
+2025-05-21T04:31:37.272+03:00  INFO 16272 --- [Coursework] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-05-21T04:31:37.274+03:00  INFO 16272 --- [Coursework] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-05-21T04:31:37.279+03:00  INFO 16272 --- [Coursework] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 5 ms
+2025-05-21T04:31:37.345+03:00  INFO 16272 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Started ProductSearchIntegrationTest in 6.729 seconds (process running for 39.694)
+2025-05-21T04:31:37.509+03:00  INFO 16272 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Роли успешно созданы
+2025-05-21T04:31:37.756+03:00  INFO 16272 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Администратор создан с email: admin и паролем: admin
+2025-05-21T04:31:37.757+03:00  INFO 16272 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Swagger UI: http://localhost:8080/swagger-ui/index.html
+2025-05-21T04:31:37.762+03:00  INFO 16272 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Application: http://localhost:8080/
+2025-05-21T04:31:38.053+03:00 DEBUG 16272 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@79c67d42
+2025-05-21T04:31:38.144+03:00  WARN 16272 --- [Coursework] [main] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-05-21T04:31:38.420+03:00 DEBUG 16272 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@3f0ea21d
+2025-05-21T04:31:38.447+03:00  INFO 16272 --- [Coursework] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.almetpt.coursework.bookclub.controllers.ProductControllerIntegrationTest]: ProductControllerIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-05-21T04:31:38.456+03:00  INFO 16272 --- [Coursework] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.almetpt.coursework.CourseworkApplication for test class com.almetpt.coursework.bookclub.controllers.ProductControllerIntegrationTest
+2025-05-21T04:31:38.494+03:00 DEBUG 16272 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@413b45bc
+2025-05-21T04:31:38.552+03:00 DEBUG 16272 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@12d9143b
+2025-05-21T04:31:40.535+03:00  WARN 16272 --- [Coursework] [main] c.a.c.bookclub.service.UserService       : Токен expired-token для пользователя user@example.com истек (проверка валидности).
+2025-05-21T04:31:40.552+03:00  WARN 16272 --- [Coursework] [main] c.a.c.bookclub.service.UserService       : Попытка валидации несуществующего токена: non-existent-token
+2025-05-21T04:31:40.656+03:00  INFO 16272 --- [Coursework] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T04:31:40.667+03:00  INFO 16272 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-05-21T04:31:40.679+03:00  INFO 16272 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-05-21T04:31:40.712+03:00  INFO 16272 --- [Coursework] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T04:31:40.773+03:00  INFO 16272 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2025-05-21T04:31:40.777+03:00  INFO 16272 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+2025-05-21T04:36:59.502+03:00  INFO 23045 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : Starting ApplicationTests using Java 17.0.15 with PID 23045 (started by cookie in /home/cookie/IdeaProjects/coursework/backend)
+2025-05-21T04:36:59.507+03:00  INFO 23045 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : No active profile set, falling back to 1 default profile: "default"
+2025-05-21T04:37:02.094+03:00  INFO 23045 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T04:37:02.307+03:00  INFO 23045 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 197 ms. Found 10 JPA repository interfaces.
+2025-05-21T04:37:04.270+03:00  INFO 23045 --- [Coursework] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T04:37:04.377+03:00  INFO 23045 --- [Coursework] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-05-21T04:37:04.445+03:00  INFO 23045 --- [Coursework] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T04:37:05.090+03:00  INFO 23045 --- [Coursework] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T04:37:05.152+03:00  INFO 23045 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-05-21T04:37:05.580+03:00  INFO 23045 --- [Coursework] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@e4ef4c0
+2025-05-21T04:37:05.586+03:00  INFO 23045 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-05-21T04:37:05.761+03:00  INFO 23045 --- [Coursework] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.5
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-21T04:37:06.107+03:00  WARN 23045 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:37:06.130+03:00  WARN 23045 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:37:06.145+03:00  WARN 23045 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:37:06.159+03:00  WARN 23045 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:37:06.169+03:00  WARN 23045 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:37:06.196+03:00  WARN 23045 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:37:06.215+03:00  WARN 23045 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:37:08.810+03:00  INFO 23045 --- [Coursework] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T04:37:10.612+03:00  INFO 23045 --- [Coursework] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T04:37:11.238+03:00  INFO 23045 --- [Coursework] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-05-21T04:37:19.322+03:00  WARN 23045 --- [Coursework] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T04:37:19.384+03:00  INFO 23045 --- [Coursework] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-05-21T04:37:21.502+03:00  WARN 23045 --- [Coursework] [main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-05-21T04:37:22.395+03:00  INFO 23045 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : Started ApplicationTests in 23.746 seconds (process running for 25.914)
+2025-05-21T04:37:22.410+03:00  INFO 23045 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Swagger UI: http://localhost:8080/swagger-ui/index.html
+2025-05-21T04:37:22.412+03:00  INFO 23045 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Application: http://localhost:8080/
+2025-05-21T04:37:23.089+03:00  INFO 23045 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Администратор уже существует
+2025-05-21T04:37:24.266+03:00  INFO 23045 --- [Coursework] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.almetpt.coursework.bookclub.controllers.ProductSearchIntegrationTest]: ProductSearchIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-05-21T04:37:24.362+03:00  INFO 23045 --- [Coursework] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.almetpt.coursework.CourseworkApplication for test class com.almetpt.coursework.bookclub.controllers.ProductSearchIntegrationTest
+2025-05-21T04:37:24.377+03:00  INFO 23045 --- [Coursework] [main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+2025-05-21T04:37:24.467+03:00  INFO 23045 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Starting ProductSearchIntegrationTest using Java 17.0.15 with PID 23045 (started by cookie in /home/cookie/IdeaProjects/coursework/backend)
+2025-05-21T04:37:24.469+03:00 DEBUG 23045 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-05-21T04:37:24.470+03:00  INFO 23045 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : The following 1 profile is active: "test"
+2025-05-21T04:37:25.545+03:00  INFO 23045 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T04:37:25.610+03:00  INFO 23045 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 60 ms. Found 10 JPA repository interfaces.
+2025-05-21T04:37:26.024+03:00  INFO 23045 --- [Coursework] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T04:37:26.030+03:00  INFO 23045 --- [Coursework] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T04:37:26.060+03:00  INFO 23045 --- [Coursework] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T04:37:26.063+03:00  INFO 23045 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2025-05-21T04:37:26.629+03:00  INFO 23045 --- [Coursework] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2025-05-21T04:37:26.631+03:00  INFO 23045 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2025-05-21T04:37:26.647+03:00  WARN 23045 --- [Coursework] [main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-21T04:37:26.667+03:00  INFO 23045 --- [Coursework] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-21T04:37:26.716+03:00  WARN 23045 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:37:26.726+03:00  WARN 23045 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:37:26.744+03:00  WARN 23045 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:37:26.758+03:00  WARN 23045 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:37:26.771+03:00  WARN 23045 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:37:26.794+03:00  WARN 23045 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:37:26.806+03:00  WARN 23045 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:37:27.613+03:00  INFO 23045 --- [Coursework] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T04:37:27.873+03:00  INFO 23045 --- [Coursework] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T04:37:29.543+03:00  WARN 23045 --- [Coursework] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T04:37:29.592+03:00  INFO 23045 --- [Coursework] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-05-21T04:37:31.283+03:00  WARN 23045 --- [Coursework] [main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-05-21T04:37:31.895+03:00 DEBUG 23045 --- [Coursework] [main] c.a.c.b.config.jwt.JWTCookieFilter       : Filter 'JWTCookieFilter' configured for use
+2025-05-21T04:37:31.898+03:00  INFO 23045 --- [Coursework] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-05-21T04:37:31.898+03:00  INFO 23045 --- [Coursework] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-05-21T04:37:31.904+03:00  INFO 23045 --- [Coursework] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 5 ms
+2025-05-21T04:37:31.960+03:00  INFO 23045 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Started ProductSearchIntegrationTest in 7.583 seconds (process running for 35.479)
+2025-05-21T04:37:32.091+03:00  INFO 23045 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Роли успешно созданы
+2025-05-21T04:37:32.299+03:00  INFO 23045 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Администратор создан с email: admin и паролем: admin
+2025-05-21T04:37:32.300+03:00  INFO 23045 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Swagger UI: http://localhost:8080/swagger-ui/index.html
+2025-05-21T04:37:32.300+03:00  INFO 23045 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Application: http://localhost:8080/
+2025-05-21T04:37:32.593+03:00 DEBUG 23045 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@79c67d42
+2025-05-21T04:37:32.704+03:00  WARN 23045 --- [Coursework] [main] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-05-21T04:37:33.023+03:00 DEBUG 23045 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@3f0ea21d
+2025-05-21T04:37:33.052+03:00  INFO 23045 --- [Coursework] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.almetpt.coursework.bookclub.controllers.ProductControllerIntegrationTest]: ProductControllerIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-05-21T04:37:33.059+03:00  INFO 23045 --- [Coursework] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.almetpt.coursework.CourseworkApplication for test class com.almetpt.coursework.bookclub.controllers.ProductControllerIntegrationTest
+2025-05-21T04:37:33.096+03:00 DEBUG 23045 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@413b45bc
+2025-05-21T04:37:33.165+03:00 DEBUG 23045 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@4f4f079
+2025-05-21T04:37:35.208+03:00  WARN 23045 --- [Coursework] [main] c.a.c.bookclub.service.UserService       : Токен expired-token для пользователя user@example.com истек (проверка валидности).
+2025-05-21T04:37:35.223+03:00  WARN 23045 --- [Coursework] [main] c.a.c.bookclub.service.UserService       : Попытка валидации несуществующего токена: non-existent-token
+2025-05-21T04:37:35.323+03:00  INFO 23045 --- [Coursework] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T04:37:35.333+03:00  INFO 23045 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-05-21T04:37:35.350+03:00  INFO 23045 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-05-21T04:37:35.387+03:00  INFO 23045 --- [Coursework] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T04:37:35.448+03:00  INFO 23045 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2025-05-21T04:37:35.451+03:00  INFO 23045 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+2025-05-21T04:38:22.185+03:00  INFO 24625 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : Starting ApplicationTests using Java 17.0.15 with PID 24625 (started by cookie in /home/cookie/IdeaProjects/coursework/backend)
+2025-05-21T04:38:22.191+03:00  INFO 24625 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : No active profile set, falling back to 1 default profile: "default"
+2025-05-21T04:38:25.902+03:00  INFO 24625 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T04:38:26.194+03:00  INFO 24625 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 269 ms. Found 10 JPA repository interfaces.
+2025-05-21T04:38:29.054+03:00  INFO 24625 --- [Coursework] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T04:38:29.235+03:00  INFO 24625 --- [Coursework] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.11.Final
+2025-05-21T04:38:29.344+03:00  INFO 24625 --- [Coursework] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T04:38:30.324+03:00  INFO 24625 --- [Coursework] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T04:38:30.440+03:00  INFO 24625 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-05-21T04:38:31.035+03:00  INFO 24625 --- [Coursework] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@7b10472e
+2025-05-21T04:38:31.041+03:00  INFO 24625 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-05-21T04:38:31.253+03:00  INFO 24625 --- [Coursework] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 17.5
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-21T04:38:31.807+03:00  WARN 24625 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:38:31.845+03:00  WARN 24625 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:38:31.869+03:00  WARN 24625 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:38:31.890+03:00  WARN 24625 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:38:31.911+03:00  WARN 24625 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:38:31.958+03:00  WARN 24625 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:38:31.977+03:00  WARN 24625 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:38:35.425+03:00  INFO 24625 --- [Coursework] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T04:38:37.101+03:00  INFO 24625 --- [Coursework] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T04:38:38.037+03:00  INFO 24625 --- [Coursework] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-05-21T04:38:47.351+03:00  WARN 24625 --- [Coursework] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T04:38:47.469+03:00  INFO 24625 --- [Coursework] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-05-21T04:38:51.124+03:00  WARN 24625 --- [Coursework] [main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-05-21T04:38:52.044+03:00  INFO 24625 --- [Coursework] [main] c.almetpt.coursework.ApplicationTests    : Started ApplicationTests in 30.893 seconds (process running for 33.438)
+2025-05-21T04:38:52.057+03:00  INFO 24625 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Swagger UI: http://localhost:8080/swagger-ui/index.html
+2025-05-21T04:38:52.058+03:00  INFO 24625 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Application: http://localhost:8080/
+2025-05-21T04:38:52.556+03:00  INFO 24625 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Администратор уже существует
+2025-05-21T04:38:53.675+03:00  INFO 24625 --- [Coursework] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.almetpt.coursework.bookclub.controllers.ProductSearchIntegrationTest]: ProductSearchIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-05-21T04:38:53.784+03:00  INFO 24625 --- [Coursework] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.almetpt.coursework.CourseworkApplication for test class com.almetpt.coursework.bookclub.controllers.ProductSearchIntegrationTest
+2025-05-21T04:38:53.801+03:00  INFO 24625 --- [Coursework] [main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
+2025-05-21T04:38:53.912+03:00  INFO 24625 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Starting ProductSearchIntegrationTest using Java 17.0.15 with PID 24625 (started by cookie in /home/cookie/IdeaProjects/coursework/backend)
+2025-05-21T04:38:53.914+03:00 DEBUG 24625 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Running with Spring Boot v3.4.4, Spring v6.2.5
+2025-05-21T04:38:53.916+03:00  INFO 24625 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : The following 1 profile is active: "test"
+2025-05-21T04:38:55.195+03:00  INFO 24625 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-05-21T04:38:55.322+03:00  INFO 24625 --- [Coursework] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 119 ms. Found 10 JPA repository interfaces.
+2025-05-21T04:38:56.007+03:00  INFO 24625 --- [Coursework] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-05-21T04:38:56.017+03:00  INFO 24625 --- [Coursework] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-05-21T04:38:56.092+03:00  INFO 24625 --- [Coursework] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-05-21T04:38:56.095+03:00  INFO 24625 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2025-05-21T04:38:56.806+03:00  INFO 24625 --- [Coursework] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-2 - Added connection conn0: url=jdbc:h2:mem:testdb user=SA
+2025-05-21T04:38:56.808+03:00  INFO 24625 --- [Coursework] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2025-05-21T04:38:56.822+03:00  WARN 24625 --- [Coursework] [main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-05-21T04:38:56.843+03:00  INFO 24625 --- [Coursework] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
+	Database driver: undefined/unknown
+	Database version: 2.3.232
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-05-21T04:38:56.951+03:00  WARN 24625 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:38:56.964+03:00  WARN 24625 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:38:56.984+03:00  WARN 24625 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:38:56.997+03:00  WARN 24625 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:38:57.011+03:00  WARN 24625 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:38:57.037+03:00  WARN 24625 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:38:57.048+03:00  WARN 24625 --- [Coursework] [main] o.h.b.i.InFlightMetadataCollectorImpl    : HHH000069: Duplicate generator name default_generator
+2025-05-21T04:38:58.267+03:00  INFO 24625 --- [Coursework] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-05-21T04:38:58.684+03:00  INFO 24625 --- [Coursework] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T04:39:01.731+03:00  WARN 24625 --- [Coursework] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-05-21T04:39:01.805+03:00  INFO 24625 --- [Coursework] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2025-05-21T04:39:03.708+03:00  WARN 24625 --- [Coursework] [main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2025-05-21T04:39:04.243+03:00 DEBUG 24625 --- [Coursework] [main] c.a.c.b.config.jwt.JWTCookieFilter       : Filter 'JWTCookieFilter' configured for use
+2025-05-21T04:39:04.246+03:00  INFO 24625 --- [Coursework] [main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2025-05-21T04:39:04.247+03:00  INFO 24625 --- [Coursework] [main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2025-05-21T04:39:04.254+03:00  INFO 24625 --- [Coursework] [main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 5 ms
+2025-05-21T04:39:04.322+03:00  INFO 24625 --- [Coursework] [main] c.a.c.b.c.ProductSearchIntegrationTest   : Started ProductSearchIntegrationTest in 10.522 seconds (process running for 45.716)
+2025-05-21T04:39:04.511+03:00  INFO 24625 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Роли успешно созданы
+2025-05-21T04:39:04.879+03:00  INFO 24625 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Администратор создан с email: admin и паролем: admin
+2025-05-21T04:39:04.883+03:00  INFO 24625 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Swagger UI: http://localhost:8080/swagger-ui/index.html
+2025-05-21T04:39:04.884+03:00  INFO 24625 --- [Coursework] [main] c.a.coursework.CourseworkApplication     : Application: http://localhost:8080/
+2025-05-21T04:39:05.500+03:00 DEBUG 24625 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@5cbae692
+2025-05-21T04:39:05.707+03:00  WARN 24625 --- [Coursework] [main] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+
+2025-05-21T04:39:06.141+03:00 DEBUG 24625 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@e4f3304
+2025-05-21T04:39:06.176+03:00  INFO 24625 --- [Coursework] [main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.almetpt.coursework.bookclub.controllers.ProductControllerIntegrationTest]: ProductControllerIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-05-21T04:39:06.184+03:00  INFO 24625 --- [Coursework] [main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.almetpt.coursework.CourseworkApplication for test class com.almetpt.coursework.bookclub.controllers.ProductControllerIntegrationTest
+2025-05-21T04:39:06.251+03:00 DEBUG 24625 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@67029450
+2025-05-21T04:39:06.338+03:00 DEBUG 24625 --- [Coursework] [main] c.a.c.bookclub.aspects.AuditAspect       : AuditAspect: Saved audit entry: com.almetpt.coursework.bookclub.model.AuditEntry@2ce32a62
+2025-05-21T04:39:09.927+03:00  WARN 24625 --- [Coursework] [main] c.a.c.bookclub.service.UserService       : Токен expired-token для пользователя user@example.com истек (проверка валидности).
+2025-05-21T04:39:09.947+03:00  WARN 24625 --- [Coursework] [main] c.a.c.bookclub.service.UserService       : Попытка валидации несуществующего токена: non-existent-token
+2025-05-21T04:39:10.123+03:00  INFO 24625 --- [Coursework] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T04:39:10.140+03:00  INFO 24625 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-05-21T04:39:10.184+03:00  INFO 24625 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-05-21T04:39:10.262+03:00  INFO 24625 --- [Coursework] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-05-21T04:39:10.353+03:00  INFO 24625 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2025-05-21T04:39:10.363+03:00  INFO 24625 --- [Coursework] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.

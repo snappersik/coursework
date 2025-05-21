@@ -16,6 +16,6 @@ public class ProductCategoryTest {
     @Test
     void testProductCategoryCount() {
         // Arrange & Act & Assert
-        assertEquals(2, ProductCategory.values().length);
+        assertEquals(4, ProductCategory.values().length);
     }
 }

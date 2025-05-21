@@ -37,6 +37,16 @@ const UserManager = () => {
     }
   };
 
+  const getRoleIdByName = (roleName) => {
+    switch (roleName) {
+      case 'USER': return 1;
+      case 'ORGANIZER': return 2;
+      case 'ADMIN': return 3;
+      default: return 1; // По умолчанию USER
+    }
+  };
+
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -44,7 +54,7 @@ const UserManager = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/users`, { // Ваш URL был /users
+      const response = await axios.get(`${API_URL}/users`, {
         withCredentials: true,
         params: { populate: 'role' } // Этот параметр может быть специфичен для вашего бэкенда
       });
@@ -68,24 +78,24 @@ const UserManager = () => {
   };
 
   // Преобразование даты из объекта Date в строку "dd.MM.yyyy"
-  const formatDate = (date) => {
-    if (!date) return null;
-    const d = new Date(date); // Убедимся, что это объект Date
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const year = d.getFullYear();
-    return `${day}.${month}.${year}`;
-  };
+  // const formatDate = (date) => {
+  //   if (!date) return null;
+  //   const d = new Date(date); // Убедимся, что это объект Date
+  //   const day = String(d.getDate()).padStart(2, '0');
+  //   const month = String(d.getMonth() + 1).padStart(2, '0');
+  //   const year = d.getFullYear();
+  //   return `${day}.${month}.${year}`;
+  // };
 
   // Преобразование строки "dd.MM.yyyy" в объект Date для DatePicker или для работы
-  const parseDate = (dateString) => {
-    if (!dateString || typeof dateString !== 'string') return null;
-    const parts = dateString.split('.');
-    if (parts.length === 3) {
-      return new Date(parts[2], parts[1] - 1, parts[0]); // год, месяц (0-11), день
-    }
-    return null;
-  };
+  // const parseDate = (dateString) => {
+  //   if (!dateString || typeof dateString !== 'string') return null;
+  //   const parts = dateString.split('.');
+  //   if (parts.length === 3) {
+  //     return new Date(parts[2], parts[1] - 1, parts[0]); // год, месяц (0-11), день
+  //   }
+  //   return null;
+  // };
 
   // Преобразование из "yyyy-MM-dd" (от input type="date") в "dd.MM.yyyy" для отправки
   const formatDateForBackend = (dateString_yyyyMMdd) => {
@@ -97,6 +107,17 @@ const UserManager = () => {
     return null;
   };
 
+  // Преобразование даты из формата "dd.MM.yyyy" в "yyyy-MM-dd" для input type="date"
+  const formatDateForInput = (dateString) => {
+    if (!dateString || typeof dateString !== 'string') return '';
+
+    const parts = dateString.split('.');
+    if (parts.length === 3) {
+      return `${parts[2]}-${parts[1]}-${parts[0]}`; // yyyy-MM-dd
+    }
+
+    return '';
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -375,8 +396,8 @@ const UserManager = () => {
                   <td className="px-4 py-2">{user.lastName || '-'}</td>
                   <td className="px-4 py-2">
                     <span className={`px-2 py-1 rounded ${(user.role?.id || user.userRole) === 3 ? 'bg-red-600' :
-                        (user.role?.id || user.userRole) === 2 ? 'bg-blue-600' :
-                          (user.role?.id || user.userRole) === 1 ? 'bg-green-600' : 'bg-gray-600'
+                      (user.role?.id || user.userRole) === 2 ? 'bg-blue-600' :
+                        (user.role?.id || user.userRole) === 1 ? 'bg-green-600' : 'bg-gray-600'
                       }`}>
                       {getRoleNameById(user.role?.id || user.roleId || 1)}
                     </span>

@@ -5,7 +5,6 @@ import com.almetpt.coursework.bookclub.dto.EventDTO;
 import com.almetpt.coursework.bookclub.exception.MyDeleteException;
 import com.almetpt.coursework.bookclub.mapper.EventMapper;
 import com.almetpt.coursework.bookclub.model.ApplicationStatus;
-import com.almetpt.coursework.bookclub.model.Book;
 import com.almetpt.coursework.bookclub.model.Event;
 import com.almetpt.coursework.bookclub.model.EventApplication;
 import com.almetpt.coursework.bookclub.repository.BookRepository;
@@ -29,8 +28,7 @@ public class EventService extends GenericService<Event, EventDTO> {
     private final EventRepository eventRepository;
     private final EventApplicationRepository eventApplicationRepository;
     private final JavaMailSender javaMailSender;
-    private final BookRepository bookRepository;
-
+    
     public EventService(EventRepository eventRepository,
                         EventApplicationRepository eventApplicationRepository,
                         BookRepository bookRepository,
@@ -39,7 +37,6 @@ public class EventService extends GenericService<Event, EventDTO> {
         super(eventRepository, eventMapper);
         this.eventRepository = eventRepository;
         this.eventApplicationRepository = eventApplicationRepository;
-        this.bookRepository = bookRepository;
         this.javaMailSender = javaMailSender;
     }
 

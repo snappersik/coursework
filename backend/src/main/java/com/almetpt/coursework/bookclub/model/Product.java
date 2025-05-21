@@ -43,7 +43,6 @@ public class Product extends GenericModel {
     @Column(name = "original_cover_image_filename")
     private String originalCoverImageFilename;
 
-    // Вспомогательный метод для определения наличия локального изображения
     @Transient
     public boolean hasLocalImage() {
         return coverImageData != null && coverImageData.length > 0;

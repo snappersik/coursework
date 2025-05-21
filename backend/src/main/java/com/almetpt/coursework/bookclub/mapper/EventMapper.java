@@ -7,7 +7,6 @@ import com.almetpt.coursework.bookclub.repository.BookRepository;
 import jakarta.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.Converter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -19,7 +18,6 @@ public class EventMapper extends GenericMapper<Event, EventDTO> {
 
     private final BookRepository bookRepository;
 
-    @Autowired
     public EventMapper(ModelMapper modelMapper, BookRepository bookRepository) {
         super(Event.class, EventDTO.class, modelMapper);
         this.bookRepository = bookRepository;

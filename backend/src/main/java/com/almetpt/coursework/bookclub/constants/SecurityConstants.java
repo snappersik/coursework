@@ -36,7 +36,10 @@ public interface SecurityConstants {
             "/auth/login",
             "/auth/register",
             "/auth/logout",
-            "/auth/refresh");
+            "/auth/forgot-password",
+            "/auth/reset-password",
+            "/auth/refresh",
+            "/auth/validate-reset-token");
             
     // Публичные GET-запросы для чтения данных
     List<String> PUBLIC_GET_LIST = prefixPaths(
