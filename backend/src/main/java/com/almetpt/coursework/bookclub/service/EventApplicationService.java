@@ -44,7 +44,6 @@ public class EventApplicationService extends GenericService<EventApplication, Ev
         this.javaMailSender = javaMailSender;
     }
 
-    @Override
     @Transactional
     public EventApplicationDTO create(EventApplicationDTO dto) {
         User user = userRepository.findById(dto.getUserId())
@@ -53,13 +52,24 @@ public class EventApplicationService extends GenericService<EventApplication, Ev
         Event event = eventRepository.findById(dto.getEventId())
                 .orElseThrow(() -> new RuntimeException("Event not found with id: " + dto.getEventId()));
 
+        // Проверяем, есть ли уже заявка от этого пользователя на это мероприятие
+        List<EventApplication> existingApplications = eventApplicationRepository
+                .findByUser_IdAndEvent_IdAndIsDeletedFalse(
+                        user.getId(), event.getId());
+
+        if (!existingApplications.isEmpty()) {
+            throw new RuntimeException("Вы уже подали заявку на это мероприятие");
+        }
+
         EventApplication application = new EventApplication();
         application.setUser(user);
         application.setEvent(event);
 
         int approvedCount = eventApplicationRepository.countApprovedApplicationsForEvent(event.getId());
+
         if (approvedCount < event.getMaxParticipants()) {
             application.setStatus(ApplicationStatus.APPROVED);
+
             SimpleMailMessage message = MailUtils.createMailMessage(
                     user.getEmail(),
                     "Заявка одобрена",

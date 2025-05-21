@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
 import EventList from '../../components/events/EventList';
 import EventFilters from '../../components/events/EventFilters';
 import { motion } from 'framer-motion';
@@ -72,11 +71,6 @@ const EventsPage = () => {
       exit={{ opacity: 0 }}
       className="container mx-auto px-4 py-8"
     >
-      <Helmet>
-        <title>Мероприятия | Книжная Гавань</title>
-        <meta name="description" content="Список предстоящих мероприятий в Книжной Гавани" />
-      </Helmet>
-
       <h1 className="text-3xl font-bold mb-8 text-center">Мероприятия</h1>
       
       <EventFilters filters={filters} onFilterChange={handleFilterChange} />

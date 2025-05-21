@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { FaCalendarAlt, FaTimesCircle, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
@@ -141,11 +140,6 @@ const MyApplicationsPage = () => {
       exit={{ opacity: 0 }}
       className="container mx-auto px-4 py-8"
     >
-      <Helmet>
-        <title>Мои заявки на мероприятия | Книжная Гавань</title>
-        <meta name="description" content="Управление заявками на мероприятия" />
-      </Helmet>
-
       <h1 className="text-3xl font-bold mb-8 text-center">Мои заявки на мероприятия</h1>
 
       {applications.length === 0 ? (

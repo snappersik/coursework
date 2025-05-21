@@ -356,15 +356,15 @@ export const createEventApplication = async (eventId) => {
     // Получаем текущего пользователя из authStore
     const userId = authStore.userId;
 
+    // Проверяем, что userId существует
+    if (!userId) {
+      throw new Error('Пользователь не авторизован');
+    }
+
     // Отправляем запрос с правильными заголовками
     const response = await apiClient.post('/event-applications', {
       eventId: parseInt(eventId),
       userId: parseInt(userId)
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-      }
     });
 
     return response.data;

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import { format, parseISO } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { motion } from 'framer-motion';
@@ -8,6 +7,7 @@ import { toast } from 'react-toastify';
 import { FaCalendarAlt, FaUsers, FaBook, FaArrowLeft, FaUserCheck, FaTimesCircle } from 'react-icons/fa';
 import axios from 'axios';
 import { API_URL } from '../../config';
+import { createEventApplication } from '../../api/apiClient';
 import { authStore } from '../../store/store';
 import EventApplicationForm from '../../components/events/EventApplicationForm';
 
@@ -180,11 +180,6 @@ const EventDetailPage = () => {
       exit={{ opacity: 0 }}
       className="container mx-auto px-4 py-8"
     >
-      <Helmet>
-        <title>{event.title} | Книжная Гавань</title>
-        <meta name="description" content={event.description} />
-      </Helmet>
-
       <div className="mb-6">
         <Link
           to="/events"
