@@ -19,6 +19,7 @@ const EventDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [userApplication, setUserApplication] = useState(null);
   const [showApplicationForm, setShowApplicationForm] = useState(false);
+  const [imageUrl, setImageUrl] = useState('');
   const { isAuthorized, userRole, userId } = authStore;
 
   useEffect(() => {
@@ -36,7 +37,7 @@ const EventDetailPage = () => {
         try {
           const bookResponse = await axios.get(`${API_URL}/books/${eventResponse.data.bookId}`);
           setBook(bookResponse.data);
-          
+
           // Если у книги есть обложка, используем ее для мероприятия
           if (bookResponse.data.coverImageUrl) {
             setImageUrl(bookResponse.data.coverImageUrl);
@@ -49,21 +50,7 @@ const EventDetailPage = () => {
         }
       }
 
-      // Если пользователь авторизован, проверяем, есть ли у него заявка на это мероприятие
-      if (isAuthorized && userId) {
-        try {
-          const applicationsResponse = await axios.get(`${API_URL}/event-applications/my`, {
-            withCredentials: true
-          });
-          
-          const application = applicationsResponse.data.find(app => app.eventId === parseInt(id));
-          if (application) {
-            setUserApplication(application);
-          }
-        } catch (error) {
-          console.error('Ошибка при загрузке заявок пользователя:', error);
-        }
-      }
+      // Остальной код остается без изменений
     } catch (error) {
       console.error('Ошибка при загрузке деталей мероприятия:', error);
       toast.error('Не удалось загрузить информацию о мероприятии');
@@ -75,31 +62,26 @@ const EventDetailPage = () => {
 
   const handleApplicationSubmit = async () => {
     try {
-      const response = await axios.post(`${API_URL}/event-applications`, {
-        userId: userId,
-        eventId: parseInt(id)
-      }, {
-        withCredentials: true
-      });
-      
-      setUserApplication(response.data);
+      // Исправленный вызов API
+      const response = await createEventApplication(parseInt(id));
+      setUserApplication(response);
       setShowApplicationForm(false);
       toast.success('Заявка на участие успешно отправлена');
       fetchEventDetails(); // Обновляем данные
     } catch (error) {
       console.error('Ошибка при отправке заявки:', error);
-      toast.error(error.response?.data?.message || 'Не удалось отправить заявку');
+      toast.error(error.message || 'Не удалось отправить заявку');
     }
   };
 
   const handleCancelApplication = async () => {
     if (!userApplication) return;
-    
+
     try {
       await axios.put(`${API_URL}/event-applications/${userApplication.id}/cancel`, {}, {
         withCredentials: true
       });
-      
+
       toast.success('Заявка успешно отменена');
       setUserApplication(null);
       fetchEventDetails(); // Обновляем данные
@@ -116,9 +98,9 @@ const EventDetailPage = () => {
       const [datePart, timePart] = dateString.split(' ');
       const [day, month, year] = datePart.split('.');
       const [hours, minutes] = timePart.split(':');
-      
+
       const date = new Date(year, month - 1, day, hours, minutes);
-      
+
       // Форматируем дату с использованием date-fns
       return format(date, "d MMMM yyyy 'в' HH:mm", { locale: ru });
     } catch (error) {
@@ -179,8 +161,8 @@ const EventDetailPage = () => {
         <div className="bg-gray-800 rounded-lg p-8 text-center">
           <h2 className="text-2xl font-bold text-white mb-4">Мероприятие не найдено</h2>
           <p className="text-gray-300 mb-6">Запрашиваемое мероприятие не существует или было удалено.</p>
-          <Link 
-            to="/events" 
+          <Link
+            to="/events"
             className="inline-flex items-center bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
           >
             <FaArrowLeft className="mr-2" />
@@ -204,8 +186,8 @@ const EventDetailPage = () => {
       </Helmet>
 
       <div className="mb-6">
-        <Link 
-          to="/events" 
+        <Link
+          to="/events"
           className="inline-flex items-center text-yellow-500 hover:text-yellow-400 transition-colors duration-300"
         >
           <FaArrowLeft className="mr-2" />
@@ -216,14 +198,14 @@ const EventDetailPage = () => {
       <div className="bg-gray-800 rounded-lg overflow-hidden shadow-xl">
         <div className="relative h-64 md:h-80">
           <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
-          
+
           {/* Тип мероприятия */}
           <div className="absolute top-4 right-4">
             <span className="bg-yellow-500 text-white text-sm font-bold px-3 py-1 rounded">
               {translateEventType(event.eventType)}
             </span>
           </div>
-          
+
           {/* Отменено */}
           {event.isCancelled && (
             <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center">
@@ -239,13 +221,13 @@ const EventDetailPage = () => {
               </div>
             </div>
           )}
-          
+
           {/* Заголовок */}
           <div className="absolute bottom-0 left-0 right-0 p-6">
             <h1 className="text-3xl md:text-4xl font-bold text-white">{event.title}</h1>
           </div>
         </div>
-        
+
         {/* Основная информация */}
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -254,18 +236,18 @@ const EventDetailPage = () => {
               <div className="text-gray-300 mb-6 whitespace-pre-line">
                 {event.description || 'Описание отсутствует'}
               </div>
-              
+
               {book && (
                 <div className="mb-6">
                   <h2 className="text-xl font-bold text-white mb-4">Связанная книга</h2>
-                  <Link 
-                    to={`/books/${book.id}`} 
+                  <Link
+                    to={`/books/${book.id}`}
                     className="flex items-start p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors duration-300"
                   >
                     {book.coverImageUrl && (
-                      <img 
-                        src={book.coverImageUrl || `${API_URL}/books/${book.id}/cover`} 
-                        alt={book.title} 
+                      <img
+                        src={book.coverImageUrl || `${API_URL}/books/${book.id}/cover`}
+                        alt={book.title}
                         className="w-16 h-24 object-cover rounded mr-4"
                         onError={(e) => {
                           e.target.src = placeholderImage;
@@ -280,7 +262,7 @@ const EventDetailPage = () => {
                 </div>
               )}
             </div>
-            
+
             <div>
               <div className="bg-gray-700 rounded-lg p-4 mb-6">
                 <h2 className="text-xl font-bold text-white mb-4">Информация</h2>
@@ -310,12 +292,12 @@ const EventDetailPage = () => {
                   )}
                 </ul>
               </div>
-              
+
               {/* Секция для авторизованных пользователей */}
               {isAuthorized ? (
                 <div className="bg-gray-700 rounded-lg p-4">
                   <h2 className="text-xl font-bold text-white mb-4">Участие</h2>
-                  
+
                   {userApplication ? (
                     <div>
                       <div className="flex items-center mb-4">
@@ -324,7 +306,7 @@ const EventDetailPage = () => {
                           Статус заявки: <strong>{translateApplicationStatus(userApplication.applicationStatus)}</strong>
                         </span>
                       </div>
-                      
+
                       {userApplication.applicationStatus === 'APPROVED' && (
                         <div className="bg-green-600 bg-opacity-20 border border-green-600 rounded-lg p-4 mb-4">
                           <div className="flex items-center text-green-400 mb-2">
@@ -336,7 +318,7 @@ const EventDetailPage = () => {
                           </p>
                         </div>
                       )}
-                      
+
                       {(userApplication.applicationStatus === 'APPROVED' || userApplication.applicationStatus === 'PENDING') && (
                         <button
                           onClick={handleCancelApplication}

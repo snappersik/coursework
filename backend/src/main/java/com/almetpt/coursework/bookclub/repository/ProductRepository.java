@@ -36,10 +36,10 @@ public interface ProductRepository extends GenericRepository<Product> {
 
   @Query("""
       SELECT p
-        FROM Product p
-       WHERE p.isDeleted = false
-         AND (:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%')))
-         AND (:category IS NULL OR p.category = :category)
+      FROM Product p
+      WHERE p.isDeleted = false
+      AND (CAST(:name AS string) = '' OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%')))
+      AND (:category IS NULL OR p.category = :category)
       """)
   Page<Product> findAllByNameAndCategory(
       @Param("name") String name,

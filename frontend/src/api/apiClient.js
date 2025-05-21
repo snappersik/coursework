@@ -84,10 +84,10 @@ export const logout = async () => {
   try {
     // Сначала делаем запрос на бэкенд для инвалидации сессии и удаления HttpOnly кук
     const res = await apiClient.post('/auth/logout'); // Убедитесь, что ваш эндпоинт POST
-    
+
     // Независимо от ответа сервера (успех или нет), очищаем состояние на фронте
     // Блок finally гарантирует, что authStore.logout() будет вызван
-    
+
     if (res.status === 200) {
       console.log('[apiClient] logout: Запрос на сервер успешен (статус 200).');
       return { success: true };
@@ -152,14 +152,17 @@ export const updateUserProfile = async (userData) => {
 
 export const uploadUserAvatar = async (formData) => {
   try {
-    const response = await apiClient.post('/users/profile/avatar-upload', formData, {
+    const response = await axios.post(`${API_URL}/users/profile/avatar-upload`, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'multipart/form-data'
       },
+      withCredentials: true
     });
+
+    // Возвращаем данные ответа
     return response.data;
   } catch (error) {
-    console.error('Upload avatar error:', error);
+    console.error('Ошибка при загрузке аватара:', error);
     throw error;
   }
 };
@@ -350,16 +353,27 @@ export const getEventById = async (eventId) => {
 // Создание заявки на участие в мероприятии
 export const createEventApplication = async (eventId) => {
   try {
+    // Получаем текущего пользователя из authStore
+    const userId = authStore.userId;
+
+    // Отправляем запрос с правильными заголовками
     const response = await apiClient.post('/event-applications', {
-      eventId,
-      userId: authStore.userId
+      eventId: parseInt(eventId),
+      userId: parseInt(userId)
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      }
     });
+
     return response.data;
   } catch (error) {
     console.error('Create event application error:', error);
     throw new Error(error.response?.data?.message || error.response?.data || 'Не удалось создать заявку на участие');
   }
 };
+
 
 // Получение заявок текущего пользователя
 export const getUserEventApplications = async () => {

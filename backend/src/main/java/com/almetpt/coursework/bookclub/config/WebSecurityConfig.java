@@ -60,6 +60,8 @@ public class WebSecurityConfig {
                                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/api/rest/orders/create")
                                                 .authenticated()
+                                                .requestMatchers(HttpMethod.POST, "/api/rest/event-applications")
+                                                .authenticated()
                                                 .requestMatchers("/api/rest/users/profile").authenticated()
                                                 .requestMatchers("/api/rest/audit").hasRole(ADMIN)
                                                 // Разрешаем доступ к обложкам книг всем пользователям

@@ -106,22 +106,44 @@ const ProfileTab = observer(({ user, onUpdateProfile }) => {
     setIsLoading(true);
     let finalAvatarUrl = user?.avatarUrl; // Начинаем с текущего URL аватара
 
-    if (avatarFile) { // Если был выбран новый файл
+    if (avatarFile) {
       try {
         const uploadData = new FormData();
         uploadData.append('file', avatarFile);
-        const uploadResponse = await uploadUserAvatar(uploadData); // Вызов API для загрузки аватара
-        if (uploadResponse && uploadResponse.avatarUrl) {
-          finalAvatarUrl = uploadResponse.avatarUrl; // Используем путь, возвращенный бэкендом
+        const uploadResponse = await uploadUserAvatar(uploadData);
+
+        // Проверяем, что uploadResponse существует
+        if (uploadResponse) {
+          // Если avatarUrl есть в ответе, используем его
+          if (uploadResponse.avatarUrl) {
+            finalAvatarUrl = uploadResponse.avatarUrl;
+          }
+          // Если нет avatarUrl, но есть другие поля, которые могут содержать URL
+          else if (uploadResponse.url) {
+            finalAvatarUrl = uploadResponse.url;
+          }
+          // Если в ответе есть сам пользователь с URL аватара
+          else if (uploadResponse.user && uploadResponse.user.avatarUrl) {
+            finalAvatarUrl = uploadResponse.user.avatarUrl;
+          }
+          // Если ответ сам по себе строка (URL)
+          else if (typeof uploadResponse === 'string') {
+            finalAvatarUrl = uploadResponse;
+          }
+          // Если ничего не подошло, но ответ успешный, считаем что аватар загружен
+          else {
+            console.log('Аватар загружен, но URL не получен. Используем текущий URL.');
+            // Оставляем текущий URL
+          }
           toast.success('Аватар успешно загружен.');
         } else {
-          throw new Error('Ответ сервера не содержит URL аватара.');
+          throw new Error('Ответ сервера пустой.');
         }
       } catch (error) {
         console.error('Ошибка загрузки аватара:', error);
         toast.error(`Не удалось загрузить аватар: ${error.message || 'Произошла ошибка'}`);
         setIsLoading(false);
-        return; // Прерываем сохранение, если загрузка аватара не удалась
+        return;
       }
     }
 
@@ -175,7 +197,7 @@ const ProfileTab = observer(({ user, onUpdateProfile }) => {
   return (
     <div className="bg-gray-800 p-6 rounded-lg shadow-xl">
       <div className="flex flex-col items-center md:flex-row md:items-start">
-        <div
+        {/* <div
           className={`relative mb-6 md:mb-0 md:mr-8 ${isDragging ? 'border-yellow-500 bg-gray-700' : ''}`}
           onDragEnter={isEditing ? handleDragEnter : undefined}
           onDragLeave={isEditing ? handleDragLeave : undefined}
@@ -201,7 +223,7 @@ const ProfileTab = observer(({ user, onUpdateProfile }) => {
               )}
             </>
           )}
-        </div>
+        </div> */}
 
         <div className="flex-1 w-full">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">

@@ -21,8 +21,8 @@ public class ProductService extends GenericService<Product, ProductDTO> {
     private final ProductImageService productImageService;
 
     public ProductService(ProductRepository productRepository,
-                         ProductMapper productMapper,
-                         ProductImageService productImageService) {
+            ProductMapper productMapper,
+            ProductImageService productImageService) {
         super(productRepository, productMapper);
         this.productRepository = productRepository;
         this.productMapper = productMapper;
@@ -31,41 +31,44 @@ public class ProductService extends GenericService<Product, ProductDTO> {
 
     public Page<ProductDTO> searchProducts(String name, String categoryName, Pageable pageable) {
         ProductCategory category = null;
-        if (categoryName != null && !categoryName.isEmpty()) {
+        if (categoryName != null && !categoryName.isEmpty() && !"all".equalsIgnoreCase(categoryName)) {
             try {
                 category = ProductCategory.valueOf(categoryName.toUpperCase());
-            } catch (IllegalArgumentException ignored) { }
+            } catch (IllegalArgumentException ignored) {
+            }
         }
-
+        // Исправление: если name пустой, передавайте пустую строку, а не null
+        if (name == null)
+            name = "";
         Page<Product> page = productRepository.findAllByNameAndCategory(name, category, pageable);
         List<ProductDTO> dtos = productMapper.toDTOs(page.getContent());
         return new PageImpl<>(dtos, pageable, page.getTotalElements());
     }
-    
+
     public ProductDTO createProductWithImage(ProductDTO productDTO, MultipartFile file) throws IOException {
         ProductDTO createdProduct = create(productDTO);
-        
+
         if (file != null && !file.isEmpty()) {
             productImageService.uploadImage(createdProduct.getId(), file);
             // Обновляем DTO после загрузки изображения
             createdProduct = getOne(createdProduct.getId());
         }
-        
+
         return createdProduct;
     }
-    
+
     public ProductDTO updateProductWithImage(ProductDTO productDTO, MultipartFile file) throws IOException {
         ProductDTO updatedProduct = update(productDTO);
-        
+
         if (file != null && !file.isEmpty()) {
             productImageService.uploadImage(updatedProduct.getId(), file);
             // Обновляем DTO после загрузки изображения
             updatedProduct = getOne(updatedProduct.getId());
         }
-        
+
         return updatedProduct;
     }
-    
+
     public boolean canDeleteProduct(Long productId) {
         return productRepository.isProductCanBeDeleted(productId);
     }

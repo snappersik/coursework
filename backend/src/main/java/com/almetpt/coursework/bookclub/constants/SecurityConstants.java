@@ -94,6 +94,7 @@ public interface SecurityConstants {
             "/products/*/delete",
             "/products/soft/*",
             "/products/all",
+            "/products/{id}/with-file",
             "/products/restore/*");
             
     List<String> PRODUCT_CATEGORIES_LIST = prefixPaths(
