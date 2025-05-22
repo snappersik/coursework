@@ -268,23 +268,42 @@ export const testAuthentication = async () => {
   console.groupEnd();
 };
 
-export const addToCart = async (userId, productId) => {
+export const addToCart = async (productId) => {
   try {
-    const response = await apiClient.post(`/carts/${userId}/products/${productId}`);
+    // Сервер определит пользователя по JWT токену
+    const response = await apiClient.post(`/carts/products/${productId}`);
     return response.data;
   } catch (error) {
     console.error('Add to cart error:', error);
-    throw new Error(error.response?.data || 'Не удалось добавить товар в корзину');
+    let errorMessage = 'Не удалось добавить товар в корзину';
+    if (error.response?.data?.message) {
+      errorMessage = error.response.data.message;
+    } else if (typeof error.response?.data === 'string') {
+      errorMessage = error.response.data;
+    }
+    throw new Error(errorMessage);
   }
 };
 
-export const removeFromCart = async (userId, productId) => {
+export const removeFromCart = async (productId) => {
   try {
-    const response = await apiClient.delete(`/carts/${userId}/products/${productId}`);
+    // Сервер определит пользователя по JWT токену
+    const response = await apiClient.delete(`/carts/products/${productId}`);
     return response.data;
   } catch (error) {
     console.error('Remove from cart error:', error);
-    throw new Error(error.response?.data || 'Не удалось удалить товар из корзины');
+    throw new Error(error.response?.data?.message || error.response?.data || 'Не удалось удалить товар из корзины');
+  }
+};
+
+// Очистка корзины текущего пользователя
+export const clearUserCart = async () => {
+  try {
+    const response = await apiClient.put('/carts/my-cart/clear');
+    return response.data;
+  } catch (error) {
+    console.error('Clear cart error:', error);
+    throw new Error(error.response?.data?.message || error.response?.data || 'Не удалось очистить корзину');
   }
 };
 
@@ -298,13 +317,20 @@ export const createOrder = async () => {
   }
 };
 
-export const getUserOrders = async () => {
+export const getUserOrders = async (page = 0, size = 10) => { // Добавлены параметры для пагинации
   try {
-    const response = await apiClient.get('/orders/my');
-    return response.data;
+    const response = await apiClient.get(`/orders/my?page=${page}&size=${size}`);
+    // Бэкенд возвращает Page<OrderDTO>, нам нужен content
+    return response.data && Array.isArray(response.data.content) ? response.data.content : [];
   } catch (error) {
     console.error('Get user orders error:', error);
-    throw new Error(error.response?.data || 'Не удалось получить заказы');
+    let errorMessage = 'Не удалось получить заказы';
+    if (error.response?.data?.message) {
+      errorMessage = error.response.data.message;
+    } else if (typeof error.response?.data === 'string') {
+      errorMessage = error.response.data;
+    }
+    throw new Error(errorMessage);
   }
 };
 

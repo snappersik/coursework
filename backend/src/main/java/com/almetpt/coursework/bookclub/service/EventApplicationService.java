@@ -37,8 +37,10 @@ public class EventApplicationService extends GenericService<EventApplication, Ev
             UserRepository userRepository,
             EventRepository eventRepository,
             JavaMailSender javaMailSender,
-            EventApplicationMapper eventApplicationMapper) { // Убедитесь, что сюда передается именно EventApplicationMapper
-        super(eventApplicationRepository, eventApplicationMapper); // Он сохранится в protected final GenericMapper<E, D> mapper;
+            EventApplicationMapper eventApplicationMapper) { // Убедитесь, что сюда передается именно
+                                                             // EventApplicationMapper
+        super(eventApplicationRepository, eventApplicationMapper); // Он сохранится в protected final GenericMapper<E,
+                                                                   // D> mapper;
         this.eventApplicationRepository = eventApplicationRepository;
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
@@ -47,7 +49,8 @@ public class EventApplicationService extends GenericService<EventApplication, Ev
 
     @Transactional
     public EventApplicationDTO create(EventApplicationDTO dto) {
-        log.info("Starting creation of event application for userId: {} and eventId: {}", dto.getUserId(), dto.getEventId());
+        log.info("Starting creation of event application for userId: {} and eventId: {}", dto.getUserId(),
+                dto.getEventId());
 
         if (dto.getUserId() == null || dto.getEventId() == null) {
             log.error("UserId or EventId is null in DTO: {}", dto);
@@ -104,32 +107,41 @@ public class EventApplicationService extends GenericService<EventApplication, Ev
         EventApplication savedApplication;
         try {
             // Явно сохраняем перед тем, как использовать ID или другие поля
-            savedApplication = eventApplicationRepository.saveAndFlush(application); // Используем saveAndFlush для немедленной записи в БД
+            savedApplication = eventApplicationRepository.saveAndFlush(application); // Используем saveAndFlush для
+                                                                                     // немедленной записи в БД
             log.info("Event application entity saved and flushed successfully with id: {}", savedApplication.getId());
         } catch (Exception e) {
-            log.error("CRITICAL: Error during eventApplicationRepository.saveAndFlush(). Application before save: userId={}, eventId={}. Exception: {}",
+            log.error(
+                    "CRITICAL: Error during eventApplicationRepository.saveAndFlush(). Application before save: userId={}, eventId={}. Exception: {}",
                     application.getUser() != null ? application.getUser().getId() : "null",
                     application.getEvent() != null ? application.getEvent().getId() : "null",
                     e.getMessage(), e);
             throw e; // Откат транзакции
         }
 
-
         EventApplicationDTO applicationDTO;
         try {
             log.debug("Attempting to map EventApplication (id: {}) to DTO...", savedApplication.getId());
-            // 'this.mapper' - это экземпляр EventApplicationMapper, переданный в конструктор GenericService
+            // 'this.mapper' - это экземпляр EventApplicationMapper, переданный в
+            // конструктор GenericService
             applicationDTO = this.mapper.toDTO(savedApplication);
             if (applicationDTO == null) {
-                log.error("CRITICAL: this.mapper.toDTO(application) returned null for application id: {}", savedApplication.getId());
-                throw new IllegalStateException("Failed to map EventApplication to DTO: mapper returned null. Application ID: " + savedApplication.getId());
+                log.error("CRITICAL: this.mapper.toDTO(application) returned null for application id: {}",
+                        savedApplication.getId());
+                throw new IllegalStateException(
+                        "Failed to map EventApplication to DTO: mapper returned null. Application ID: "
+                                + savedApplication.getId());
             }
-            // Полное DTO логировать опасно, если оно содержит чувствительные данные или сложную структуру.
+            // Полное DTO логировать опасно, если оно содержит чувствительные данные или
+            // сложную структуру.
             // Логируем ключевые идентификаторы.
-            log.info("Mapped event application (id: {}) to DTO successfully. DTO_Id: {}, DTO_UserId: {}, DTO_EventId: {}, DTO_Status: {}",
-                    savedApplication.getId(), applicationDTO.getId(), applicationDTO.getUserId(), applicationDTO.getEventId(), applicationDTO.getApplicationStatus());
+            log.info(
+                    "Mapped event application (id: {}) to DTO successfully. DTO_Id: {}, DTO_UserId: {}, DTO_EventId: {}, DTO_Status: {}",
+                    savedApplication.getId(), applicationDTO.getId(), applicationDTO.getUserId(),
+                    applicationDTO.getEventId(), applicationDTO.getApplicationStatus());
         } catch (Exception e) {
-            log.error("CRITICAL: Error during EventApplication (id: {}) mapping to DTO. Saved Application Details: User ID={}, Event ID={}, Status={}. Exception: {}",
+            log.error(
+                    "CRITICAL: Error during EventApplication (id: {}) mapping to DTO. Saved Application Details: User ID={}, Event ID={}, Status={}. Exception: {}",
                     savedApplication.getId(),
                     savedApplication.getUser() != null ? savedApplication.getUser().getId() : "null",
                     savedApplication.getEvent() != null ? savedApplication.getEvent().getId() : "null",
@@ -164,5 +176,17 @@ public class EventApplicationService extends GenericService<EventApplication, Ev
                 .map(this.mapper::toDTO) // Явно используем this.mapper
                 .collect(Collectors.toList());
     }
-}
 
+    @Transactional
+    public boolean cancelByUser(Long applicationId, Long userId) {
+        EventApplication application = eventApplicationRepository.findById(applicationId)
+                .orElse(null);
+        if (application == null || application.isDeleted() || !application.getUser().getId().equals(userId)) {
+            return false;
+        }
+        application.setDeleted(true);
+        eventApplicationRepository.save(application);
+        return true;
+    }
+
+}

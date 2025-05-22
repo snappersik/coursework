@@ -27,25 +27,25 @@ const ProfilePage = observer(() => {
         setLoading(true);
         const userInfo = await getUserInfo();
         setUser(userInfo);
-
+        
         // Загружаем заказы и заявки на мероприятия
         if (activeTab === 'orders') {
-          const userOrders = await getUserOrders();
+          const userOrders = await getUserOrders(0, 20); 
           setOrders(userOrders);
         } else if (activeTab === 'events') {
-          const userEvents = await getUserEventApplications();
+          const userEvents = await getUserEventApplications(); 
           setEventApplications(userEvents);
         }
       } catch (err) {
-        setError('Не удалось загрузить данные');
-        console.error('Ошибка при загрузке данных:', err);
+        setError('Не удалось загрузить данные профиля или связанные данные');
+        console.error('Ошибка при загрузке данных в профиле:', err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchUserProfile();
-  }, [activeTab, navigate]);
+  }, [activeTab, navigate, authStore.isAuthorized]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);

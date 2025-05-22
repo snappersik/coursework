@@ -30,7 +30,7 @@ public class EventApplicationController extends GenericController<EventApplicati
     private final UserRepository userRepository;
 
     public EventApplicationController(EventApplicationService eventApplicationService,
-                                      UserRepository userRepository) {
+            UserRepository userRepository) {
         super(eventApplicationService);
         this.eventApplicationService = eventApplicationService;
         this.userRepository = userRepository;
@@ -50,7 +50,8 @@ public class EventApplicationController extends GenericController<EventApplicati
         String currentUserEmail = authentication.getName();
         User currentUser = userRepository.findUserByEmailAndIsDeletedFalse(currentUserEmail);
         if (currentUser == null) {
-            log.warn("EventApplicationController: Authenticated user with email {} not found in repository.", currentUserEmail);
+            log.warn("EventApplicationController: Authenticated user with email {} not found in repository.",
+                    currentUserEmail);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
             // Возможно, стоит вернуть более конкретную ошибку
         }
@@ -62,17 +63,27 @@ public class EventApplicationController extends GenericController<EventApplicati
         try {
             log.debug("EventApplicationController: Calling eventApplicationService.create()...");
             EventApplicationDTO createdApplication = eventApplicationService.create(dto);
-            log.info("EventApplicationController: Successfully created event application, ID: {}", createdApplication.getId());
+            log.info("EventApplicationController: Successfully created event application, ID: {}",
+                    createdApplication.getId());
             return ResponseEntity.status(HttpStatus.CREATED).body(createdApplication);
         } catch (IllegalArgumentException e) {
-            log.error("EventApplicationController: IllegalArgumentException during event application creation: {}. DTO: {}", e.getMessage(), dto, e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Рассмотрите возможность возврата объекта ошибки
+            log.error(
+                    "EventApplicationController: IllegalArgumentException during event application creation: {}. DTO: {}",
+                    e.getMessage(), dto, e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Рассмотрите возможность возврата объекта
+                                                                             // ошибки
         } catch (IllegalStateException e) {
-            log.error("EventApplicationController: IllegalStateException during event application creation: {}. DTO: {}", e.getMessage(), dto, e);
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(null); // Рассмотрите возможность возврата объекта ошибки
+            log.error(
+                    "EventApplicationController: IllegalStateException during event application creation: {}. DTO: {}",
+                    e.getMessage(), dto, e);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null); // Рассмотрите возможность возврата объекта
+                                                                          // ошибки
         } catch (Exception e) {
-            log.error("EventApplicationController: Generic exception during event application creation for DTO: {}. Error: {}", dto, e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // Рассмотрите возможность возврата объекта ошибки
+            log.error(
+                    "EventApplicationController: Generic exception during event application creation for DTO: {}. Error: {}",
+                    dto, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // Рассмотрите возможность
+                                                                                       // возврата объекта ошибки
         }
     }
 
@@ -82,7 +93,8 @@ public class EventApplicationController extends GenericController<EventApplicati
         log.info("EventApplicationController: Received request to get current user applications.");
         try {
             List<EventApplicationDTO> applications = eventApplicationService.getCurrentUserApplications();
-            log.info("EventApplicationController: Successfully fetched {} applications for current user.", applications.size());
+            log.info("EventApplicationController: Successfully fetched {} applications for current user.",
+                    applications.size());
             return ResponseEntity.ok(applications);
         } catch (Exception e) {
             log.error("EventApplicationController: Error fetching current user applications: {}", e.getMessage(), e);
@@ -95,12 +107,52 @@ public class EventApplicationController extends GenericController<EventApplicati
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<EventApplicationDTO>> getEventApplicationsPaginated(
             @PageableDefault(size = 20, sort = "createdWhen") Pageable pageable) {
-        log.debug("EventApplicationController: Fetching paginated event applications for admin. Pageable: {}", pageable);
-        // Если админ должен видеть ВСЕ заявки (включая удаленные), используйте service.listAll(pageable)
+        log.debug("EventApplicationController: Fetching paginated event applications for admin. Pageable: {}",
+                pageable);
+        // Если админ должен видеть ВСЕ заявки (включая удаленные), используйте
+        // service.listAll(pageable)
         // Если только активные (не удаленные), то service.listAllNotDeleted(pageable)
-        // Для админской панели часто имеет смысл показывать все или иметь фильтр. Начнем с неудаленных.
+        // Для админской панели часто имеет смысл показывать все или иметь фильтр.
+        // Начнем с неудаленных.
         Page<EventApplicationDTO> applicationsPage = eventApplicationService.listAllNotDeleted(pageable);
-        log.info("EventApplicationController: Fetched {} paginated event applications.", applicationsPage.getTotalElements());
+        log.info("EventApplicationController: Fetched {} paginated event applications.",
+                applicationsPage.getTotalElements());
         return ResponseEntity.ok(applicationsPage);
     }
+
+    @PutMapping("/{id}/cancel")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> cancelEventApplication(@PathVariable Long id) {
+        log.info("EventApplicationController: Received request to cancel application with id: {}", id);
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                log.warn("EventApplicationController: User not authenticated.");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Пользователь не аутентифицирован");
+            }
+
+            String currentUserEmail = authentication.getName();
+            User currentUser = userRepository.findUserByEmailAndIsDeletedFalse(currentUserEmail);
+            if (currentUser == null) {
+                log.warn("EventApplicationController: Authenticated user with email {} not found in repository.",
+                        currentUserEmail);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Пользователь не найден");
+            }
+
+            boolean success = eventApplicationService.cancelByUser(id, currentUser.getId());
+            if (success) {
+                log.info("EventApplicationController: Application {} cancelled by user {}", id, currentUser.getId());
+                return ResponseEntity.ok().body("Заявка успешно отменена");
+            } else {
+                log.warn("EventApplicationController: Application {} not found or not owned by user {}", id,
+                        currentUser.getId());
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("Заявка не найдена или не принадлежит пользователю");
+            }
+        } catch (Exception e) {
+            log.error("EventApplicationController: Error cancelling application: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка при отмене заявки");
+        }
+    }
+
 }

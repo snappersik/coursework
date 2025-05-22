@@ -72,6 +72,9 @@ public class WebSecurityConfig {
                                                 .hasRole(ORGANIZER)
                                                 .requestMatchers(AUTHENTICATED_PERMISSIONS.toArray(String[]::new))
                                                 .authenticated()
+                                                .requestMatchers(HttpMethod.GET, "/api/rest/admin/stats",
+                                                                "/api/rest/admin/stats/events")
+                                                .hasAnyRole(ADMIN, ORGANIZER)
                                                 .requestMatchers(HttpMethod.GET, "/api/rest/admin/**").hasRole(ADMIN)
                                                 .anyRequest().denyAll())
                                 .addFilterBefore(jwtCookieFilter, UsernamePasswordAuthenticationFilter.class);

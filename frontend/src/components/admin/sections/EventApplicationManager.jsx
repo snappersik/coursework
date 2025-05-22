@@ -2,7 +2,10 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react'; // Add
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { API_URL } from '../../../config';
-import { FaSort, FaSortAlphaDown, FaSortAlphaUp, FaSearch, FaFilter, FaTimes, FaCheck, FaBan, FaEye, FaChevronLeft, FaChevronRight } from 'react-icons/fa'; // Added FaChevronLeft, FaChevronRight
+import { FaSort, FaSortAlphaDown, FaSortAlphaUp, FaSearch, FaFilter, FaTimes, FaCheck, FaBan, FaEye, FaChevronLeft, FaChevronRight, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { format, parseISO, isValid } from 'date-fns';
+import { ru } from 'date-fns/locale';
+
 
 const EventApplicationManager = () => {
   const [applications, setApplications] = useState([]);
@@ -24,6 +27,36 @@ const EventApplicationManager = () => {
     totalPages: 0
   });
 
+  const formatApplicationDate = (dateString) => {
+    if (!dateString) {
+      return 'N/A';
+    }
+    try {
+      let parsableDateString = String(dateString);
+      // Попытка преобразовать "YYYY-MM-DD HH:mm:ss.SSS" в "YYYY-MM-DDTHH:mm:ss.SSS"
+      if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?$/.test(parsableDateString)) {
+        parsableDateString = parsableDateString.replace(' ', 'T');
+      }
+      // Попытка преобразовать "ДД.ММ.ГГГГ ЧЧ:мм" в "YYYY-MM-DDTHH:mm" (если такой формат приходит)
+      else if (/^\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}(:\d{2})?(\.\d+)?$/.test(parsableDateString)) {
+        const parts = parsableDateString.split(' ');
+        const dateParts = parts[0].split('.');
+        const timePart = parts.length > 1 ? parts[1] : "00:00";
+        parsableDateString = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}T${timePart}`;
+      }
+
+      const date = parseISO(parsableDateString);
+      if (isValid(date)) {
+        return format(date, 'dd.MM.yyyy HH:mm', { locale: ru });
+      }
+      console.warn("Could not parse application date with parseISO after transformations:", dateString, "->", parsableDateString);
+      return 'Invalid Date';
+    } catch (error) {
+      console.error("Error formatting application date:", dateString, error);
+      return 'Ошибка даты';
+    }
+  };
+
   // Memoized fetch functions
   const fetchApplicationsInternal = useCallback(async () => {
     try {
@@ -35,11 +68,11 @@ const EventApplicationManager = () => {
       if (filters.eventId) params.append('eventId', filters.eventId);
       if (filters.userEmail) params.append('userEmail', filters.userEmail);
       if (filters.status) params.append('status', filters.status);
-      
+
       const response = await axios.get(`${API_URL}/event-applications/paginated?${params.toString()}`, {
         withCredentials: true
       });
-      
+
       setApplications(Array.isArray(response.data.content) ? response.data.content : []);
       setPagination(prev => ({
         ...prev,
@@ -116,7 +149,7 @@ const EventApplicationManager = () => {
         return [...baseApplications]; // Fallback
       }
     }
-    
+
     if (sortConfig.key) {
       try {
         filtered.sort((a, b) => {
@@ -133,7 +166,7 @@ const EventApplicationManager = () => {
             aValue = a[sortConfig.key];
             bValue = b[sortConfig.key];
           }
-          
+
           if (aValue === bValue) return 0;
           if (aValue == null) return sortConfig.direction === 'asc' ? -1 : 1;
           if (bValue == null) return sortConfig.direction === 'asc' ? 1 : -1;
@@ -178,7 +211,7 @@ const EventApplicationManager = () => {
   };
 
   const handleMarkAttended = async (applicationId) => {
-     try {
+    try {
       await axios.put(`${API_URL}/event-applications/${applicationId}/mark-attended`, {}, { withCredentials: true });
       toast.success('Участие отмечено');
       fetchApplicationsInternal(); // Re-fetch
@@ -187,7 +220,7 @@ const EventApplicationManager = () => {
       toast.error(error.response?.data?.message || 'Не удалось отметить участие');
     }
   };
-  
+
   const handleViewDetails = (application) => {
     setCurrentApplication(application);
     setShowDetailsModal(true);
@@ -202,7 +235,7 @@ const EventApplicationManager = () => {
     setPagination(prev => ({ ...prev, page: 0 })); // Reset to first page on filter apply
     fetchApplicationsInternal(); // This will use the new filters and reset page
   };
-  
+
   const requestSort = (key) => {
     let direction = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -218,14 +251,18 @@ const EventApplicationManager = () => {
   };
 
   const translateApplicationStatus = (status) => {
+    if (!status) { // Если статус null, undefined или пустая строка
+      return 'N/A'; // Возвращаем "N/A" или "Неизвестно"
+    }
     const translations = {
       'PENDING': 'На рассмотрении',
       'APPROVED': 'Одобрена',
       'REJECTED': 'Отклонена',
       'CANCELLED': 'Отменена'
     };
-    return translations[status] || status;
+    return translations[status] || status; // Если перевода нет, показываем сам статус
   };
+
 
   if (loading && applications.length === 0) { // Show loader only if applications are not yet loaded
     return (
@@ -319,12 +356,11 @@ const EventApplicationManager = () => {
                   {application.submissionDate ? new Date(application.submissionDate).toLocaleDateString('ru-RU') : '-'}
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap text-sm">
-                  <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    application.status === 'APPROVED' ? 'bg-green-500 text-green-100' :
+                  <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${application.status === 'APPROVED' ? 'bg-green-500 text-green-100' :
                     application.status === 'REJECTED' ? 'bg-red-500 text-red-100' :
-                    application.status === 'PENDING' ? 'bg-yellow-500 text-yellow-100' :
-                    'bg-gray-500 text-gray-100'
-                  }`}>
+                      application.status === 'PENDING' ? 'bg-yellow-500 text-yellow-100' :
+                        'bg-gray-500 text-gray-100'
+                    }`}>
                     {translateApplicationStatus(application.status)}
                   </span>
                 </td>
@@ -355,7 +391,7 @@ const EventApplicationManager = () => {
           </tbody>
         </table>
       </div>
-      
+
       {/* Пагинация */}
       {pagination.totalPages > 1 && (
         <div className="mt-6 flex justify-center items-center space-x-3">

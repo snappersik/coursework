@@ -78,6 +78,10 @@ public interface SecurityConstants {
         List<String> ADMIN_PANEL = prefixPaths(
                         "/admin/**");
 
+        List<String> ORGANIZER_DASHBOARD_ACCESS = prefixPaths(
+                        "/admin/stats",
+                        "/admin/stats/events");
+
         // Права для управления книгами
         List<String> BOOKS_MANAGEMENT_LIST = prefixPaths(
                         "/books/create",
@@ -138,6 +142,10 @@ public interface SecurityConstants {
                         "/event-applications/*/approve",
                         "/event-applications/*/reject",
                         "/event-applications/mark-attended/*");
+
+        List<String> ORGANIZER_DASHBOARD = prefixPaths(
+                        "/admin/stats",
+                        "/admin/stats/events");
 
         // Права для управления check-in (для админа и организатора)
         List<String> CHECK_IN_MANAGEMENT_LIST = prefixPaths(
@@ -209,7 +217,8 @@ public interface SecurityConstants {
                         "/users/profile",
                         "/users/profile/avatar-upload",
                         "/event-applications/create",
-                        "/event-applications/my");
+                        "/event-applications/my",
+                        "/event-applications/{id}/cancel");
 
         // Объединение всех прав администратора
         List<String> ADMIN_PERMISSIONS_LIST = Stream.of(
@@ -232,7 +241,9 @@ public interface SecurityConstants {
                         PRODUCTS_MANAGEMENT_LIST,
                         EVENTS_ORGANIZER_MANAGEMENT_LIST,
                         EVENT_APPLICATIONS_ORGANIZER_LIST,
-                        CHECK_IN_MANAGEMENT_LIST)
+                        CHECK_IN_MANAGEMENT_LIST,
+                        ORGANIZER_DASHBOARD)
                         .flatMap(List::stream)
                         .collect(Collectors.toList());
+
 }

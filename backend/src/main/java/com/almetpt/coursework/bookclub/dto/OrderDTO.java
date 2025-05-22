@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-
 import java.util.List;
 
 @Getter
@@ -14,9 +13,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDTO extends GenericDTO {
-    private Long id;
     private Long userId;
+    private String userEmail;
     private BigDecimal total;
     private String orderStatus;
     private List<ProductDTO> products;
 }
+
