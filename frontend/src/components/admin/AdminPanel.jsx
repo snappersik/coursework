@@ -38,7 +38,7 @@ const AdminPanel = observer(() => {
     if (authStore.userRole === 'ADMIN') return true;
     if (authStore.userRole === 'ORGANIZER') {
       // Разделы, доступные Организатору
-      return ['dashboard', 'books', 'events', 'event-applications', 'slider'].includes(section);
+      return ['books', 'events', 'event-applications', 'slider'].includes(section);
     }
     return false;
   };

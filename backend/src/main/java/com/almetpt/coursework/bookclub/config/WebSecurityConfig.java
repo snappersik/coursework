@@ -56,6 +56,13 @@ public class WebSecurityConfig {
                                                 .permitAll()
                                                 .requestMatchers(AUTH_WHITE_LIST.toArray(String[]::new)).permitAll()
                                                 .requestMatchers(ORDERS_GET_ALL.toArray(String[]::new)).permitAll()
+                                                // выа
+                                                .requestMatchers(HttpMethod.GET, "/api/rest/users")
+                                                .hasAnyRole(ADMIN, ORGANIZER)
+                                                .requestMatchers(HttpMethod.GET,
+                                                                "/api/rest/event-applications/paginated")
+                                                .hasAnyRole(ADMIN, ORGANIZER)
+                                                // фвыа
                                                 .requestMatchers(PUBLIC_GET_LIST.toArray(String[]::new)).permitAll()
                                                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/api/rest/orders/create")
@@ -68,6 +75,9 @@ public class WebSecurityConfig {
                                                 .requestMatchers("/api/rest/books/*/cover").permitAll()
                                                 .requestMatchers(ADMIN_PERMISSIONS_LIST.toArray(String[]::new))
                                                 .hasRole(ADMIN)
+                                                .requestMatchers(HttpMethod.GET, "/api/rest/admin/stats",
+                                                                "/api/rest/admin/stats/events")
+                                                .hasAnyRole(ADMIN, ORGANIZER)
                                                 .requestMatchers(ORGANIZER_PERMISSIONS_LIST.toArray(String[]::new))
                                                 .hasRole(ORGANIZER)
                                                 .requestMatchers(AUTHENTICATED_PERMISSIONS.toArray(String[]::new))

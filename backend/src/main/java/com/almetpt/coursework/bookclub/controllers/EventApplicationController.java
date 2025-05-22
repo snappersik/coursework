@@ -104,7 +104,7 @@ public class EventApplicationController extends GenericController<EventApplicati
 
     @Operation(summary = "Получить страницу заявок на мероприятия", description = "Возвращает страницу заявок на мероприятия с пагинацией. Доступно администраторам.")
     @GetMapping("/paginated")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ORGANIZER')")
     public ResponseEntity<Page<EventApplicationDTO>> getEventApplicationsPaginated(
             @PageableDefault(size = 20, sort = "createdWhen") Pageable pageable) {
         log.debug("EventApplicationController: Fetching paginated event applications for admin. Pageable: {}",

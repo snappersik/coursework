@@ -1,6 +1,6 @@
 package com.almetpt.coursework.bookclub.service;
 
-import com.almetpt.coursework.bookclub.dto.CartDTO;
+// import com.almetpt.coursework.bookclub.dto.CartDTO;
 import com.almetpt.coursework.bookclub.dto.OrderDTO;
 import com.almetpt.coursework.bookclub.mapper.OrderMapper;
 import com.almetpt.coursework.bookclub.model.*;
@@ -10,7 +10,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource; // Изменен импорт
+import org.springframework.core.io.Resource; 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -82,7 +82,7 @@ public class OrderService extends GenericService<Order, OrderDTO> {
                 throw new NotFoundException("User not found with email: " + userEmail);
             }
 
-            CartDTO cartDTO = cartService.getCurrentUserCartDto();
+            // CartDTO cartDTO = cartService.getCurrentUserCartDto();
             // Cart cart = cartService.getCartEntity(cartDTO.getId()); // Старый вариант
             Cart cart = cartService.getCurrentUserCartEntity(); // Получаем сущность корзины текущего пользователя
 

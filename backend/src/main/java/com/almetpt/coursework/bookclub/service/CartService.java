@@ -91,8 +91,8 @@ public class CartService {
     public CartDTO removeProductFromCart(Long cartId, Long productId) {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new NotFoundException("Cart not found with id: " + cartId));
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException("Product not found with id: " + productId));
+        // Product product = productRepository.findById(productId)
+        //         .orElseThrow(() -> new NotFoundException("Product not found with id: " + productId));
 
         List<Product> products = cart.getProducts();
         if (products != null) {

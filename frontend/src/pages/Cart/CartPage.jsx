@@ -1,23 +1,27 @@
-import React, { useState, useEffect } from "react"; // Добавлен useEffect
+import React, { useState, useEffect } from "react";
 import { observer } from "mobx-react-lite";
 import { cartStore } from "../../store/cartStore";
+import { authStore } from "../../store/store"; // <--- ДОБАВЛЕН ЭТОТ ИМПОРТ
 import { toast } from "react-toastify";
 import SuccessPurchaseModal from "../../components/modals/SuccessPurchaseModal";
-import { Link } from "react-router-dom"; // Для ссылки на каталог
-import { API_URL, DEFAULT_PRODUCT_IMAGE } from '../../config'; // Для дефолтного изображения
+import { Link } from "react-router-dom";
+import { API_URL, DEFAULT_PRODUCT_IMAGE } from '../../config';
 
 const CartPage = observer(() => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  // Загрузка корзины при монтировании компонента, если она еще не загружена
-  // или если есть необходимость синхронизации
   useEffect(() => {
-    if (cartStore.items.length === 0 && authStore.isAuthorized) {
-       cartStore.loadCartFromServer();
+    // Теперь authStore должен быть доступен
+    if (authStore && authStore.isAuthorized) {
+      // Загружаем корзину с сервера. cartStore.loadCartFromServer сам может
+      // проверить, нужно ли загружать (например, если cartStore.items.length === 0)
+      // или если он еще не загружал для текущего пользователя
+      cartStore.loadCartFromServer();
     }
-  }, []);
-
+    // Зависимость от authStore.isAuthorized, чтобы эффект перезапускался при изменении статуса авторизации
+    // и от cartStore.items.length, чтобы перезагрузить если корзина стала пустой после каких-то действий (опционально)
+  }, [authStore.isAuthorized]); 
 
   const handleRemoveItem = async (productId) => {
     setIsLoading(true);
@@ -40,7 +44,7 @@ const CartPage = observer(() => {
     setIsLoading(true);
     try {
       await cartStore.createOrder();
-      setShowSuccessModal(true); // Модальное окно закроется и вызовет clearCart
+      setShowSuccessModal(true); 
     } catch (error) {
       toast.error(error.message || 'Не удалось оформить заказ');
       console.error('Ошибка при оформлении заказа:', error);
@@ -59,17 +63,25 @@ const CartPage = observer(() => {
     <div className="container mx-auto px-4 py-8 text-white">
       <h1 className="text-3xl font-bold mb-8 text-center">Корзина</h1>
       
-      {cartStore.isLoading && cartStore.items.length === 0 ? (
+      {/* Условие для начальной загрузки, authStore.isAuthorized может быть undefined в первый момент */}
+      {(cartStore.isLoading && authStore.isAuthorized === undefined) || (cartStore.isLoading && cartStore.items.length === 0 && authStore.isAuthorized) ? (
          <div className="text-center py-16 bg-[#484848] rounded-lg">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500 mx-auto mb-4"></div>
           <h2 className="text-xl text-white">Загрузка корзины...</h2>
         </div>
-      ) : cartStore.items.length === 0 ? (
+      ) : !authStore.isAuthorized ? ( // Если пользователь не авторизован
+        <div className="text-center py-16 bg-[#484848] rounded-lg">
+          <h2 className="text-xl text-white">Для доступа к корзине необходимо авторизоваться</h2>
+          <p className="mt-2 text-gray-300">
+            <Link to="/auth" className="text-yellow-400 hover:text-yellow-300">Войти</Link>
+          </p>
+        </div>
+      ) : cartStore.items.length === 0 ? ( // Авторизован, но корзина пуста
         <div className="text-center py-16 bg-[#484848] rounded-lg">
           <h2 className="text-xl text-white">Ваша корзина пуста</h2>
           <p className="mt-2 text-gray-300">Добавьте товары из <Link to="/catalog" className="text-yellow-400 hover:text-yellow-300">каталога</Link></p>
         </div>
-      ) : (
+      ) : ( // Авторизован и есть товары
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div className="md:col-span-2">
             {cartStore.items.map(item => (
@@ -82,14 +94,13 @@ const CartPage = observer(() => {
                     onError={(e) => e.target.src = DEFAULT_PRODUCT_IMAGE}
                   />
                 </div>
-                <div className="flex-1 min-w-0"> {/* min-w-0 для text-ellipsis */}
+                <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-lg text-gray-100 truncate">{item.name || "Название товара отсутствует"}</h3>
                   <p className="text-sm text-gray-400 line-clamp-1">{item.description || "Описание отсутствует"}</p>
                 </div>
                 <div className="text-right ml-4 flex-shrink-0">
                   <p className="font-bold text-white text-lg">{item.price} ₽</p>
-                   {/* Если нужно отображать количество */}
-                   {item.quantity && item.quantity > 1 && (
+                   {item.quantity && item.quantity > 1 && ( // Если есть поле quantity и оно больше 1
                     <p className="text-sm text-gray-400">x {item.quantity}</p>
                   )}
                   <button 
@@ -111,7 +122,6 @@ const CartPage = observer(() => {
                 <span>Товары ({cartStore.itemCount}):</span>
                 <span>{cartStore.totalPrice.toFixed(2)} ₽</span>
               </div>
-              {/* Можно добавить стоимость доставки и т.д. */}
             </div>
             <div className="flex justify-between font-bold text-lg mb-6 text-gray-100">
               <span>Итого к оплате:</span>
