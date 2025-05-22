@@ -82,7 +82,7 @@ public class OrderService extends GenericService<Order, OrderDTO> {
                 throw new NotFoundException("User not found with email: " + userEmail);
             }
 
-            CartDTO cartDTO = cartService.getCurrentUserCartDto(); // Используем обновленный метод
+            CartDTO cartDTO = cartService.getCurrentUserCartDto();
             // Cart cart = cartService.getCartEntity(cartDTO.getId()); // Старый вариант
             Cart cart = cartService.getCurrentUserCartEntity(); // Получаем сущность корзины текущего пользователя
 
@@ -133,6 +133,7 @@ public class OrderService extends GenericService<Order, OrderDTO> {
         return orderMapper.toDTO(orderRepository.save(order));
     }
 
+    @SuppressWarnings("null")
     private void sendOrderConfirmationEmail(Order order) throws MessagingException {
         if (order == null || order.getUser() == null || order.getUser().getEmail() == null) {
             log.error("Cannot send email: order, user, or email is undefined for order ID (if available): {}", order != null ? order.getId() : "N/A");
